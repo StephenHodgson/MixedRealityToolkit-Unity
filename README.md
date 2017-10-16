@@ -58,7 +58,8 @@ If you're looking for **Controller models**:
     * ControllerInfo.cs
     * GLTFComponentStreamingAssets.cs
     * The entire Utilities\Scripts\GLTF folder.
-* **IMPORTANT** You will also need a recent Windows Insider SDK installed, or you will not be able to build these scripts. Please install the SDK found [here](https://www.microsoft.com/en-us/software-download/windowsinsiderpreviewSDK).
+* **IMPORTANT** You need to have the 16299 UWP SDK installed, or you will not be able to build these scripts. Please install the SDK found [here](https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk).
+
 * **IMPORTANT** Currently, motion controller's GLTF 3D model is only visible when you deploy through Visual Studio. In Unity's game mode, you should assign override model. <img src="External/ReadMeImages/MotionControllerTest_ModelOverride.png" width="700px">
 
 If you're looking for **teleporting**:
