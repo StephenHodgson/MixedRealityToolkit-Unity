@@ -1,4 +1,7 @@
-﻿using HoloToolkit.Unity.Boundary;
+﻿// Copyright(c) Microsoft Corporation.All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using HoloToolkit.Unity.Boundary;
 using UnityEngine;
 
 #if UNITY_2017_2_OR_NEWER
