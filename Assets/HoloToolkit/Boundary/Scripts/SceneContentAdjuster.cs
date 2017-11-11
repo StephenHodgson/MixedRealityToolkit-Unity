@@ -1,7 +1,6 @@
 ﻿// Copyright(c) Microsoft Corporation.All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using HoloToolkit.Unity.Boundary;
 using System.Collections;
 using UnityEngine;
 
@@ -13,7 +12,6 @@ namespace HoloToolkit.Unity
 {
     public class SceneContentAdjuster : MonoBehaviour
     {
-        private float contentHeightOffset = 1f;
         private int frameWaitHack = 0;
 
         private void Awake()
@@ -42,9 +40,7 @@ namespace HoloToolkit.Unity
                 yield return null;
             }
 
-#if UNITY_2017_2_OR_NEWER
             transform.position = new Vector3(transform.position.x, CameraCache.Main.transform.position.y, transform.position.z);
-#endif
         }
     }
 }
