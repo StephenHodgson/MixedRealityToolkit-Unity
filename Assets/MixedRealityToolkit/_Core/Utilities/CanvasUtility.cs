@@ -12,7 +12,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Utilities
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Canvas))]
-    public class CanvasHelper : MonoBehaviour
+    public class CanvasUtility : MonoBehaviour
     {
         /// <summary>
         /// The canvas this helper script is targeting.
@@ -29,7 +29,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Utilities
 
         private void Start()
         {
-             Debug.Assert(Canvas != null);
+            Debug.Assert(Canvas != null);
 
             if (Canvas.isRootCanvas && Canvas.renderMode == RenderMode.WorldSpace)
             {

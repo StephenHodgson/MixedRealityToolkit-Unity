@@ -1,13 +1,14 @@
-﻿// Copyright (c) Rotorz Limited. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Microsoft.MixedReality.Toolkit.Internal.Definitions;
-using UnityEditor;
-using UnityEngine;
+using Assembly = System.Reflection.Assembly;
+using Microsoft.MixedReality.Toolkit.Internal.Attributes;
 using System;
 using System.Collections.Generic;
+using Microsoft.MixedReality.Toolkit.Internal.Utilities;
+using UnityEditor;
+using UnityEngine;
 using UnityEditor.Compilation;
-using Assembly = System.Reflection.Assembly;
 
 namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
 {
@@ -122,33 +123,35 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
 
         #region Control Drawing / Event Handling
 
-        private static readonly int s_ControlHint = typeof(ClassTypeReferencePropertyDrawer).GetHashCode();
-        private static GUIContent s_TempContent = new GUIContent();
+        private static readonly int ControlHint = typeof(ClassTypeReferencePropertyDrawer).GetHashCode();
+        private static readonly GUIContent TempContent = new GUIContent();
 
         private static string DrawTypeSelectionControl(Rect position, GUIContent label, string classRef, ClassTypeConstraintAttribute filter)
         {
             if (label != null && label != GUIContent.none)
+            {
                 position = EditorGUI.PrefixLabel(position, label);
+            }
 
-            int controlID = GUIUtility.GetControlID(s_ControlHint, FocusType.Keyboard, position);
+            int controlId = GUIUtility.GetControlID(ControlHint, FocusType.Keyboard, position);
 
             bool triggerDropDown = false;
 
-            switch (Event.current.GetTypeForControl(controlID))
+            switch (Event.current.GetTypeForControl(controlId))
             {
                 case EventType.ExecuteCommand:
                     if (Event.current.commandName == "TypeReferenceUpdated")
                     {
-                        if (s_SelectionControlID == controlID)
+                        if (selectionControlId == controlId)
                         {
-                            if (classRef != s_SelectedClassRef)
+                            if (classRef != selectedClassRef)
                             {
-                                classRef = s_SelectedClassRef;
+                                classRef = selectedClassRef;
                                 GUI.changed = true;
                             }
 
-                            s_SelectionControlID = 0;
-                            s_SelectedClassRef = null;
+                            selectionControlId = 0;
+                            selectedClassRef = null;
                         }
                     }
 
@@ -157,7 +160,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
                 case EventType.MouseDown:
                     if (GUI.enabled && position.Contains(Event.current.mousePosition))
                     {
-                        GUIUtility.keyboardControl = controlID;
+                        GUIUtility.keyboardControl = controlId;
                         triggerDropDown = true;
                         Event.current.Use();
                     }
@@ -165,7 +168,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
                     break;
 
                 case EventType.KeyDown:
-                    if (GUI.enabled && GUIUtility.keyboardControl == controlID)
+                    if (GUI.enabled && GUIUtility.keyboardControl == controlId)
                     {
                         if (Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.Space)
                         {
@@ -180,20 +183,24 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
                     // Remove assembly name from content of popup control.
                     var classRefParts = classRef.Split(',');
 
-                    s_TempContent.text = classRefParts[0].Trim();
-                    if (s_TempContent.text == "")
-                        s_TempContent.text = "(None)";
+                    TempContent.text = classRefParts[0].Trim();
+                    if (TempContent.text == "")
+                    {
+                        TempContent.text = "(None)";
+                    }
                     else if (ResolveType(classRef) == null)
-                        s_TempContent.text += " {Missing}";
+                    {
+                        TempContent.text += " {Missing}";
+                    }
 
-                    EditorStyles.popup.Draw(position, s_TempContent, controlID);
+                    EditorStyles.popup.Draw(position, TempContent, controlId);
                     break;
             }
 
             if (triggerDropDown)
             {
-                s_SelectionControlID = controlID;
-                s_SelectedClassRef = classRef;
+                selectionControlId = controlId;
+                selectedClassRef = classRef;
 
                 var filteredTypes = GetFilteredTypes(filter);
                 DisplayDropDown(position, filteredTypes, ResolveType(classRef), filter?.Grouping ?? ClassGrouping.ByNamespaceFlat);
@@ -208,9 +215,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
             {
                 bool restoreShowMixedValue = EditorGUI.showMixedValue;
                 EditorGUI.showMixedValue = property.hasMultipleDifferentValues;
-
                 property.stringValue = DrawTypeSelectionControl(position, label, property.stringValue, filter);
-
                 EditorGUI.showMixedValue = restoreShowMixedValue;
             }
             finally
@@ -223,19 +228,17 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
         {
             var menu = new GenericMenu();
 
-            menu.AddItem(new GUIContent("(None)"), selectedType == null, s_OnSelectedTypeName, null);
+            menu.AddItem(new GUIContent("(None)"), selectedType == null, OnSelectedTypeName, null);
             menu.AddSeparator("");
 
             for (int i = 0; i < types.Count; ++i)
             {
-                var type = types[i];
+                string menuLabel = FormatGroupedTypeName(types[i], grouping);
 
-                string menuLabel = FormatGroupedTypeName(type, grouping);
-                if (string.IsNullOrEmpty(menuLabel))
-                    continue;
+                if (string.IsNullOrEmpty(menuLabel)) { continue; }
 
                 var content = new GUIContent(menuLabel);
-                menu.AddItem(content, type == selectedType, s_OnSelectedTypeName, type);
+                menu.AddItem(content, types[i] == selectedType, OnSelectedTypeName, types[i]);
             }
 
             menu.DropDown(position);
@@ -247,39 +250,42 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
 
             switch (grouping)
             {
-                default:
                 case ClassGrouping.None:
                     return name;
-
                 case ClassGrouping.ByNamespace:
-                    return name.Replace('.', '/');
-
+                    return string.IsNullOrEmpty(name) ? string.Empty : name.Replace('.', '/');
                 case ClassGrouping.ByNamespaceFlat:
-                    int lastPeriodIndex = name.LastIndexOf('.');
+                    int lastPeriodIndex = string.IsNullOrEmpty(name) ? -1 : name.LastIndexOf('.');
                     if (lastPeriodIndex != -1)
-                        name = name.Substring(0, lastPeriodIndex) + "/" + name.Substring(lastPeriodIndex + 1);
+                    {
+                        name = string.IsNullOrEmpty(name)
+                            ? string.Empty
+                            : $"{name.Substring(0, lastPeriodIndex)}/{name.Substring(lastPeriodIndex + 1)}";
+                    }
 
                     return name;
-
                 case ClassGrouping.ByAddComponentMenu:
                     var addComponentMenuAttributes = type.GetCustomAttributes(typeof(AddComponentMenu), false);
                     if (addComponentMenuAttributes.Length == 1)
+                    {
                         return ((AddComponentMenu)addComponentMenuAttributes[0]).componentMenu;
+                    }
 
-                    return "Scripts/" + type.FullName.Replace('.', '/');
+                    Debug.Assert(type.FullName != null);
+                    return $"Scripts/{type.FullName.Replace('.', '/')}";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(grouping), grouping, null);
             }
         }
 
-        private static int s_SelectionControlID;
-        private static string s_SelectedClassRef;
-
-        private static readonly GenericMenu.MenuFunction2 s_OnSelectedTypeName = OnSelectedTypeName;
+        private static int selectionControlId;
+        private static string selectedClassRef;
 
         private static void OnSelectedTypeName(object userData)
         {
             var selectedType = userData as Type;
 
-            s_SelectedClassRef = ClassTypeReference.GetClassRef(selectedType);
+            selectedClassRef = ClassTypeReference.GetClassRef(selectedType);
 
             var typeReferenceUpdatedEvent = EditorGUIUtility.CommandEvent("TypeReferenceUpdated");
             EditorWindow.focusedWindow.SendEvent(typeReferenceUpdatedEvent);
@@ -294,7 +300,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            DrawTypeSelectionControl(position, property.FindPropertyRelative("_classRef"), label, attribute as ClassTypeConstraintAttribute);
+            DrawTypeSelectionControl(position, property.FindPropertyRelative("classReference"), label, attribute as ClassTypeConstraintAttribute);
         }
     }
 }

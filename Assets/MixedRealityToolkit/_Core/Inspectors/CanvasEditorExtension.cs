@@ -55,7 +55,7 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem.Inspectors
                 // Add the Canvas Helper if we need it.
                 if (canvas.isRootCanvas && canvas.renderMode == RenderMode.WorldSpace && canvas.worldCamera == inputSystem.FocusProvider.UIRaycastCamera)
                 {
-                    var helper = canvas.gameObject.EnsureComponent<CanvasHelper>();
+                    var helper = canvas.gameObject.EnsureComponent<CanvasUtility>();
                     helper.Canvas = canvas;
                 }
 
@@ -71,7 +71,7 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem.Inspectors
                 if (removeHelper)
                 {
                     // Remove the helper if needed.
-                    var helper = canvas.GetComponent<CanvasHelper>();
+                    var helper = canvas.GetComponent<CanvasUtility>();
                     if (helper != null)
                     {
                         DestroyImmediate(helper);
