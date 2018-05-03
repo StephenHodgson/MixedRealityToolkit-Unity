@@ -4,7 +4,7 @@
 using Microsoft.MixedReality.Toolkit.Internal.Interfaces.Events;
 using UnityEngine.EventSystems;
 
-namespace Microsoft.MixedReality.Toolkit.Internal.EventDatas
+namespace Microsoft.MixedReality.Toolkit.Internal.EventDatum
 {
     public class GenericBaseEventData : BaseEventData
     {

@@ -5,7 +5,7 @@ using Microsoft.MixedReality.Toolkit.Internal.Definitions;
 using Microsoft.MixedReality.Toolkit.Internal.Interfaces.InputSystem;
 using UnityEngine.EventSystems;
 
-namespace Microsoft.MixedReality.Toolkit.Internal.EventDatas.Input
+namespace Microsoft.MixedReality.Toolkit.Internal.EventDatum.Input
 {
     /// <summary>
     /// Describes an input event that involves a tap.

@@ -6,7 +6,7 @@ using Microsoft.MixedReality.Toolkit.Internal.Interfaces.InputSystem;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Microsoft.MixedReality.Toolkit.Internal.EventDatas.Input
+namespace Microsoft.MixedReality.Toolkit.Internal.EventDatum.Input
 {
     /// <summary>
     /// Describes an input event that involves content navigation.

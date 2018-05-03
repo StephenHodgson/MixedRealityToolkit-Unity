@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Windows.Speech;
 #endif
 
-namespace Microsoft.MixedReality.Toolkit.Internal.EventDatas.Input
+namespace Microsoft.MixedReality.Toolkit.Internal.EventDatum.Input
 {
     /// <summary>
     /// Describes an input event that involves keyword recognition.

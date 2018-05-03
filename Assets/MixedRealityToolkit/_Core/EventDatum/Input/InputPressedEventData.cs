@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-namespace Microsoft.MixedReality.Toolkit.Internal.EventDatas.Input
+namespace Microsoft.MixedReality.Toolkit.Internal.EventDatum.Input
 {
     public class InputPressedEventData : InputEventData
     {
