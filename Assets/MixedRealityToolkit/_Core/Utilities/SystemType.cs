@@ -10,7 +10,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Utilities
     /// Reference to a class <see cref="System.Type"/> with support for Unity serialization.
     /// </summary>
     [Serializable]
-    public sealed class ClassTypeReference : ISerializationCallbackReceiver
+    public sealed class SystemType : ISerializationCallbackReceiver
     {
         [SerializeField]
         private string classReference = string.Empty;
@@ -23,10 +23,10 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Utilities
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClassTypeReference"/>class.
+        /// Initializes a new instance of the <see cref="SystemType"/> class.
         /// </summary>
         /// <param name="assemblyQualifiedClassName">Assembly qualified class name.</param>
-        public ClassTypeReference(string assemblyQualifiedClassName)
+        public SystemType(string assemblyQualifiedClassName)
         {
             Type = !string.IsNullOrEmpty(assemblyQualifiedClassName)
                 ? Type.GetType(assemblyQualifiedClassName)
@@ -34,13 +34,13 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Utilities
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClassTypeReference"/> class.
+        /// Initializes a new instance of the <see cref="SystemType"/> class.
         /// </summary>
         /// <param name="type">Class type.</param>
         /// <exception cref="ArgumentException">
         /// If <paramref name="type"/> is not a class type.
         /// </exception>
-        public ClassTypeReference(Type type)
+        public SystemType(Type type)
         {
             Type = type;
         }
@@ -89,19 +89,19 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Utilities
             }
         }
 
-        public static implicit operator string(ClassTypeReference typeReference)
+        public static implicit operator string(SystemType type)
         {
-            return typeReference.classReference;
+            return type.classReference;
         }
 
-        public static implicit operator Type(ClassTypeReference typeReference)
+        public static implicit operator Type(SystemType type)
         {
-            return typeReference.Type;
+            return type.Type;
         }
 
-        public static implicit operator ClassTypeReference(Type type)
+        public static implicit operator SystemType(Type type)
         {
-            return new ClassTypeReference(type);
+            return new SystemType(type);
         }
 
         public override string ToString()

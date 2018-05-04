@@ -3,23 +3,26 @@
 
 using Assembly = System.Reflection.Assembly;
 using Microsoft.MixedReality.Toolkit.Internal.Attributes;
+using Microsoft.MixedReality.Toolkit.Internal.Utilities;
 using System;
 using System.Collections.Generic;
-using Microsoft.MixedReality.Toolkit.Internal.Utilities;
 using UnityEditor;
-using UnityEngine;
 using UnityEditor.Compilation;
+using UnityEngine;
 
-namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
+namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.PropertyDrawers
 {
-
     /// <summary>
-    /// Custom property drawer for <see cref="ClassTypeReference"/> properties.
+    /// Custom property drawer for <see cref="SystemType"/> properties.
     /// </summary>
-    [CustomPropertyDrawer(typeof(ClassTypeReference))]
-    [CustomPropertyDrawer(typeof(ClassTypeConstraintAttribute), true)]
-    public sealed class ClassTypeReferencePropertyDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(SystemType))]
+    [CustomPropertyDrawer(typeof(SystemTypeAttribute), true)]
+    public class ClassTypeReferencePropertyDrawer : PropertyDrawer
     {
+        private static int selectionControlId;
+        private static string selectedClassRef;
+        private static readonly Dictionary<string, Type> TypeMap = new Dictionary<string, Type>();
+
         #region Type Filtering
 
         /// <summary>
@@ -29,8 +32,8 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
         /// </summary>
         /// <remarks>
         /// <para>This property must be set immediately before presenting a class
-        /// type reference property field using <see cref="EditorGUI.PropertyField"/>
-        /// or <see cref="EditorGUILayout.PropertyField"/> since the value of this
+        /// type reference property field using <see cref="EditorGUI.PropertyField(Rect,SerializedProperty)"/>
+        /// or <see cref="EditorGUILayout.PropertyField(SerializedProperty,UnityEngine.GUILayoutOption[])"/> since the value of this
         /// property is reset to <c>null</c> each time the control is drawn.</para>
         /// <para>Since filtering makes extensive use of <see cref="ICollection{Type}.Contains"/>
         /// it is recommended to use a collection that is optimized for fast
@@ -59,13 +62,11 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
         /// </example>
         public static Func<ICollection<Type>> ExcludedTypeCollectionGetter { get; set; }
 
-        private static List<Type> GetFilteredTypes(ClassTypeConstraintAttribute filter)
+        private static List<Type> GetFilteredTypes(SystemTypeAttribute filter)
         {
             var types = new List<Type>();
-
-            var excludedTypes = ExcludedTypeCollectionGetter?.Invoke();
-
             var assemblies = CompilationPipeline.GetAssemblies();
+            var excludedTypes = ExcludedTypeCollectionGetter?.Invoke();
 
             foreach (var assembly in assemblies)
             {
@@ -74,11 +75,10 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
             }
 
             types.Sort((a, b) => string.Compare(a.FullName, b.FullName, StringComparison.Ordinal));
-
             return types;
         }
 
-        private static void FilterTypes(Assembly assembly, ClassTypeConstraintAttribute filter, ICollection<Type> excludedTypes, List<Type> output)
+        private static void FilterTypes(Assembly assembly, SystemTypeAttribute filter, ICollection<Type> excludedTypes, List<Type> output)
         {
             foreach (var type in assembly.GetTypes())
             {
@@ -101,32 +101,30 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
             }
         }
 
-        #endregion
+        #endregion Type Filtering
 
         #region Type Utility
-
-        private static Dictionary<string, Type> s_TypeMap = new Dictionary<string, Type>();
 
         private static Type ResolveType(string classRef)
         {
             Type type;
-            if (!s_TypeMap.TryGetValue(classRef, out type))
+            if (!TypeMap.TryGetValue(classRef, out type))
             {
                 type = !string.IsNullOrEmpty(classRef) ? Type.GetType(classRef) : null;
-                s_TypeMap[classRef] = type;
+                TypeMap[classRef] = type;
             }
 
             return type;
         }
 
-        #endregion
+        #endregion Type Utility
 
         #region Control Drawing / Event Handling
 
         private static readonly int ControlHint = typeof(ClassTypeReferencePropertyDrawer).GetHashCode();
         private static readonly GUIContent TempContent = new GUIContent();
 
-        private static string DrawTypeSelectionControl(Rect position, GUIContent label, string classRef, ClassTypeConstraintAttribute filter)
+        private static string DrawTypeSelectionControl(Rect position, GUIContent label, string classRef, SystemTypeAttribute filter)
         {
             if (label != null && label != GUIContent.none)
             {
@@ -202,14 +200,13 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
                 selectionControlId = controlId;
                 selectedClassRef = classRef;
 
-                var filteredTypes = GetFilteredTypes(filter);
-                DisplayDropDown(position, filteredTypes, ResolveType(classRef), filter?.Grouping ?? ClassGrouping.ByNamespaceFlat);
+                DisplayDropDown(position, GetFilteredTypes(filter), ResolveType(classRef), filter?.Grouping ?? ClassGrouping.ByNamespaceFlat);
             }
 
             return classRef;
         }
 
-        private static void DrawTypeSelectionControl(Rect position, SerializedProperty property, GUIContent label, ClassTypeConstraintAttribute filter)
+        private static void DrawTypeSelectionControl(Rect position, SerializedProperty property, GUIContent label, SystemTypeAttribute filter)
         {
             try
             {
@@ -227,9 +224,8 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
         private static void DisplayDropDown(Rect position, List<Type> types, Type selectedType, ClassGrouping grouping)
         {
             var menu = new GenericMenu();
-
             menu.AddItem(new GUIContent("(None)"), selectedType == null, OnSelectedTypeName, null);
-            menu.AddSeparator("");
+            menu.AddSeparator(string.Empty);
 
             for (int i = 0; i < types.Count; ++i)
             {
@@ -278,20 +274,14 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
             }
         }
 
-        private static int selectionControlId;
-        private static string selectedClassRef;
-
         private static void OnSelectedTypeName(object userData)
         {
-            var selectedType = userData as Type;
-
-            selectedClassRef = ClassTypeReference.GetClassRef(selectedType);
-
+            selectedClassRef = SystemType.GetClassRef(userData as Type);
             var typeReferenceUpdatedEvent = EditorGUIUtility.CommandEvent("TypeReferenceUpdated");
             EditorWindow.focusedWindow.SendEvent(typeReferenceUpdatedEvent);
         }
 
-        #endregion
+        #endregion Control Drawing / Event Handling
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -300,7 +290,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Inspectors.Definitions
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            DrawTypeSelectionControl(position, property.FindPropertyRelative("classReference"), label, attribute as ClassTypeConstraintAttribute);
+            DrawTypeSelectionControl(position, property.FindPropertyRelative("classReference"), label, attribute as SystemTypeAttribute);
         }
     }
 }

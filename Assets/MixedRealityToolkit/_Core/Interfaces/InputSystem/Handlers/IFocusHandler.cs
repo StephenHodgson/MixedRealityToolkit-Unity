@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using Microsoft.MixedReality.Toolkit.Internal.EventDatum.Input;
-using Microsoft.MixedReality.Toolkit.Internal.Interfaces.InputSystem;
 
 namespace Microsoft.MixedReality.Toolkit.Internal.Interfaces.InputSystem.Handlers
 {

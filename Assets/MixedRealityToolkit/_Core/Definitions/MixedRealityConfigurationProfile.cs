@@ -55,17 +55,17 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Definitions
         }
 
         [SerializeField]
-        [Tooltip("Input System Script File to instantiate at runtime.")]
+        [Tooltip("Input System Class to instantiate at runtime.")]
         [Implements(typeof(IMixedRealityInputSystem), ClassGrouping.None)]
-        private ClassTypeReference inputSystemReference;
+        private SystemType inputSystem;
 
         /// <summary>
         /// Input System Script File to instantiate at runtime.
         /// </summary>
-        public ClassTypeReference InputSystemReference
+        public SystemType InputSystem
         {
-            get { return inputSystemReference; }
-            private set { inputSystemReference = value; }
+            get { return inputSystem; }
+            private set { inputSystem = value; }
         }
 
         [SerializeField]

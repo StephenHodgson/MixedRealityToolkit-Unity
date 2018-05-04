@@ -123,7 +123,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Managers
             if (ActiveProfile.EnableInputSystem)
             {
                 //Enable Input (example initializer)
-                AddManager(typeof(IMixedRealityInputSystem), Activator.CreateInstance(ActiveProfile.InputSystemReference) as IMixedRealityInputSystem);
+                AddManager(typeof(IMixedRealityInputSystem), Activator.CreateInstance(ActiveProfile.InputSystem) as IMixedRealityInputSystem);
             }
 
             //If the Boundary system has been selected for initialization in the Active profile, enable it in the project

@@ -3,8 +3,6 @@
 
 using System;
 using Microsoft.MixedReality.Toolkit.Internal.Interfaces.InputSystem;
-using UnityEngine.EventSystems;
-
 #if UNITY_WSA || UNITY_STANDALONE_WIN
 using UnityEngine.Windows.Speech;
 #endif

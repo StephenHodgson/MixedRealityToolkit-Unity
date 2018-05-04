@@ -151,6 +151,7 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem
             var baseInputEventData = ExecuteEvents.ValidateEventData<BaseInputEventData>(eventData);
 
             Debug.Assert(!baseInputEventData.used);
+            Debug.Assert(eventData != null);
 
             GameObject focusedObject = FocusProvider.GetFocusedObject(baseInputEventData);
 

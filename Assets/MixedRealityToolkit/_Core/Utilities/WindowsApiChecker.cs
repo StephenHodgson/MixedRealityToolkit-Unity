@@ -15,7 +15,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Utilities
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void CheckApiContracts()
         {
-#if !UNITY_EDITOR && (UNITY_WSA || UNITY_STANDALONE_WIN)
+#if !UNITY_EDITOR && UNITY_WSA
             UniversalApiContractV6_IsAvailable = Windows.Foundation.Metadata.ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 6);
             UniversalApiContractV5_IsAvailable = Windows.Foundation.Metadata.ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5);
             UniversalApiContractV4_IsAvailable = Windows.Foundation.Metadata.ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 4);
