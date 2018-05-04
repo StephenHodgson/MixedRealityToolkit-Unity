@@ -111,10 +111,6 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem.Sources
                 SelectPressedAmountUpdated = false;
             }
 
-#if !UNITY_WSA
-            //#pragma warning disable 414
-            //#pragma warning disable 649
-#endif
             public SourceCapability<Vector3> PointerPosition;
             public SourceCapability<Quaternion> PointerRotation;
             public SourceCapability<Ray> PointingRay;
@@ -132,12 +128,7 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem.Sources
             public bool PositionUpdated;
             public bool RotationUpdated;
             public bool SelectPressedAmountUpdated;
-            public bool TestBool;
 
-#if !UNITY_WSA
-            //#pragma warning restore 414
-            //#pragma warning restore 649
-#endif
             public override bool TryGetPointerPosition(IPointer pointer, out Vector3 position)
             {
                 position = Vector3.zero;
@@ -146,8 +137,6 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem.Sources
                     position = PointerPosition.CurrentReading;
                     return true;
                 }
-
-                TestBool = true;
 
                 return false;
             }
