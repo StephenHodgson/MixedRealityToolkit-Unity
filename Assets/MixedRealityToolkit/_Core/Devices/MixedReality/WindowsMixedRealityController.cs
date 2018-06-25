@@ -17,7 +17,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.WindowsMixedReality
     /// <summary>
     /// A Windows Mixed Reality Controller Instance.
     /// </summary>
-    internal class WindowsMixedRealityController : BaseController
+    public class WindowsMixedRealityController : BaseController
     {
         /// <summary>
         /// Constructor.
@@ -66,69 +66,11 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.WindowsMixedReality
                     SetupFromMapping(controllerMapping.Interactions);
                     return;
                 }
-            }
-
-            SetupControllerDefaults();
-        }
-
-        #region Setup and Update functions
-
-        /// <summary>
-        /// Load the Interaction mappings for this controller from the configured Controller Mapping profile
-        /// </summary>
-        /// <param name="mappings">Configured mappings from a controller mapping profile</param>
-        private void SetupFromMapping(MixedRealityInteractionMapping[] mappings)
-        {
-            var interactions = new List<MixedRealityInteractionMapping>();
-            for (int i = 0; i < mappings.Length; i++)
-            {
-                switch (mappings[i].AxisType)
+                else
                 {
-                    case AxisType.Digital:
-                        interactions.Add(new MixedRealityInteractionMapping((uint)i, mappings[i].AxisType, mappings[i].InputType, (InputAction)mappings[i].InputAction));
-                        break;
-                    case AxisType.SingleAxis:
-                        interactions.Add(new MixedRealityInteractionMapping((uint)i, mappings[i].AxisType, mappings[i].InputType, (InputAction)mappings[i].InputAction));
-                        break;
-                    case AxisType.DualAxis:
-                        interactions.Add(new MixedRealityInteractionMapping((uint)i, mappings[i].AxisType, mappings[i].InputType, (InputAction)mappings[i].InputAction));
-                        break;
-                    case AxisType.ThreeDofPosition:
-                        interactions.Add(new MixedRealityInteractionMapping((uint)i, mappings[i].AxisType, mappings[i].InputType, (InputAction)mappings[i].InputAction));
-                        break;
-                    case AxisType.ThreeDofRotation:
-                        interactions.Add(new MixedRealityInteractionMapping((uint)i, mappings[i].AxisType, mappings[i].InputType, (InputAction)mappings[i].InputAction));
-                        break;
-                    case AxisType.SixDof:
-                        interactions.Add(new MixedRealityInteractionMapping((uint)i, mappings[i].AxisType, mappings[i].InputType, (InputAction)mappings[i].InputAction));
-                        break;
-                    case AxisType.None:
-                    case AxisType.Raw:
-                        interactions.Add(new MixedRealityInteractionMapping((uint)i, mappings[i].AxisType, mappings[i].InputType, (InputAction)mappings[i].InputAction));
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    Debug.LogWarning("No Interaction mappings exist for this controller / hand, please check your Controller Mapping configuration");
                 }
             }
-
-            Interactions = interactions.ToArray();
-        }
-
-        /// <summary>
-        /// Create Interaction mappings from a device specific default set of action mappings
-        /// </summary>
-        private void SetupControllerDefaults()
-        {
-            Interactions = new MixedRealityInteractionMapping[9];
-            Interactions[0] = new MixedRealityInteractionMapping(0, AxisType.Digital, DeviceInputType.Select, new InputAction(1, "Select"));
-            Interactions[1] = new MixedRealityInteractionMapping(1, AxisType.SingleAxis, DeviceInputType.Trigger, new InputAction(2, "Trigger Press"));
-            Interactions[2] = new MixedRealityInteractionMapping(2, AxisType.Digital, DeviceInputType.GripPress, new InputAction(2, "Grip Press"));
-            Interactions[3] = new MixedRealityInteractionMapping(3, AxisType.Digital, DeviceInputType.Menu, new InputAction(3, "Menu Press"));
-            Interactions[4] = new MixedRealityInteractionMapping(4, AxisType.DualAxis, DeviceInputType.ThumbStick, ControllerHandedness == Handedness.Left ? new InputAction(4, "Vertical Movement") : new InputAction(4, "Horizontal Movement"));
-            Interactions[5] = new MixedRealityInteractionMapping(5, AxisType.Digital, DeviceInputType.ThumbStickPress, new InputAction(5, "Thumbstick Press"));
-            Interactions[6] = new MixedRealityInteractionMapping(6, AxisType.DualAxis, DeviceInputType.Touchpad, new InputAction(6, "Touchpad Position"));
-            Interactions[7] = new MixedRealityInteractionMapping(7, AxisType.Digital, DeviceInputType.TouchpadTouch, new InputAction(7, "Touchpad Touch"));
-            Interactions[8] = new MixedRealityInteractionMapping(8, AxisType.Digital, DeviceInputType.TouchpadPress, new InputAction(8, "Touchpad Press"));
         }
 
         #region Update data functions
@@ -422,7 +364,5 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.WindowsMixedReality
         }
 
         #endregion Update data functions
-
-        #endregion Setup and Update functions
     }
 }
