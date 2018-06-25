@@ -5,10 +5,8 @@ using Microsoft.MixedReality.Toolkit.Internal.Definitions.Devices;
 using Microsoft.MixedReality.Toolkit.Internal.Definitions.InputSystem;
 using Microsoft.MixedReality.Toolkit.Internal.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Internal.Interfaces.InputSystem;
-using Microsoft.MixedReality.Toolkit.Internal.Managers;
 using Microsoft.MixedReality.Toolkit.Internal.Utilities;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 
@@ -43,35 +41,6 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.WindowsMixedReality
         private Vector3 currentGripPosition;
         private Quaternion currentGripRotation;
         private SixDof currentGripData = new SixDof(Vector3.zero, Quaternion.identity);
-
-        /// <inheritdoc/>
-        public override void SetupConfiguration()
-        {
-            if (MixedRealityManager.Instance.ActiveProfile.EnableControllerProfiles)
-            {
-                MixedRealityControllerMapping controllerMapping = default(MixedRealityControllerMapping);
-                var controllerMappings = MixedRealityManager.Instance.ActiveProfile.ControllersProfile.MixedRealityControllerMappingProfiles;
-
-                for (int i = 0; i < controllerMappings?.Length; i++)
-                {
-                    if (controllerMappings[i].Controller.Type == GetType() && controllerMappings[i].Handedness == ControllerHandedness)
-                    {
-                        controllerMapping = controllerMappings[i];
-                        break;
-                    }
-                }
-
-                if (controllerMapping.Interactions?.Length > 0)
-                {
-                    SetupFromMapping(controllerMapping.Interactions);
-                    return;
-                }
-                else
-                {
-                    Debug.LogWarning("No Interaction mappings exist for this controller / hand, please check your Controller Mapping configuration");
-                }
-            }
-        }
 
         #region Update data functions
 
