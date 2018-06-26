@@ -52,7 +52,7 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem
         private int disabledRefCount;
 
         private SourceStateEventData sourceStateEventData;
-        private SourcePositionEventData sourcePositionEventData;
+        private SourcePoseEventData sourcePoseEventData;
 
         private FocusEventData focusEventData;
 
@@ -61,8 +61,8 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem
         private InputPressedEventData inputPressedEventData;
 
         private TwoDoFInputEventData twoDoFInputEventData;
-        private ThreeDoFInputEventData threeDoFInputEventData;
-        private SixDoFInputEventData sixDoFInputEventData;
+        private ThreeDofInputEventData threeDoFInputEventData;
+        private PoseInputEventData sixDoFInputEventData;
 
         private NavigationEventData navigationEventData;
         private ManipulationEventData manipulationEventData;
@@ -134,7 +134,7 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem
             }
 
             sourceStateEventData = new SourceStateEventData(EventSystem.current);
-            sourcePositionEventData = new SourcePositionEventData(EventSystem.current);
+            sourcePoseEventData = new SourcePoseEventData(EventSystem.current);
 
             focusEventData = new FocusEventData(EventSystem.current);
 
@@ -143,8 +143,8 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem
             inputPressedEventData = new InputPressedEventData(EventSystem.current);
 
             twoDoFInputEventData = new TwoDoFInputEventData(EventSystem.current);
-            threeDoFInputEventData = new ThreeDoFInputEventData(EventSystem.current);
-            sixDoFInputEventData = new SixDoFInputEventData(EventSystem.current);
+            threeDoFInputEventData = new ThreeDofInputEventData(EventSystem.current);
+            sixDoFInputEventData = new PoseInputEventData(EventSystem.current);
 
             navigationEventData = new NavigationEventData(EventSystem.current);
             manipulationEventData = new ManipulationEventData(EventSystem.current);
@@ -483,66 +483,66 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem
 
         #endregion Input Source State Events
 
-        #region Input Source Position Events
+        #region Input Source Pose Events
 
         /// <inheritdoc />
         public void RaiseSourceTrackingStateChanged(IMixedRealityInputSource source, IMixedRealityController controller, TrackingState state)
         {
             // Create input event
-            sourcePositionEventData.Initialize(source, controller, state);
+            sourcePoseEventData.Initialize(source, controller, state);
 
             // Pass handler through HandleEvent to perform modal/fallback logic
-            HandleEvent(sourcePositionEventData, OnSourcePositionChangedEventHandler);
+            HandleEvent(sourcePoseEventData, OnSourcePoseChangedEventHandler);
         }
 
         /// <inheritdoc />
         public void RaiseSourcePositionChanged(IMixedRealityInputSource source, IMixedRealityController controller, Vector2 position)
         {
             // Create input event
-            sourcePositionEventData.Initialize(source, controller, position);
+            sourcePoseEventData.Initialize(source, controller, position);
 
             // Pass handler through HandleEvent to perform modal/fallback logic
-            HandleEvent(sourcePositionEventData, OnSourcePositionChangedEventHandler);
+            HandleEvent(sourcePoseEventData, OnSourcePoseChangedEventHandler);
         }
 
         /// <inheritdoc />
         public void RaiseSourcePositionChanged(IMixedRealityInputSource source, IMixedRealityController controller, Vector3 position)
         {
             // Create input event
-            sourcePositionEventData.Initialize(source, controller, position);
+            sourcePoseEventData.Initialize(source, controller, position);
 
             // Pass handler through HandleEvent to perform modal/fallback logic
-            HandleEvent(sourcePositionEventData, OnSourcePositionChangedEventHandler);
+            HandleEvent(sourcePoseEventData, OnSourcePoseChangedEventHandler);
         }
 
         /// <inheritdoc />
-        public void RaiseSourcePositionChanged(IMixedRealityInputSource source, IMixedRealityController controller, Quaternion rotation)
+        public void RaiseSourceRotationChanged(IMixedRealityInputSource source, IMixedRealityController controller, Quaternion rotation)
         {
             // Create input event
-            sourcePositionEventData.Initialize(source, controller, rotation);
+            sourcePoseEventData.Initialize(source, controller, rotation);
 
             // Pass handler through HandleEvent to perform modal/fallback logic
-            HandleEvent(sourcePositionEventData, OnSourcePositionChangedEventHandler);
+            HandleEvent(sourcePoseEventData, OnSourcePoseChangedEventHandler);
         }
 
         /// <inheritdoc />
-        public void RaiseSourcePositionChanged(IMixedRealityInputSource source, IMixedRealityController controller, SixDof position)
+        public void RaiseSourcePoseChanged(IMixedRealityInputSource source, IMixedRealityController controller, SixDof position)
         {
             // Create input event
-            sourcePositionEventData.Initialize(source, controller, position);
+            sourcePoseEventData.Initialize(source, controller, position);
 
             // Pass handler through HandleEvent to perform modal/fallback logic
-            HandleEvent(sourcePositionEventData, OnSourcePositionChangedEventHandler);
+            HandleEvent(sourcePoseEventData, OnSourcePoseChangedEventHandler);
         }
 
-        private static readonly ExecuteEvents.EventFunction<IMixedRealitySourcePositionHandler> OnSourcePositionChangedEventHandler =
-                delegate (IMixedRealitySourcePositionHandler handler, BaseEventData eventData)
+        private static readonly ExecuteEvents.EventFunction<IMixedRealitySourcePoseHandler> OnSourcePoseChangedEventHandler =
+                delegate (IMixedRealitySourcePoseHandler handler, BaseEventData eventData)
                 {
-                    var casted = ExecuteEvents.ValidateEventData<SourcePositionEventData>(eventData);
-                    handler.OnSourcePositionChanged(casted);
+                    var casted = ExecuteEvents.ValidateEventData<SourcePoseEventData>(eventData);
+                    handler.OnSourcePoseChanged(casted);
                 };
 
-        #endregion Input Source Position Events
+        #endregion Input Source Pose Events
 
         #endregion Input Source Events
 
@@ -930,7 +930,7 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem
         private static readonly ExecuteEvents.EventFunction<IMixedReality3DoFInputHandler> OnThreeDoFInputChanged =
             delegate (IMixedReality3DoFInputHandler handler, BaseEventData eventData)
             {
-                var casted = ExecuteEvents.ValidateEventData<ThreeDoFInputEventData>(eventData);
+                var casted = ExecuteEvents.ValidateEventData<ThreeDofInputEventData>(eventData);
                 handler.On3DoFInputChanged(casted);
             };
 
@@ -981,7 +981,7 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem
         private static readonly ExecuteEvents.EventFunction<IMixedReality6DoFInputHandler> OnSixDoFInputChanged =
             delegate (IMixedReality6DoFInputHandler handler, BaseEventData eventData)
             {
-                var casted = ExecuteEvents.ValidateEventData<SixDoFInputEventData>(eventData);
+                var casted = ExecuteEvents.ValidateEventData<PoseInputEventData>(eventData);
                 handler.On6DoFInputChanged(casted);
             };
 
