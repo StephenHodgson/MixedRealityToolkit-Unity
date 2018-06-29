@@ -23,13 +23,38 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices
         /// <param name="controllerHandedness"></param>
         /// <param name="inputSource"></param>
         /// <param name="interactions"></param>
-        protected BaseController(TrackingState trackingState, Handedness controllerHandedness, IMixedRealityInputSource inputSource = null, MixedRealityInteractionMapping[] interactions = null)
+        protected BaseController(TrackingState trackingState, Handedness controllerHandedness, IMixedRealityInputSource inputSource, MixedRealityInteractionMapping[] interactions)
         {
             TrackingState = trackingState;
             ControllerHandedness = controllerHandedness;
             InputSource = inputSource;
             Interactions = interactions;
+
+            // TODO: consider if these should be passed in or not
+            IsPositionAvailable = false;
+            PositionAccuracy = TrackingAccuracy.None;
+            IsRotationAvailable = false;
+            RotationAccuracy = TrackingAccuracy.None;
         }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="trackingState"></param>
+        /// <param name="controllerHandedness"></param>
+        /// <param name="inputSource"></param>
+        protected BaseController(TrackingState trackingState, Handedness controllerHandedness, IMixedRealityInputSource inputSource) :
+            this(trackingState, controllerHandedness, inputSource, null)
+        { }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="trackingState"></param>
+        /// <param name="controllerHandedness"></param>
+        protected BaseController(TrackingState trackingState, Handedness controllerHandedness) : 
+            this(trackingState, controllerHandedness, null, null)
+        { }
 
         /// <summary>
         /// Returns the current Input System if enabled, otherwise null.
@@ -57,6 +82,18 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices
 
         /// <inheritdoc />
         public IMixedRealityInputSource InputSource { get; }
+
+        /// <inheritdoc />
+        public bool IsPositionAvailable { get; protected set; }
+
+        /// <inheritdoc />
+        public TrackingAccuracy PositionAccuracy { get; protected set; }
+
+        /// <inheritdoc />
+        public bool IsRotationAvailable { get; protected set; }
+
+        /// <inheritdoc />
+        public TrackingAccuracy RotationAccuracy { get; protected set; }
 
         /// <inheritdoc />
         public MixedRealityInteractionMapping[] Interactions { get; private set; }

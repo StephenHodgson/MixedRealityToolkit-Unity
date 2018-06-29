@@ -25,21 +25,15 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Definitions.Utilities
         /// Constructor.
         /// </summary>
         /// <param name="position"></param>
-        public MixedRealityPose(Vector3 position)
-        {
-            this.position = position;
-            rotation = Quaternion.identity;
-        }
+        public MixedRealityPose(Vector3 position) : this(position, Quaternion.identity)
+        { }
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="rotation"></param>
-        public MixedRealityPose(Quaternion rotation)
-        {
-            position = Vector3.zero;
-            this.rotation = rotation;
-        }
+        public MixedRealityPose(Quaternion rotation) : this(Vector3.zero, rotation)
+        { }
 
         /// <summary>
         /// The default value for a Six Dof Transform.
