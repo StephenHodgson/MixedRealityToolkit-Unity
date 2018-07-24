@@ -3,7 +3,6 @@
 
 using Microsoft.MixedReality.Toolkit.InputSystem.Pointers;
 using Microsoft.MixedReality.Toolkit.Internal.Definitions.InputSystem;
-using Microsoft.MixedReality.Toolkit.Internal.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Internal.Interfaces.InputSystem;
 using Microsoft.MixedReality.Toolkit.Internal.Utilities;
 using Microsoft.MixedReality.Toolkit.Internal.Utilities.Async;
@@ -48,13 +47,13 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem.Sources
         /// <param name="holdUpdatedAction"></param>
         /// <param name="holdCompletedAction"></param>
         /// <param name="holdCanceledAction"></param>
-        public TouchscreenInputSource(InputAction pointerDownAction,
-                                      InputAction pointerClickedAction,
-                                      InputAction pointerUpAction,
-                                      InputAction holdStartedAction,
-                                      InputAction holdUpdatedAction,
-                                      InputAction holdCompletedAction,
-                                      InputAction holdCanceledAction)
+        public TouchscreenInputSource(MixedRealityInputAction pointerDownAction,
+                                      MixedRealityInputAction pointerClickedAction,
+                                      MixedRealityInputAction pointerUpAction,
+                                      MixedRealityInputAction holdStartedAction,
+                                      MixedRealityInputAction holdUpdatedAction,
+                                      MixedRealityInputAction holdCompletedAction,
+                                      MixedRealityInputAction holdCanceledAction)
                 : base("TouchScreenInputSource")
         {
             PointerDownAction = pointerDownAction;
@@ -89,13 +88,13 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem.Sources
 
         private readonly WaitForFixedUpdate nextUpdate = new WaitForFixedUpdate();
 
-        public InputAction PointerDownAction { get; set; }
-        public InputAction PointerClickedAction { get; set; }
-        public InputAction PointerUpAction { get; set; }
-        public InputAction HoldStartedAction { get; set; }
-        public InputAction HoldUpdatedAction { get; set; }
-        public InputAction HoldCompletedAction { get; set; }
-        public InputAction HoldCanceledAction { get; set; }
+        public MixedRealityInputAction PointerDownAction { get; set; }
+        public MixedRealityInputAction PointerClickedAction { get; set; }
+        public MixedRealityInputAction PointerUpAction { get; set; }
+        public MixedRealityInputAction HoldStartedAction { get; set; }
+        public MixedRealityInputAction HoldUpdatedAction { get; set; }
+        public MixedRealityInputAction HoldCompletedAction { get; set; }
+        public MixedRealityInputAction HoldCanceledAction { get; set; }
 
         private async void Run()
         {
