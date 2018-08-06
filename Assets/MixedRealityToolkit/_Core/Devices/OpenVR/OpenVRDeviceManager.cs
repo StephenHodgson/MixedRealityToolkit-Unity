@@ -32,14 +32,26 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.OpenVR
             return activeControllers.Values.ToArray<IMixedRealityController>();
         }
 
+        /// <inheritdoc />
         public override void Enable()
         {
+            InputTracking.GetNodeStates(nodeStates);
+
+            for (int i = 0; i < nodeStates.Count; i++)
+            {
+                if (IsNodeTypeSupported(nodeStates[i]))
+                {
+                    GetOrAddController(nodeStates[i]);
+                }
+            }
+
             InputTracking.nodeAdded += InputTracking_nodeAdded;
             InputTracking.nodeRemoved += InputTracking_nodeRemoved;
             InputTracking.trackingAcquired += InputTracking_trackingAcquired;
             InputTracking.trackingLost += InputTracking_trackingLost;
         }
 
+        /// <inheritdoc />
         public override void Update()
         {
             InputTracking.GetNodeStates(nodeStates);
@@ -55,48 +67,58 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.OpenVR
             }
         }
 
+        /// <inheritdoc />
         public override void Disable()
         {
             InputTracking.nodeAdded -= InputTracking_nodeAdded;
             InputTracking.nodeRemoved -= InputTracking_nodeRemoved;
             InputTracking.trackingAcquired -= InputTracking_trackingAcquired;
             InputTracking.trackingLost -= InputTracking_trackingLost;
+
+            foreach (var controller in activeControllers)
+            {
+                InputSystem?.RaiseSourceLost(controller.Value.InputSource, controller.Value);
+            }
         }
 
         #region Unity InteractionManager Events
 
-        private void InputTracking_nodeAdded(XRNodeState obj)
+        private void InputTracking_nodeAdded(XRNodeState nodeState)
         {
-            if (IsNodeTypeSupported(obj))
+            if (IsNodeTypeSupported(nodeState))
             {
-                GetOrAddController(obj);
+                Debug.Log("Node added:" + nodeState.nodeType);
+                GetOrAddController(nodeState);
             }
         }
 
-        private void InputTracking_trackingAcquired(XRNodeState obj)
+        private void InputTracking_trackingAcquired(XRNodeState nodeState)
         {
-            if (IsNodeTypeSupported(obj))
+            if (IsNodeTypeSupported(nodeState))
             {
-                if (activeControllers.ContainsKey(obj.nodeType))
+                if (activeControllers.ContainsKey(nodeState.nodeType))
                 {
-                    var controller = GetOrAddController(obj);
+                    Debug.Log("Tracking acquired:" + nodeState.nodeType);
+                    var controller = GetOrAddController(nodeState);
                     InputSystem?.RaiseSourceDetected(controller?.InputSource, controller);
                 }
             }
         }
 
-        private void InputTracking_trackingLost(XRNodeState obj)
+        private void InputTracking_trackingLost(XRNodeState nodeState)
         {
-            if (IsNodeTypeSupported(obj))
+            if (IsNodeTypeSupported(nodeState))
             {
-                var controller = GetOrAddController(obj);
+                Debug.Log("Tracking lost:" + nodeState.nodeType);
+                var controller = GetOrAddController(nodeState);
                 InputSystem?.RaiseSourceLost(controller?.InputSource, controller);
             }
         }
 
-        private void InputTracking_nodeRemoved(XRNodeState obj)
+        private void InputTracking_nodeRemoved(XRNodeState nodeState)
         {
-            activeControllers.Remove(obj.nodeType);
+            Debug.Log("node removed:" + nodeState.nodeType);
+            activeControllers.Remove(nodeState.nodeType);
         }
 
         #endregion Unity InteractionManager Events
@@ -160,7 +182,6 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.OpenVR
             // If a device is already registered with the ID provided, just return it.
             if (activeControllers.ContainsKey(xrNodeState.nodeType))
             {
-                //TODO - Need logic to determine controller type (if possible)
                 var controller = activeControllers[xrNodeState.nodeType];
                 Debug.Assert(controller != null);
                 return controller;
