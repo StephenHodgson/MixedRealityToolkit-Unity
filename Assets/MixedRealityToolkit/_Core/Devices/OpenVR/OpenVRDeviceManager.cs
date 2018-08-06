@@ -55,6 +55,14 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.OpenVR
             }
         }
 
+        public override void Disable()
+        {
+            InputTracking.nodeAdded -= InputTracking_nodeAdded;
+            InputTracking.nodeRemoved -= InputTracking_nodeRemoved;
+            InputTracking.trackingAcquired -= InputTracking_trackingAcquired;
+            InputTracking.trackingLost -= InputTracking_trackingLost;
+        }
+
         #region Unity InteractionManager Events
 
         private void InputTracking_nodeAdded(XRNodeState obj)
@@ -99,19 +107,13 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.OpenVR
         {
             switch (obj.nodeType)
             {
-                case XRNode.LeftEye:
-                case XRNode.RightEye:
-                case XRNode.CenterEye:
-                case XRNode.Head:
-                case XRNode.TrackingReference:
-                case XRNode.HardwareTracker:
-                    return false;
                 case XRNode.LeftHand:
                 case XRNode.RightHand:
                 case XRNode.GameController:
-                default:
                     return true;
             }
+
+            return false;
         }
 
         /// <summary>

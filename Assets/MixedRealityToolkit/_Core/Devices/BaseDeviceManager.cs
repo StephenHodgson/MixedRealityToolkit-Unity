@@ -27,22 +27,30 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices
             Priority = priority;
         }
 
+        /// <inheritdoc />
         public string Name { get; }
+
         /// <inheritdoc />
         public uint Priority { get; }
 
         /// <inheritdoc />
         public virtual void Initialize() { }
+
         /// <inheritdoc />
         public virtual void Reset() { }
+
         /// <inheritdoc />
         public virtual void Enable() { }
+
         /// <inheritdoc />
         public virtual void Update() { }
+
         /// <inheritdoc />
         public virtual void Disable() { }
+
         /// <inheritdoc />
         public virtual void Destroy() { }
+
         /// <inheritdoc />
         public virtual IMixedRealityController[] GetActiveControllers() => new IMixedRealityController[0];
 
@@ -58,6 +66,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices
                 return inputSystem;
             }
         }
+
         private IMixedRealityInputSystem inputSystem;
 
         protected virtual IMixedRealityPointer[] RequestPointers(SystemType controllerType, Handedness controllingHand)

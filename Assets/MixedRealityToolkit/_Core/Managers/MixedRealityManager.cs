@@ -185,7 +185,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Managers
 #if UNITY_EDITOR
             AddManagersForTheCurrentPlatformEditor();
 #else
-            AddManagersForTheCurrentPlatform();
+            AddManagersForTheCurrentPlatformPlayer();
 #endif
 
             #endregion SDK Initialization
@@ -921,7 +921,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Managers
 
         #region Platform Selectors
 
-        private void AddManagersForTheCurrentPlatform()
+        private void AddManagersForTheCurrentPlatformPlayer()
         {
             switch (Application.platform)
             {
@@ -942,8 +942,23 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Managers
                 case RuntimePlatform.WSAPlayerARM:
                     AddManager(typeof(IMixedRealityDeviceManager), new WindowsMixedRealityDeviceManager("Mixed Reality Device Manager", 10));
                     break;
-                default:
+                case RuntimePlatform.LinuxPlayer:
+                case RuntimePlatform.LinuxEditor:
                     break;
+                case RuntimePlatform.TizenPlayer:
+                    break;
+                case RuntimePlatform.PSP2:
+                    break;
+                case RuntimePlatform.PS4:
+                    break;
+                case RuntimePlatform.XboxOne:
+                    break;
+                case RuntimePlatform.tvOS:
+                    break;
+                case RuntimePlatform.Switch:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -967,8 +982,28 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Managers
                 case UnityEditor.BuildTarget.WSAPlayer:
                     AddManager(typeof(IMixedRealityDeviceManager), new WindowsMixedRealityDeviceManager("Mixed Reality Device Manager", 10));
                     break;
-                default:
+                case UnityEditor.BuildTarget.StandaloneLinux:
+                case UnityEditor.BuildTarget.StandaloneLinux64:
+                case UnityEditor.BuildTarget.StandaloneLinuxUniversal:
                     break;
+                case UnityEditor.BuildTarget.Tizen:
+                    break;
+                case UnityEditor.BuildTarget.PSP2:
+                    break;
+                case UnityEditor.BuildTarget.PS4:
+                    break;
+                case UnityEditor.BuildTarget.XboxOne:
+                    break;
+                case UnityEditor.BuildTarget.N3DS:
+                    break;
+                case UnityEditor.BuildTarget.tvOS:
+                    break;
+                case UnityEditor.BuildTarget.Switch:
+                    break;
+                case UnityEditor.BuildTarget.NoTarget:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
