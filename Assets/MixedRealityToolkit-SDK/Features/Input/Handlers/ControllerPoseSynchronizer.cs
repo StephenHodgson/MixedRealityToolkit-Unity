@@ -56,6 +56,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
             {
                 handedness = value.ControllerHandedness;
                 controller = value;
+                gameObject.name = $"{handedness}_{gameObject.name}";
             }
         }
 
@@ -133,7 +134,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
                 TrackingState = eventData.TrackingState;
             }
 
-            if (TrackingState == TrackingState.Tracked)
+            if (UseSourcePoseData && TrackingState == TrackingState.Tracked)
             {
                 transform.localPosition = eventData.MixedRealityPose.Position;
                 transform.localRotation = eventData.MixedRealityPose.Rotation;
