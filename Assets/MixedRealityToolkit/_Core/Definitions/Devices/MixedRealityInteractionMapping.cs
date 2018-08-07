@@ -15,6 +15,75 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Definitions.Devices
     [Serializable]
     public class MixedRealityInteractionMapping
     {
+        #region Constructor Overrides
+
+        /// <summary>
+        /// The constructor for a new Interaction Mapping definition
+        /// </summary>
+        /// <param name="id">Identity for mapping</param>
+        /// <param name="description">The description of the interaction mapping.</param> 
+        /// <param name="axisType">The axis that the mapping operates on, also denotes the data type for the mapping</param>
+        /// <param name="inputType">The physical input device / control</param>
+        public MixedRealityInteractionMapping(uint id, string description, AxisType axisType, DeviceInputType inputType)
+        {
+            Initialize(id, description, axisType, inputType, MixedRealityInputAction.None);
+        }
+
+        /// <summary>
+        /// The constructor for a new Interaction Mapping definition
+        /// </summary>
+        /// <param name="id">Identity for mapping</param>
+        /// <param name="description">The description of the interaction mapping.</param> 
+        /// <param name="axisType">The axis that the mapping operates on, also denotes the data type for the mapping</param>
+        /// <param name="inputType">The physical input device / control</param>
+        /// <param name="inputAction">The logical MixedRealityInputAction that this input performs</param>
+        public MixedRealityInteractionMapping(uint id, string description, AxisType axisType, DeviceInputType inputType, MixedRealityInputAction inputAction)
+        {
+            Initialize(id, description, axisType, inputType, inputAction);
+        }
+
+        /// <summary>
+        /// The constructor for a new Interaction Mapping definition
+        /// </summary>
+        /// <param name="id">Identity for mapping</param>
+        /// <param name="description">The description of the interaction mapping.</param> 
+        /// <param name="axisType">The axis that the mapping operates on, also denotes the data type for the mapping</param>
+        /// <param name="inputType">The physical input device / control</param>
+        /// <param name="axisCodeX">Optional horizontal or single axis value to get axis data from Unity's old input system.</param>
+        /// <param name="axisCodeY">Optional vertical axis value to get axis data from Unity's old input system.</param> 
+        public MixedRealityInteractionMapping(uint id, string description, AxisType axisType, DeviceInputType inputType, string axisCodeX, string axisCodeY = "")
+        {
+            Initialize(id, description, axisType, inputType, MixedRealityInputAction.None, KeyCode.None, axisCodeX, axisCodeY);
+        }
+
+        /// <summary>
+        /// The constructor for a new Interaction Mapping definition
+        /// </summary>
+        /// <param name="id">Identity for mapping</param>
+        /// <param name="description">The description of the interaction mapping.</param> 
+        /// <param name="axisType">The axis that the mapping operates on, also denotes the data type for the mapping</param>
+        /// <param name="inputType">The physical input device / control</param>
+        /// <param name="inputAction">The logical MixedRealityInputAction that this input performs</param>
+        /// <param name="axisCodeX">Optional horizontal or single axis value to get axis data from Unity's old input system.</param>
+        /// <param name="axisCodeY">Optional vertical axis value to get axis data from Unity's old input system.</param> 
+        public MixedRealityInteractionMapping(uint id, string description, AxisType axisType, DeviceInputType inputType, MixedRealityInputAction inputAction, string axisCodeX, string axisCodeY = "")
+        {
+            Initialize(id, description, axisType, inputType, inputAction, KeyCode.None, axisCodeX, axisCodeY);
+        }
+
+        /// <summary>
+        /// The constructor for a new Interaction Mapping definition
+        /// </summary>
+        /// <param name="id">Identity for mapping</param>
+        /// <param name="description">The description of the interaction mapping.</param> 
+        /// <param name="axisType">The axis that the mapping operates on, also denotes the data type for the mapping</param>
+        /// <param name="inputType">The physical input device / control</param>
+        /// <param name="keyCode">Optional KeyCode value to get input from Unity's old input system</param>
+        public MixedRealityInteractionMapping(uint id, string description, AxisType axisType, DeviceInputType inputType, KeyCode keyCode)
+        {
+            Initialize(id, description, axisType, inputType, MixedRealityInputAction.None, keyCode);
+        }
+
         /// <summary>
         /// The constructor for a new Interaction Mapping definition
         /// </summary>
@@ -24,18 +93,21 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Definitions.Devices
         /// <param name="inputType">The physical input device / control</param>
         /// <param name="inputAction">The logical MixedRealityInputAction that this input performs</param>
         /// <param name="keyCode">Optional KeyCode value to get input from Unity's old input system</param>
-        /// <param name="axisCodeX">Optional horizontal or single axis value to get axis data from Unity's old input system.</param>
-        /// <param name="axisCodeY">Optional vertical axis value to get axis data from Unity's old input system.</param> 
-        public MixedRealityInteractionMapping(uint id, string description, AxisType axisType, DeviceInputType inputType, MixedRealityInputAction inputAction, KeyCode keyCode = KeyCode.None, string axisCodeX = "", string axisCodeY = "")
+        public MixedRealityInteractionMapping(uint id, string description, AxisType axisType, DeviceInputType inputType, MixedRealityInputAction inputAction, KeyCode keyCode)
         {
-            this.id = id;
-            this.description = description;
-            this.axisType = axisType;
-            this.inputType = inputType;
-            this.inputAction = inputAction;
-            this.keyCode = keyCode;
-            this.axisCodeX = axisCodeX;
-            this.axisCodeY = axisCodeY;
+            Initialize(id, description, axisType, inputType, inputAction, keyCode);
+        }
+
+        private void Initialize(uint _id, string _description, AxisType _axisType, DeviceInputType _inputType, MixedRealityInputAction _inputAction, KeyCode _keyCode = KeyCode.None, string _axisCodeX = "", string _axisCodeY = "")
+        {
+            id = _id;
+            description = _description;
+            axisType = _axisType;
+            inputType = _inputType;
+            inputAction = _inputAction;
+            keyCode = _keyCode;
+            axisCodeX = _axisCodeX;
+            axisCodeY = _axisCodeY;
             rawData = null;
             boolData = false;
             floatData = 0f;
@@ -45,6 +117,8 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Definitions.Devices
             poseData = MixedRealityPose.ZeroIdentity;
             changed = false;
         }
+
+        #endregion Constructor Overrides
 
         #region Interaction Properties
 

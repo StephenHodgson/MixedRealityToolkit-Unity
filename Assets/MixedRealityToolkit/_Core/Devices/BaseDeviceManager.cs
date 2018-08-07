@@ -28,6 +28,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices
             Priority = priority;
         }
 
+        /// <inheritdoc />
         public string Name { get; }
 
         /// <inheritdoc />
@@ -69,6 +70,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices
                 return inputSystem;
             }
         }
+
         private IMixedRealityInputSystem inputSystem;
 
         /// <summary>
