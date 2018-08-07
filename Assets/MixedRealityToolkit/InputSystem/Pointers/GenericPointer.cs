@@ -2,10 +2,11 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.MixedReality.Toolkit.Internal.Definitions.Physics;
-using Microsoft.MixedReality.Toolkit.Internal.Interfaces;
+using Microsoft.MixedReality.Toolkit.Internal.Interfaces.Devices;
 using Microsoft.MixedReality.Toolkit.Internal.Interfaces.InputSystem;
 using Microsoft.MixedReality.Toolkit.Internal.Interfaces.InputSystem.Handlers;
 using Microsoft.MixedReality.Toolkit.Internal.Interfaces.Physics;
+using Microsoft.MixedReality.Toolkit.Internal.Interfaces.TeleportSystem;
 using Microsoft.MixedReality.Toolkit.Internal.Managers;
 using System.Collections;
 using UnityEngine;
@@ -68,7 +69,7 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem.Pointers
         public ICursorModifier CursorModifier { get; set; }
 
         /// <inheritdoc />
-        public ITeleportTarget TeleportTarget { get; set; }
+        public IMixedRealityTeleportHotSpot TeleportHotSpot { get; set; }
 
         /// <inheritdoc />
         public bool IsInteractionEnabled { get; set; }
@@ -99,6 +100,8 @@ namespace Microsoft.MixedReality.Toolkit.InputSystem.Pointers
 
         /// <inheritdoc />
         public float SphereCastRadius { get; set; }
+
+        public float PointerOrientation { get; } = 0f;
 
         /// <inheritdoc />
         public virtual void OnPreRaycast()

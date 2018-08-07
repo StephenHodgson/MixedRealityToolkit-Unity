@@ -6,6 +6,7 @@ using Microsoft.MixedReality.Toolkit.Internal.Interfaces;
 using Microsoft.MixedReality.Toolkit.Internal.Interfaces.Devices;
 using Microsoft.MixedReality.Toolkit.Internal.Interfaces.InputSystem;
 using Microsoft.MixedReality.Toolkit.Internal.Managers;
+using Microsoft.MixedReality.Toolkit.Internal.Utilities;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -54,6 +55,9 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices
         /// <inheritdoc />
         public virtual IMixedRealityController[] GetActiveControllers() => new IMixedRealityController[0];
 
+        /// <summary>
+        /// The current Input System, if any.
+        /// </summary>
         protected IMixedRealityInputSystem InputSystem
         {
             get
@@ -69,6 +73,12 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices
 
         private IMixedRealityInputSystem inputSystem;
 
+        /// <summary>
+        /// Request an array of pointers for the controller type.
+        /// </summary>
+        /// <param name="controllerType">The controller type making the request for pointers.</param>
+        /// <param name="controllingHand">The handedness of the controller making the request.</param>
+        /// <returns></returns>
         protected virtual IMixedRealityPointer[] RequestPointers(SystemType controllerType, Handedness controllingHand)
         {
             var pointers = new List<IMixedRealityPointer>();
@@ -90,6 +100,7 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices
                         {
                             var pointerObject = Object.Instantiate(pointerProfile.PointerPrefab);
                             var pointer = pointerObject.GetComponent<IMixedRealityPointer>();
+                            pointerObject.transform.SetParent(CameraCache.Main.transform.parent);
 
                             if (pointer != null)
                             {
