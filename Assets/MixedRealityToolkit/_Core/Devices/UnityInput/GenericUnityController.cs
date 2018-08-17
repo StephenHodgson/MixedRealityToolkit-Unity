@@ -58,6 +58,9 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.UnityInput
                     case AxisType.SingleAxis:
                         UpdateSingleAxisData(Interactions[i]);
                         break;
+                    case AxisType.NegativeSingleAxis:
+                        UpdateSingleAxisData(Interactions[i], true);
+                        break;
                     case AxisType.DualAxis:
                         UpdateDualAxisData(Interactions[i]);
                         break;
@@ -116,11 +119,16 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.UnityInput
         /// Raises an Input System "Pressed" event when the float data changes
         /// </remarks>
         /// <param name="interactionMapping"></param>
-        protected void UpdateSingleAxisData(MixedRealityInteractionMapping interactionMapping)
+        protected void UpdateSingleAxisData(MixedRealityInteractionMapping interactionMapping, bool reverseValue = false)
         {
             Debug.Assert(interactionMapping.AxisType == AxisType.SingleAxis);
 
             var singleAxisValue = Input.GetAxis(interactionMapping.AxisCodeX);
+
+            if (reverseValue)
+            {
+                singleAxisValue *= -1;
+            }
 
             switch (interactionMapping.InputType)
             {

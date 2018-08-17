@@ -26,8 +26,12 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.OpenVR
         public override MixedRealityInteractionMapping[] DefaultInteractions => new[]
         {
             new MixedRealityInteractionMapping(0, "D-Pad Position", AxisType.DualAxis, DeviceInputType.DirectionalPad, ControllerMappingLibrary.AXIS_5, ControllerMappingLibrary.AXIS_6),
-            new MixedRealityInteractionMapping(1, "Button.One", AxisType.DualAxis, DeviceInputType.ButtonPress,KeyCode.JoystickButton0),
-            new MixedRealityInteractionMapping(2, "Button.Two", AxisType.DualAxis, DeviceInputType.ButtonPress,KeyCode.JoystickButton1),
+            new MixedRealityInteractionMapping(1, "Button.One", AxisType.DualAxis, DeviceInputType.ButtonPress, KeyCode.JoystickButton0),
+            new MixedRealityInteractionMapping(2, "Button.Two", AxisType.DualAxis, DeviceInputType.ButtonPress, KeyCode.JoystickButton1),
+            new MixedRealityInteractionMapping(3, "D-Pad Up", AxisType.SingleAxis, DeviceInputType.ButtonPress, ControllerMappingLibrary.AXIS_6),
+            new MixedRealityInteractionMapping(4, "D-Pad Down", AxisType.NegativeSingleAxis, DeviceInputType.ButtonPress, ControllerMappingLibrary.AXIS_6),
+            new MixedRealityInteractionMapping(5, "D-Pad Right", AxisType.SingleAxis, DeviceInputType.ButtonPress, ControllerMappingLibrary.AXIS_5),
+            new MixedRealityInteractionMapping(6, "D-Pad Left", AxisType.NegativeSingleAxis, DeviceInputType.ButtonPress, ControllerMappingLibrary.AXIS_5),
         };
 
         /// <inheritdoc />
