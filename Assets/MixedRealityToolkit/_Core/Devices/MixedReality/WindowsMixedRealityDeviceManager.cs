@@ -1,19 +1,19 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Microsoft.MixedReality.Toolkit.Internal.Interfaces;
+using Microsoft.MixedReality.Toolkit.Core.Interfaces.Devices;
+using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
 using System.Collections.Generic;
 using System.Linq;
-
 #if UNITY_WSA
-using Microsoft.MixedReality.Toolkit.Internal.Definitions.Devices;
-using Microsoft.MixedReality.Toolkit.Internal.Definitions.Utilities;
+using Microsoft.MixedReality.Toolkit.Core.Definitions.Devices;
+using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using System;
 using UnityEngine.XR.WSA.Input;
 using UnityEngine;
 #endif // UNITY_WSA
 
-namespace Microsoft.MixedReality.Toolkit.Internal.Devices.WindowsMixedReality
+namespace Microsoft.MixedReality.Toolkit.Core.Devices.WindowsMixedReality
 {
     public class WindowsMixedRealityDeviceManager : BaseDeviceManager
     {
@@ -53,7 +53,13 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.WindowsMixedReality
             // NOTE: We update the source state data, in case an app wants to query it on source detected.
             for (var i = 0; i < states.Length; i++)
             {
-                GetOrAddController(states[i])?.UpdateController(states[i]);
+                var controller = GetOrAddController(states[i]);
+
+                if (controller != null)
+                {
+                    controller.UpdateController(states[i]);
+                    InputSystem.RaiseSourceDetected(controller.InputSource, controller);
+                }
             }
         }
 
@@ -81,28 +87,21 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.WindowsMixedReality
         /// Retrieve the source controller from the Active Store, or create a new device and register it
         /// </summary>
         /// <param name="interactionSourceState">Source State provided by the SDK</param>
-        /// <param name="updateControllerData">Optional, should the controller update its state as well</param> 
         /// <returns>New or Existing Controller Input Source</returns>
-        private WindowsMixedRealityController GetOrAddController(InteractionSourceState interactionSourceState, bool updateControllerData = true)
+        private WindowsMixedRealityController GetOrAddController(InteractionSourceState interactionSourceState)
         {
             //If a device is already registered with the ID provided, just return it.
             if (activeControllers.ContainsKey(interactionSourceState.source.id))
             {
                 var controller = activeControllers[interactionSourceState.source.id] as WindowsMixedRealityController;
                 Debug.Assert(controller != null);
-
-                if (updateControllerData)
-                {
-                    controller.UpdateController(interactionSourceState);
-                }
-
                 return controller;
             }
 
             Handedness controllingHand;
             switch (interactionSourceState.source.handedness)
             {
-                case InteractionSourceHandedness.Unknown:
+                default:
                     controllingHand = Handedness.None;
                     break;
                 case InteractionSourceHandedness.Left:
@@ -111,16 +110,27 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.WindowsMixedReality
                 case InteractionSourceHandedness.Right:
                     controllingHand = Handedness.Right;
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
 
-            var inputSource = InputSystem?.RequestNewGenericInputSource($"Mixed Reality Controller {controllingHand}");
+            IMixedRealityPointer[] pointers = interactionSourceState.source.supportsPointing ? RequestPointers(typeof(WindowsMixedRealityController), controllingHand) : null;
+            var inputSource = InputSystem?.RequestNewGenericInputSource($"Mixed Reality Controller {controllingHand}", pointers);
             var detectedController = new WindowsMixedRealityController(TrackingState.NotTracked, controllingHand, inputSource);
-            detectedController.SetupConfiguration(typeof(WindowsMixedRealityController));
-            detectedController.UpdateController(interactionSourceState);
-            activeControllers.Add(interactionSourceState.source.id, detectedController);
 
+            if (!detectedController.SetupConfiguration(typeof(WindowsMixedRealityController)))
+            {
+                // Controller failed to be setup correctly.
+                // Return null so we don't raise the source detected.
+                return null;
+            }
+
+            Debug.Assert(detectedController != null);
+
+            for (int i = 0; i < detectedController.InputSource?.Pointers?.Length; i++)
+            {
+                detectedController.InputSource.Pointers[i].Controller = detectedController;
+            }
+
+            activeControllers.Add(interactionSourceState.source.id, detectedController);
             return detectedController;
         }
 
@@ -130,8 +140,13 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.WindowsMixedReality
         /// <param name="interactionSourceState">Source State provided by the SDK to remove</param>
         private void RemoveController(InteractionSourceState interactionSourceState)
         {
-            var controller = GetOrAddController(interactionSourceState, false);
-            InputSystem?.RaiseSourceLost(controller?.InputSource, controller);
+            var controller = GetOrAddController(interactionSourceState);
+
+            if (controller != null)
+            {
+                InputSystem?.RaiseSourceLost(controller.InputSource, controller);
+            }
+
             activeControllers.Remove(interactionSourceState.source.id);
         }
 
@@ -146,7 +161,13 @@ namespace Microsoft.MixedReality.Toolkit.Internal.Devices.WindowsMixedReality
         private void InteractionManager_InteractionSourceDetected(InteractionSourceDetectedEventArgs args)
         {
             var controller = GetOrAddController(args.state);
-            InputSystem?.RaiseSourceDetected(controller?.InputSource, controller);
+
+            if (controller != null)
+            {
+                InputSystem?.RaiseSourceDetected(controller.InputSource, controller);
+            }
+
+            controller?.UpdateController(args.state);
         }
 
         /// <summary>

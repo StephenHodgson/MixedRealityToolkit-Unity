@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Microsoft.MixedReality.Toolkit.Internal.EventDatum.Input;
-using Microsoft.MixedReality.Toolkit.Internal.Interfaces.InputSystem;
-using Microsoft.MixedReality.Toolkit.Internal.Interfaces.InputSystem.Handlers;
-using Microsoft.MixedReality.Toolkit.Internal.Managers;
+using Microsoft.MixedReality.Toolkit.Core.EventDatum.Input;
+using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
+using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem.Handlers;
+using Microsoft.MixedReality.Toolkit.Core.Managers;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -50,7 +50,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
             // If we're the new target object
             // Add the pointer to the list of focusers
             // and update our hasFocus flag if focusing is enabled.
-            if (eventData.NewFocusedObject == this)
+            if (eventData.NewFocusedObject == gameObject)
             {
                 eventData.Pointer.FocusTarget = this;
                 Focusers.Add(eventData.Pointer);
@@ -62,7 +62,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
             }
             // If we're the old focused target object
             // update our flag and remove the pointer from our list.
-            else if (eventData.OldFocusedObject == this)
+            else if (eventData.OldFocusedObject == gameObject)
             {
                 hasFocus = false;
 

@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Microsoft.MixedReality.Toolkit.Internal.Definitions.InputSystem;
-using Microsoft.MixedReality.Toolkit.Internal.Definitions.Utilities;
-using Microsoft.MixedReality.Toolkit.Internal.EventDatum.Input;
+using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
+using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
+using Microsoft.MixedReality.Toolkit.Core.EventDatum.Input;
 using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.SDK.UX.Cursors
@@ -81,6 +81,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Cursors
         public override void OnCursorStateChange(CursorStateEnum state)
         {
             base.OnCursorStateChange(state);
+
             if (state == CursorStateEnum.Contextual) { return; }
 
             for (int i = 0; i < cursorStateData.Length; i++)
@@ -99,7 +100,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Cursors
         private void SetAnimatorParameter(AnimatorParameter animationParameter)
         {
             // Return if we do not have an animator
-            if (cursorAnimator == null)
+            if (cursorAnimator == null || !cursorAnimator.isInitialized)
             {
                 return;
             }

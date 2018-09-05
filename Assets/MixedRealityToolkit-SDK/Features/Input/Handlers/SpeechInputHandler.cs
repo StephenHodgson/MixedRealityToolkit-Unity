@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Microsoft.MixedReality.Toolkit.Internal.Definitions.InputSystem;
-using Microsoft.MixedReality.Toolkit.Internal.EventDatum.Input;
-using Microsoft.MixedReality.Toolkit.Internal.Interfaces.InputSystem.Handlers;
+using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
+using Microsoft.MixedReality.Toolkit.Core.EventDatum.Input;
+using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem.Handlers;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -11,7 +11,7 @@ using UnityEngine.Events;
 namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
 {
     /// <summary>
-    /// This component handles the speech input events raised form the <see cref="Internal.Interfaces.InputSystem.IMixedRealityInputSystem"/>.
+    /// This component handles the speech input events raised form the <see cref="Core.Interfaces.InputSystem.IMixedRealityInputSystem"/>.
     /// </summary>
     [DisallowMultipleComponent]
     public class SpeechInputHandler : BaseInputHandler, IMixedRealitySpeechHandler
@@ -31,7 +31,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
 
         private readonly Dictionary<string, UnityEvent> responses = new Dictionary<string, UnityEvent>();
 
-        #region Monobehaviour Implementation
+        #region MonoBehaviour Implementation
 
         private void Start()
         {
@@ -60,7 +60,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
             }
         }
 
-        #endregion Monobehaviour Implementation
+        #endregion MonoBehaviour Implementation
 
         #region IMixedRealitySpeechHandler Implementation
 

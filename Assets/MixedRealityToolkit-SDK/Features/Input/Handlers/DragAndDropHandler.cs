@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Microsoft.MixedReality.Toolkit.Internal.Definitions.InputSystem;
-using Microsoft.MixedReality.Toolkit.Internal.Definitions.Physics;
-using Microsoft.MixedReality.Toolkit.Internal.EventDatum.Input;
-using Microsoft.MixedReality.Toolkit.Internal.Interfaces.InputSystem;
-using Microsoft.MixedReality.Toolkit.Internal.Interfaces.InputSystem.Handlers;
-using Microsoft.MixedReality.Toolkit.Internal.Utilities;
+using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
+using Microsoft.MixedReality.Toolkit.Core.Definitions.Physics;
+using Microsoft.MixedReality.Toolkit.Core.EventDatum.Input;
+using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
+using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem.Handlers;
+using Microsoft.MixedReality.Toolkit.Core.Utilities;
 using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
@@ -28,7 +28,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
 
         [SerializeField]
         [Tooltip("The action that will start/stop the dragging.")]
-        private MixedRealityInputAction dragAction;
+        private MixedRealityInputAction dragAction = MixedRealityInputAction.None;
 
         [SerializeField]
         [Tooltip("Transform that will be dragged. Defaults to the object of the component.")]
@@ -72,7 +72,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
         private IMixedRealityPointer currentPointer;
         private IMixedRealityInputSource currentInputSource;
 
-        #region Monobehavior Implemetation
+        #region MonoBehaviour Implementation
 
         private void Start()
         {
@@ -100,7 +100,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
             }
         }
 
-        #endregion Monobehavior Implemetation
+        #endregion MonoBehaviour Implementation
 
         #region IMixedRealityPointerHandler Implementation
 
