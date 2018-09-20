@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
 {
     [CustomEditor(typeof(MixedRealityInputActionRulesProfile))]
-    public class MixedRealityInputActionRulesInspector : MixedRealityBaseConfigurationProfileInspector
+    public class MixedRealityInputActionRulesProfileInspector : MixedRealityBaseConfigurationProfileInspector
     {
         private SerializedProperty inputActionRulesDigital;
         private SerializedProperty inputActionRulesSingleAxis;
