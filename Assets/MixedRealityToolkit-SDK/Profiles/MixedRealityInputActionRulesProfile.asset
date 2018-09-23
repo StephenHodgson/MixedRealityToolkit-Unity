@@ -11,3 +11,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee54661ca8af487c9db40e57d479fa48, type: 3}
   m_Name: MixedRealityInputActionRulesProfile
   m_EditorClassIdentifier: 
+  inputActionRulesDigital: []
+  inputActionRulesSingleAxis: []
+  inputActionRulesDualAxis:
+  - baseAction:
+      id: 11
+      description: D-Pad
+      axisConstraint: 4
+    ruleAction:
+      id: 12
+      description: D-Pad Up
+      axisConstraint: 4
+    criteria: {x: 0, y: 1}
+  - baseAction:
+      id: 11
+      description: D-Pad
+      axisConstraint: 4
+    ruleAction:
+      id: 13
+      description: D-Pad Down
+      axisConstraint: 4
+    criteria: {x: 0, y: -1}
+  - baseAction:
+      id: 11
+      description: D-Pad
+      axisConstraint: 4
+    ruleAction:
+      id: 14
+      description: D-Pad Left
+      axisConstraint: 4
+    criteria: {x: -1, y: 0}
+  - baseAction:
+      id: 11
+      description: D-Pad
+      axisConstraint: 4
+    ruleAction:
+      id: 15
+      description: D-Pad Right
+      axisConstraint: 4
+    criteria: {x: 1, y: 0}
+  - baseAction:
+      id: 5
+      description: Teleport Direction
+      axisConstraint: 4
+    ruleAction:
+      id: 12
+      description: D-Pad Up
+      axisConstraint: 4
+    criteria: {x: 1, y: 0}
+  inputActionRulesVectorAxis: []
+  inputActionRulesQuaternionAxis: []
+  inputActionRulesPoseAxis: []
