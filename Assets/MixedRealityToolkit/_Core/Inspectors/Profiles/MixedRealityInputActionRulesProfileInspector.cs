@@ -223,7 +223,7 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Input Action Rules Profile", EditorStyles.boldLabel);
-            EditorGUILayout.HelpBox("The Input Action Rules...", MessageType.Info);
+            EditorGUILayout.HelpBox("The Input Action Rules are used to filter an input action to another input action based on a set criteria.", MessageType.Info);
 
             serializedObject.Update();
 
