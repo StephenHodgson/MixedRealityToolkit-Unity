@@ -291,7 +291,7 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
 
                         EditorGUILayout.EndHorizontal();
 
-                        if (!refresh && baseActionId.intValue != 0)
+                        if (baseActionId.intValue != 0)
                         {
                             var ruleActionId = ruleAction.FindPropertyRelative("id");
                             var ruleActionDescription = ruleAction.FindPropertyRelative("description");
