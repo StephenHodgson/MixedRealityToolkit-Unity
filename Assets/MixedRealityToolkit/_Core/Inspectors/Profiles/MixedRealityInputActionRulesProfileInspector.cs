@@ -428,6 +428,8 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
             var ruleActionDescription = ruleAction.FindPropertyRelative("description");
             var ruleActionAxisConstraint = ruleAction.FindPropertyRelative("axisConstraint");
 
+            var criteria = newInputActionRule.FindPropertyRelative("criteria");
+
             baseActionIdProperty.intValue = baseActionId;
             baseActionDescription.stringValue = allActionLabels[baseActionId];
             baseActionAxisConstraint.intValue = axis;
@@ -435,6 +437,8 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
             ruleActionIdProperty.intValue = 0;
             ruleActionDescription.stringValue = "None";
             ruleActionAxisConstraint.intValue = 0;
+
+            SetDefaultForType(axis, criteria);
         }
 
         private void DeletePropertyFromList(SerializedProperty list, SerializedProperty property)
@@ -490,6 +494,31 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
             }
 
             return new GUIContent[] { };
+        }
+
+        private void SetDefaultForType(int axis, SerializedProperty prop)
+        {
+            switch ((AxisType)axis)
+            {
+                case AxisType.Digital:
+                    prop.boolValue = false;
+                    break;
+                case AxisType.SingleAxis:
+                    prop.floatValue = 0;
+                    break;
+                case AxisType.DualAxis:
+                    prop.vector2Value = Vector2.zero;
+                    break;
+                case AxisType.ThreeDofPosition:
+                    prop.vector3Value = Vector3.zero;
+                    break;
+                case AxisType.ThreeDofRotation:
+                    prop.quaternionValue = Quaternion.identity;
+                    break;
+                case AxisType.SixDof:
+                    prop.boundsValue = new Bounds();
+                    break;
+            }
         }
     }
 }
