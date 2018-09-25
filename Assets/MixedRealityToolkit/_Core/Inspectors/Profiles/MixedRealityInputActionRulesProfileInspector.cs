@@ -345,7 +345,7 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
             
 
             actionProperties = properties
-                .OrderBy(property => property.FindPropertyRelative("baseAction").FindPropertyRelative("description").stringValue) // Sort by name or id?
+                .OrderBy(property => property.FindPropertyRelative("baseAction").FindPropertyRelative("id"))
                 .ToList();
         }
 
