@@ -306,6 +306,28 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
                                 Debug.LogWarning("The base action and rule action can't be the same!");
                             }
 
+                            if (ruleActionId.intValue != changedRuleId)
+                            {
+                                var list = GetListFromAxisConstraint(axisConstraint);
+
+                                for(int j = 0; j < list.arraySize; j++)
+                                {
+                                    var prop = list.GetArrayElementAtIndex(j);
+                                    if (prop.FindPropertyRelative("ruleAction").FindPropertyRelative("id").intValue == changedRuleId)
+                                    {
+                                        Debug.LogWarning("Duplicate!");
+                                        DeletePropertyFromList(list, inputActionRule);
+                                        refresh = true;
+                                        break;
+                                    }
+                                }
+
+                                if (refresh)
+                                {
+                                    break;
+                                }
+                            }
+
                             ruleActionId.intValue = changedRuleId;
                             ruleActionDescription.stringValue = allActionLabels[changedRuleId];
                             ruleAction.FindPropertyRelative("axisConstraint").intValue = axisConstraint;
