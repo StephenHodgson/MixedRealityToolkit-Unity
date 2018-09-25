@@ -518,7 +518,8 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
                     prop.quaternionValue = Quaternion.identity;
                     break;
                 case AxisType.SixDof:
-                    prop.boundsValue = new Bounds();
+                    prop.FindPropertyRelative("position").vector3Value = Vector3.zero;
+                    prop.FindPropertyRelative("rotation").quaternionValue = Quaternion.identity;
                     break;
             }
         }
