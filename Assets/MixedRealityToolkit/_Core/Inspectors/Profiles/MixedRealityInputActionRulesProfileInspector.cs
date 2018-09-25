@@ -294,6 +294,9 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
                             var ruleActionId = ruleAction.FindPropertyRelative("id");
                             var ruleActionDescription = ruleAction.FindPropertyRelative("description");
 
+                            EditorGUIUtility.labelWidth = 64f;
+                            EditorGUILayout.PropertyField(criteria, CriteriaContent);
+
                             EditorGUIUtility.labelWidth = 78f;
                             var changedRuleId = EditorGUILayout.IntPopup(RuleActionContent, ruleActionId.intValue, GetLabelsFromAxis(axisConstraint), GetIdsFromAxis(axisConstraint));
 
@@ -307,8 +310,6 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
                             ruleActionDescription.stringValue = allActionLabels[changedRuleId];
                             ruleAction.FindPropertyRelative("axisConstraint").intValue = axisConstraint;
 
-                            EditorGUIUtility.labelWidth = 64f;
-                            EditorGUILayout.PropertyField(criteria, CriteriaContent);
                             EditorGUIUtility.labelWidth = labelWidth;
                         }
 
@@ -345,7 +346,7 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
             
 
             actionProperties = properties
-                .OrderBy(property => property.FindPropertyRelative("baseAction").FindPropertyRelative("id"))
+                .OrderBy(property => property.FindPropertyRelative("baseAction").FindPropertyRelative("id").intValue)
                 .ToList();
         }
 
