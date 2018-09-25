@@ -313,12 +313,17 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
                                 for(int j = 0; j < list.arraySize; j++)
                                 {
                                     var prop = list.GetArrayElementAtIndex(j);
-                                    if (prop.FindPropertyRelative("ruleAction").FindPropertyRelative("id").intValue == changedRuleId)
+                                    var testAction = prop.FindPropertyRelative("ruleAction");
+                                    if (testAction.FindPropertyRelative("id").intValue == changedRuleId)
                                     {
-                                        Debug.LogWarning("Duplicate!");
-                                        DeletePropertyFromList(list, inputActionRule);
-                                        refresh = true;
-                                        break;
+                                        var testCriteria = prop.FindPropertyRelative("criteria");
+                                        if (criteria.serializedObject.Equals(testCriteria.serializedObject))
+                                        {
+                                            Debug.LogWarning("Duplicate!");
+                                            DeletePropertyFromList(list, inputActionRule);
+                                            refresh = true;
+                                            break;
+                                        }
                                     }
                                 }
 
