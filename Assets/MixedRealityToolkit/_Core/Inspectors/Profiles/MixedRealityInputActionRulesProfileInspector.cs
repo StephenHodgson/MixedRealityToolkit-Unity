@@ -260,20 +260,22 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
 
                         if (changedBaseId != baseActionId.intValue)
                         {
-                            // If the base action was changed...
                             var oldAxis = baseAction.FindPropertyRelative("axisConstraint");
                             var newBaseActionAxis = axisConstraints[changedBaseId];
 
-                            SerializedProperty list = null;
-                            int ruleActionId = ruleAction.FindPropertyRelative("id").intValue;
-                            list = GetListFromAxisConstraint(oldAxis.intValue);
-                            DeletePropertyFromList(list, inputActionRule); // Delete from old list
+                            if (baseActionId.intValue == 0 || oldAxis.intValue != (int)newBaseActionAxis)
+                            {
+                                SerializedProperty list = null;
+                                int ruleActionId = ruleAction.FindPropertyRelative("id").intValue;
+                                list = GetListFromAxisConstraint(oldAxis.intValue);
+                                DeletePropertyFromList(list, inputActionRule); // Delete from old list
 
-                            list = GetListFromAxisConstraint((int)newBaseActionAxis);
-                            AddPropertyToList(list, changedBaseId, (int)newBaseActionAxis); // Add to new list
+                                list = GetListFromAxisConstraint((int)newBaseActionAxis);
+                                AddPropertyToList(list, changedBaseId, (int)newBaseActionAxis); // Add to new list
 
-                            refresh = true;
-                            break;
+                                refresh = true;
+                                break;
+                            }
                         }
 
                         baseActionId.intValue = changedBaseId;
