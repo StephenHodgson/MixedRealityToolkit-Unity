@@ -340,7 +340,7 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
                             EditorGUIUtility.labelWidth = labelWidth;
                         }
 
-                        GUILayout.Space(18f);
+                        GUILayout.Space(24f);
                     }
                 }
             }
