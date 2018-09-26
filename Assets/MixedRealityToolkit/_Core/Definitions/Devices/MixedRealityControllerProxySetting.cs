@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Devices
 {
     /// <summary>
-    /// Used to define a controller's visualization settings.
+    /// Used to define a controller's Proxy settings.
     /// </summary>
     [Serializable]
     public struct MixedRealityControllerProxySetting
