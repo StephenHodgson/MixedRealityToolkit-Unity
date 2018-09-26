@@ -98,7 +98,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                 var leftHandModelPrefab = globalLeftHandModel.objectReferenceValue as GameObject;
                 leftHandModelPrefab = EditorGUILayout.ObjectField(new GUIContent(globalLeftHandModel.displayName, "Note: If the default model is not found, the fallback is the global left hand model."), leftHandModelPrefab, typeof(GameObject), false) as GameObject;
 
-                if (EditorGUI.EndChangeCheck() && CheckVisualizer(leftHandModelPrefab))
+                if (EditorGUI.EndChangeCheck() && CheckProxy(leftHandModelPrefab))
                 {
                     globalLeftHandModel.objectReferenceValue = leftHandModelPrefab;
                 }
@@ -107,7 +107,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                 EditorGUI.BeginChangeCheck();
                 rightHandModelPrefab = EditorGUILayout.ObjectField(new GUIContent(globalRightHandModel.displayName, "Note: If the default model is not found, the fallback is the global right hand model."), rightHandModelPrefab, typeof(GameObject), false) as GameObject;
 
-                if (EditorGUI.EndChangeCheck() && CheckVisualizer(rightHandModelPrefab))
+                if (EditorGUI.EndChangeCheck() && CheckProxy(rightHandModelPrefab))
                 {
                     globalRightHandModel.objectReferenceValue = rightHandModelPrefab;
                 }
@@ -192,7 +192,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                 EditorGUI.BeginChangeCheck();
                 overrideModelPrefab = EditorGUILayout.ObjectField(new GUIContent(overrideModel.displayName, "If no override model is set, the global model is used."), overrideModelPrefab, typeof(GameObject), false) as GameObject;
 
-                if (EditorGUI.EndChangeCheck() && CheckVisualizer(overrideModelPrefab))
+                if (EditorGUI.EndChangeCheck() && CheckProxy(overrideModelPrefab))
                 {
                     overrideModel.objectReferenceValue = overrideModelPrefab;
                 }
@@ -201,7 +201,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
             }
         }
 
-        private bool CheckVisualizer(GameObject modelPrefab)
+        private bool CheckProxy(GameObject modelPrefab)
         {
             if (modelPrefab == null) { return true; }
 
@@ -211,14 +211,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                 return false;
             }
 
-            var componentList = modelPrefab.GetComponentsInChildren<IMixedRealityControllerVisualizer>();
+            var componentList = modelPrefab.GetComponentsInChildren<IMixedRealityControllerProxy>();
 
             if (componentList == null || componentList.Length == 0)
             {
-                if (thisProfile.ControllerVisualizationType != null &&
-                    thisProfile.ControllerVisualizationType.Type != null)
+                if (thisProfile.ControllerProxyType != null &&
+                    thisProfile.ControllerProxyType.Type != null)
                 {
-                    modelPrefab.AddComponent(thisProfile.ControllerVisualizationType.Type);
+                    modelPrefab.AddComponent(thisProfile.ControllerProxyType.Type);
                 }
             }
             else if (componentList.Length == 1)
@@ -227,7 +227,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
             }
             else if (componentList.Length > 1)
             {
-                Debug.LogWarning("Found too many IMixedRealityControllerVisualizer components on your prefab. There can only be one.");
+                Debug.LogWarning("Found too many IMixedRealityControllerProxy components on your prefab. There can only be one.");
             }
 
             return false;

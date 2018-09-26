@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Interfaces.Devices
 {
-    public interface IMixedRealityControllerVisualizer : IMixedRealityControllerPoseSynchronizer
+    public interface IMixedRealityControllerProxy : IMixedRealityControllerPoseSynchronizer
     {
         /// <summary>
         /// The <see cref="GameObject"/> reference for this controller.

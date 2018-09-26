@@ -26,17 +26,17 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Devices
         }
 
         [SerializeField]
-        [Implements(typeof(IMixedRealityControllerVisualizer), TypeGrouping.ByNamespaceFlat)]
-        [Tooltip("The concrete Controller Visualizer component to use on the rendered controller model.")]
-        private SystemType controllerVisualizationType;
+        [Implements(typeof(IMixedRealityControllerProxy), TypeGrouping.ByNamespaceFlat)]
+        [Tooltip("The concrete Controller Proxy component to use on the rendered controller model.")]
+        private SystemType controllerProxyType;
 
         /// <summary>
-        /// The concrete Controller Visualizer component to use on the rendered controller model
+        /// The concrete Controller Proxy component to use on the rendered controller model
         /// </summary>
-        public SystemType ControllerVisualizationType
+        public SystemType ControllerProxyType
         {
-            get { return controllerVisualizationType; }
-            private set { controllerVisualizationType = value; }
+            get { return controllerProxyType; }
+            private set { controllerProxyType = value; }
         }
 
         [SerializeField]
