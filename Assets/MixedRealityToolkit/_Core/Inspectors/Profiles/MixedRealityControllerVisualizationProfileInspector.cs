@@ -12,8 +12,8 @@ using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 {
-    [CustomEditor(typeof(MixedRealityControllerVisualizationProfile))]
-    public class MixedRealityControllerVisualizationProfileInspector : MixedRealityBaseConfigurationProfileInspector
+    [CustomEditor(typeof(MixedRealityControllerProxyProfile))]
+    public class MixedRealityControllerProxyProfileInspector : MixedRealityBaseConfigurationProfileInspector
     {
         private static readonly GUIContent ControllerAddButtonContent = new GUIContent("+ Add a New Controller Definition");
         private static readonly GUIContent ControllerMinusButtonContent = new GUIContent("-", "Remove Controller Definition");
@@ -29,9 +29,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
         private SerializedProperty useDefaultModels;
         private SerializedProperty globalLeftHandModel;
         private SerializedProperty globalRightHandModel;
-        private SerializedProperty controllerVisualizationSettings;
+        private SerializedProperty controllerProxySettings;
 
-        private MixedRealityControllerVisualizationProfile thisProfile;
+        private MixedRealityControllerProxyProfile thisProfile;
 
         private float defaultLabelWidth;
         private float defaultFieldWidth;
@@ -46,14 +46,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                 return;
             }
 
-            thisProfile = target as MixedRealityControllerVisualizationProfile;
+            thisProfile = target as MixedRealityControllerProxyProfile;
 
             renderMotionControllers = serializedObject.FindProperty("renderMotionControllers");
             controllerVisualizationType = serializedObject.FindProperty("controllerVisualizationType");
             useDefaultModels = serializedObject.FindProperty("useDefaultModels");
             globalLeftHandModel = serializedObject.FindProperty("globalLeftHandModel");
             globalRightHandModel = serializedObject.FindProperty("globalRightHandModel");
-            controllerVisualizationSettings = serializedObject.FindProperty("controllerVisualizationSettings");
+            controllerProxySettings = serializedObject.FindProperty("controllerProxySettings");
         }
 
         public override void OnInspectorGUI()
@@ -82,8 +82,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
             }
 
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Controller Visualizations", EditorStyles.boldLabel);
-            EditorGUILayout.HelpBox("Define all the custom controller visualizations you'd like to use for each controller type when they're rendered in the scene.", MessageType.Info);
+            EditorGUILayout.LabelField("Controller Proxies", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox("Define all the custom controller proxies you'd like to use for each controller type when they're rendered in the scene.", MessageType.Info);
             serializedObject.Update();
 
             EditorGUIUtility.labelWidth = 168f;
@@ -114,7 +114,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 
                 EditorGUIUtility.labelWidth = defaultLabelWidth;
 
-                RenderControllerList(controllerVisualizationSettings);
+                RenderControllerList(controllerProxySettings);
             }
 
             serializedObject.ApplyModifiedProperties();
@@ -122,7 +122,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 
         private void RenderControllerList(SerializedProperty controllerList)
         {
-            if (thisProfile.ControllerVisualizationSettings.Length != controllerList.arraySize) { return; }
+            if (thisProfile.ControllerProxySettings.Length != controllerList.arraySize) { return; }
 
             EditorGUILayout.Space();
 
@@ -136,7 +136,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                 var mixedRealityControllerHandedness = controllerSetting.FindPropertyRelative("handedness");
                 mixedRealityControllerHandedness.intValue = 1;
                 serializedObject.ApplyModifiedProperties();
-                thisProfile.ControllerVisualizationSettings[index].ControllerType.Type = typeof(GenericJoystickController);
+                thisProfile.ControllerProxySettings[index].ControllerType.Type = typeof(GenericJoystickController);
                 return;
             }
 
@@ -149,7 +149,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                 EditorGUIUtility.fieldWidth = 64f;
                 var controllerSetting = controllerList.GetArrayElementAtIndex(i);
                 var mixedRealityControllerMappingDescription = controllerSetting.FindPropertyRelative("description");
-                mixedRealityControllerMappingDescription.stringValue = thisProfile.ControllerVisualizationSettings[i].ControllerType.Type.Name.ToProperCase();
+                mixedRealityControllerMappingDescription.stringValue = thisProfile.ControllerProxySettings[i].ControllerType.Type.Name.ToProperCase();
                 serializedObject.ApplyModifiedProperties();
                 var mixedRealityControllerHandedness = controllerSetting.FindPropertyRelative("handedness");
                 EditorGUILayout.LabelField($"{mixedRealityControllerMappingDescription.stringValue.ToProperCase()} {((Handedness)mixedRealityControllerHandedness.intValue).ToString().ToProperCase()} Hand");
