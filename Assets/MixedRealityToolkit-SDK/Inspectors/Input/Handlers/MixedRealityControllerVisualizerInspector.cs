@@ -6,6 +6,6 @@ using UnityEditor;
 
 namespace Microsoft.MixedReality.Toolkit.SDK.Inspectors.Input.Handlers
 {
-    [CustomEditor(typeof(MixedRealityControllerVisualizer))]
-    public class MixedRealityControllerVisualizerInspector : ControllerPoseSynchronizerInspector { }
+    [CustomEditor(typeof(MixedRealityControllerProxy))]
+    public class MixedRealityControllerProxyInspector : ControllerPoseSynchronizerInspector { }
 }

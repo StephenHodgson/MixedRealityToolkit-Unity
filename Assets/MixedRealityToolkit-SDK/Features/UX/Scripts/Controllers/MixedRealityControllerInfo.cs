@@ -145,8 +145,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
         /// thumbstick, and touchpad animation.
         /// </summary>
         /// <param name="childTransforms">The transforms of the glTF model.</param>
-        /// <param name="motionControllerVisualizer"></param>
-        public void LoadInfo(Transform[] childTransforms, MixedRealityControllerVisualizer motionControllerVisualizer)
+        /// <param name="motionControllerProxy"></param>
+        public void LoadInfo(Transform[] childTransforms, MixedRealityControllerProxy motionControllerProxy)
         {
             foreach (Transform child in childTransforms)
             {
