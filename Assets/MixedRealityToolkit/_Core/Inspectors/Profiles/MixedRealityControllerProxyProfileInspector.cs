@@ -49,7 +49,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
             thisProfile = target as MixedRealityControllerProxyProfile;
 
             renderMotionControllers = serializedObject.FindProperty("renderMotionControllers");
-            controllerVisualizationType = serializedObject.FindProperty("controllerVisualizationType");
+            controllerVisualizationType = serializedObject.FindProperty("controllerProxyType");
             useDefaultModels = serializedObject.FindProperty("useDefaultModels");
             globalLeftHandModel = serializedObject.FindProperty("globalLeftHandModel");
             globalRightHandModel = serializedObject.FindProperty("globalRightHandModel");

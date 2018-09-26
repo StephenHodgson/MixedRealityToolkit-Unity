@@ -119,15 +119,15 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem
 
         [SerializeField]
         [Tooltip("Device profile for rendering spatial controllers.")]
-        private MixedRealityControllerProxyProfile controllerProxiesProfile;
+        private MixedRealityControllerProxyProfile controllerProxyProfile;
 
         /// <summary>
         /// Device profile for rendering spatial controllers.
         /// </summary>
-        public MixedRealityControllerProxyProfile ControllerProxiesProfile
+        public MixedRealityControllerProxyProfile ControllerProxyProfile
         {
-            get { return controllerProxiesProfile; }
-            private set { controllerProxiesProfile = value; }
+            get { return controllerProxyProfile; }
+            private set { controllerProxyProfile = value; }
         }
     }
 }
