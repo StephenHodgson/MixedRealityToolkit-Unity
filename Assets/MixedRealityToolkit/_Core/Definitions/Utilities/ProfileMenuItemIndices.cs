@@ -16,7 +16,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities
         InputActions,
         Speech,
         BoundaryVisualization,
-        ControllerVisualization,
+        ControllerProxies,
         SpatialAwareness,
         Gestures,
         TouchInput,

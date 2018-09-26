@@ -9,8 +9,8 @@ using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Devices
 {
-    [CreateAssetMenu(menuName = "Mixed Reality Toolkit/Mixed Reality Controller Visualization Profile", fileName = "MixedRealityControllerVisualizationProfile", order = (int)CreateProfileMenuItemIndices.ControllerVisualization)]
-    public class MixedRealityControllerVisualizationProfile : BaseMixedRealityProfile
+    [CreateAssetMenu(menuName = "Mixed Reality Toolkit/Mixed Reality Controller Proxy Profile", fileName = "MixedRealityControllerProxyProfile", order = (int)CreateProfileMenuItemIndices.ControllerProxies)]
+    public class MixedRealityControllerProxyProfile : BaseMixedRealityProfile
     {
         [SerializeField]
         [Tooltip("Enable and configure the controller rendering of the Motion Controllers on Startup.")]
@@ -85,12 +85,12 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Devices
         }
 
         [SerializeField]
-        private MixedRealityControllerVisualizationSetting[] controllerVisualizationSettings = new MixedRealityControllerVisualizationSetting[0];
+        private MixedRealityControllerProxySetting[] controllerProxySettings = new MixedRealityControllerProxySetting[0];
 
         /// <summary>
-        /// The current list of controller visualization settings.
+        /// The current list of controller proxy settings.
         /// </summary>
-        public MixedRealityControllerVisualizationSetting[] ControllerVisualizationSettings => controllerVisualizationSettings;
+        public MixedRealityControllerProxySetting[] ControllerProxySettings => controllerProxySettings;
 
         /// <summary>
         /// Gets the override model for a specific controller type and hand
@@ -99,13 +99,13 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Devices
         /// <param name="hand">The specific hand assigned to the controller</param>
         public GameObject GetControllerModelOverride(Type controllerType, Handedness hand)
         {
-            for (int i = 0; i < controllerVisualizationSettings.Length; i++)
+            for (int i = 0; i < controllerProxySettings.Length; i++)
             {
-                if (controllerVisualizationSettings[i].ControllerType != null &&
-                    controllerVisualizationSettings[i].ControllerType.Type == controllerType &&
-                   (controllerVisualizationSettings[i].Handedness == hand || controllerVisualizationSettings[i].Handedness == Handedness.Both))
+                if (controllerProxySettings[i].ControllerType != null &&
+                    controllerProxySettings[i].ControllerType.Type == controllerType &&
+                   (controllerProxySettings[i].Handedness == hand || controllerProxySettings[i].Handedness == Handedness.Both))
                 {
-                    return controllerVisualizationSettings[i].OverrideControllerModel;
+                    return controllerProxySettings[i].OverrideControllerModel;
                 }
             }
 
