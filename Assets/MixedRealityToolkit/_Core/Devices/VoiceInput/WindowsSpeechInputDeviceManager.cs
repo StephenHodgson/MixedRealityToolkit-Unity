@@ -5,7 +5,7 @@ using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.Devices;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
-using Microsoft.MixedReality.Toolkit.Core.Managers;
+using Microsoft.MixedReality.Toolkit.Core.Services;
 using System;
 using UnityEngine;
 
@@ -15,6 +15,7 @@ using UnityEngine.Windows.Speech;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Devices.VoiceInput
 {
+#if UNITY_STANDALONE_WIN || UNITY_WSA || UNITY_EDITOR_WIN
     public class WindowsSpeechInputDeviceManager : BaseDeviceManager, IMixedRealitySpeechSystem
     {
         public WindowsSpeechInputDeviceManager(string name, uint priority) : base(name, priority) { }
@@ -22,25 +23,29 @@ namespace Microsoft.MixedReality.Toolkit.Core.Devices.VoiceInput
         /// <summary>
         /// The keywords to be recognized and optional keyboard shortcuts.
         /// </summary>
-        private static SpeechCommands[] Commands => MixedRealityManager.Instance.ActiveProfile.InputSystemProfile.SpeechCommandsProfile.SpeechCommands;
+        private static SpeechCommands[] Commands => MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile.SpeechCommandsProfile.SpeechCommands;
 
         /// <summary>
         /// The Input Source for Windows Speech Input.
         /// </summary>
         public IMixedRealityInputSource InputSource = null;
 
-#if UNITY_STANDALONE_WIN || UNITY_WSA || UNITY_EDITOR_WIN
-
         private KeywordRecognizer keywordRecognizer;
 
-        public ConfidenceLevel RecognitionConfidenceLevel { get; set; }
+        /// <inheritdoc />
+        public bool IsRecognitionActive
+        {
+            get { return keywordRecognizer != null && keywordRecognizer.IsRunning; }
+        }
+
+        public RecognitionConfidenceLevel RecognitionConfidenceLevel { get; set; }
 
         /// <inheritdoc />
         public override void Enable()
         {
             if (!Application.isPlaying || Commands.Length == 0) { return; }
 
-            InputSource = InputSystem?.RequestNewGenericInputSource("Windows Speech Input Source");
+            InputSource = MixedRealityToolkit.InputSystem?.RequestNewGenericInputSource("Windows Speech Input Source");
 
             var newKeywords = new string[Commands.Length];
 
@@ -49,11 +54,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.Devices.VoiceInput
                 newKeywords[i] = Commands[i].Keyword;
             }
 
-            RecognitionConfidenceLevel = (ConfidenceLevel)MixedRealityManager.Instance.ActiveProfile.InputSystemProfile.SpeechCommandsProfile.SpeechRecognitionConfidenceLevel;
-            keywordRecognizer = new KeywordRecognizer(newKeywords, RecognitionConfidenceLevel);
+            RecognitionConfidenceLevel = MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile.SpeechCommandsProfile.SpeechRecognitionConfidenceLevel;
+            keywordRecognizer = new KeywordRecognizer(newKeywords, (ConfidenceLevel) RecognitionConfidenceLevel);
             keywordRecognizer.OnPhraseRecognized += KeywordRecognizer_OnPhraseRecognized;
 
-            if (MixedRealityManager.Instance.ActiveProfile.InputSystemProfile.SpeechCommandsProfile.SpeechRecognizerStartBehavior == AutoStartBehavior.AutoStart)
+            if (MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile.SpeechCommandsProfile.SpeechRecognizerStartBehavior == AutoStartBehavior.AutoStart)
             {
                 StartRecognition();
             }
@@ -68,7 +73,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Devices.VoiceInput
                 {
                     if (Input.GetKeyDown(Commands[i].KeyCode))
                     {
-                        OnPhraseRecognized(RecognitionConfidenceLevel, TimeSpan.Zero, DateTime.Now, null, Commands[i].Keyword);
+                        OnPhraseRecognized((ConfidenceLevel) RecognitionConfidenceLevel, TimeSpan.Zero, DateTime.Now, Commands[i].Keyword);
                     }
                 }
             }
@@ -85,10 +90,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Devices.VoiceInput
             }
         }
 
-        /// <summary>
-        /// Make sure the keyword recognizer is off, then start it.
-        /// Otherwise, leave it alone because it's already in the desired state.
-        /// </summary>
+        /// <inheritdoc />
         public void StartRecognition()
         {
             if (keywordRecognizer != null && !keywordRecognizer.IsRunning)
@@ -97,10 +99,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Devices.VoiceInput
             }
         }
 
-        /// <summary>
-        /// Make sure the keyword recognizer is on, then stop it.
-        /// Otherwise, leave it alone because it's already in the desired state.
-        /// </summary>
+        /// <inheritdoc />
         public void StopRecognition()
         {
             if (keywordRecognizer != null && keywordRecognizer.IsRunning)
@@ -111,21 +110,20 @@ namespace Microsoft.MixedReality.Toolkit.Core.Devices.VoiceInput
 
         private void KeywordRecognizer_OnPhraseRecognized(PhraseRecognizedEventArgs args)
         {
-            OnPhraseRecognized(args.confidence, args.phraseDuration, args.phraseStartTime, args.semanticMeanings, args.text);
+            OnPhraseRecognized(args.confidence, args.phraseDuration, args.phraseStartTime, args.text);
         }
 
-        private void OnPhraseRecognized(ConfidenceLevel confidence, TimeSpan phraseDuration, DateTime phraseStartTime, SemanticMeaning[] semanticMeanings, string text)
+        private void OnPhraseRecognized(ConfidenceLevel confidence, TimeSpan phraseDuration, DateTime phraseStartTime, string text)
         {
             for (int i = 0; i < Commands?.Length; i++)
             {
                 if (Commands[i].Keyword == text)
                 {
-                    InputSystem.RaiseSpeechCommandRecognized(InputSource, Commands[i].Action, confidence, phraseDuration, phraseStartTime, semanticMeanings, text);
+                    MixedRealityToolkit.InputSystem.RaiseSpeechCommandRecognized(InputSource, Commands[i].Action, (RecognitionConfidenceLevel)confidence, phraseDuration, phraseStartTime, text);
                     break;
                 }
             }
         }
-
-#endif // UNITY_STANDALONE_WIN || UNITY_WSA || UNITY_EDITOR_WIN
     }
+#endif // UNITY_STANDALONE_WIN || UNITY_WSA || UNITY_EDITOR_WIN
 }
