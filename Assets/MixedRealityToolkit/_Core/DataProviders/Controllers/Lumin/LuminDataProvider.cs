@@ -4,7 +4,7 @@
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Devices;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces;
-using Microsoft.MixedReality.Toolkit.Core.Interfaces.Devices;
+using Microsoft.MixedReality.Toolkit.Core.Interfaces.DataProviders.Controllers;
 using Microsoft.MixedReality.Toolkit.Core.Services;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,16 +13,16 @@ using UnityEngine;
 using UnityEngine.XR.MagicLeap;
 #endif
 
-namespace Microsoft.MixedReality.Toolkit.Core.Devices.Lumin
+namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.Lumin
 {
-    public class LuminDeviceManager : BaseDeviceManager, IMixedRealityExtensionService
+    public class LuminDataProvider : BaseControllerDataProvider, IMixedRealityExtensionService
     {
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="priority"></param>
-        public LuminDeviceManager(string name, uint priority) : base(name, priority) { }
+        public LuminDataProvider(string name, uint priority) : base(name, priority) { }
 
 #if PLATFORM_LUMIN
 

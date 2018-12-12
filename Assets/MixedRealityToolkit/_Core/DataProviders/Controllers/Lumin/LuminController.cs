@@ -12,10 +12,17 @@ using UnityEngine;
 using UnityEngine.XR.MagicLeap;
 #endif // PLATFORM_LUMIN
 
-namespace Microsoft.MixedReality.Toolkit.Core.Devices.Lumin
+namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.Lumin
 {
     public class LuminController : BaseController
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="trackingState"></param>
+        /// <param name="controllerHandedness"></param>
+        /// <param name="inputSource"></param>
+        /// <param name="interactions"></param>
         public LuminController(
             TrackingState trackingState, Handedness controllerHandedness, IMixedRealityInputSource inputSource = null, MixedRealityInteractionMapping[] interactions = null)
             : base(trackingState, controllerHandedness, inputSource, interactions)
@@ -40,6 +47,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Devices.Lumin
         /// <inheritdoc />
         public override MixedRealityInteractionMapping[] DefaultRightHandedInteractions => DefaultInteractions;
 
+        /// <inheritdoc />
         public override void SetupDefaultInteractions(Handedness controllerHandedness)
         {
             AssignControllerMappings(DefaultInteractions);
