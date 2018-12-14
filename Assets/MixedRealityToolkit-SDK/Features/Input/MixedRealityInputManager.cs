@@ -24,6 +24,15 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
     /// </summary>
     public class MixedRealityInputManager : BaseEventSystem, IMixedRealityInputSystem
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="profile"></param>
+        public MixedRealityInputManager(MixedRealityInputSystemProfile profile) : base(profile)
+        {
+            // TODO Move profile assignments here in Input System refactor.
+        }
+
         /// <inheritdoc />
         public event Action InputEnabled;
 
