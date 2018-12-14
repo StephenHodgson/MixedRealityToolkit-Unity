@@ -198,7 +198,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
                 Utilities.Editor.InputMappingAxisUtility.CheckUnityInputManagerMappings(Definitions.Devices.ControllerMappingLibrary.UnityInputManagerAxes);
 #endif
 
-                if (RegisterService<IMixedRealityInputSystem>(ActiveProfile.InputSystemType, ActiveProfile.InputSystemProfile) || InputSystem != null)
+                if (RegisterService<IMixedRealityInputSystem>(ActiveProfile.InputSystemType, ActiveProfile.InputSystemProfile) && InputSystem != null)
                 {
                     if (RegisterService<IMixedRealityFocusProvider>(ActiveProfile.InputSystemProfile.FocusProviderType))
                     {
