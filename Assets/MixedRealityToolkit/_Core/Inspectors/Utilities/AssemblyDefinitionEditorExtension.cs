@@ -361,9 +361,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Utilities
                 case "macOSStandalone":
                     buildTarget = BuildTarget.StandaloneOSX;
                     return true;
-                case "Nintendo3DS":
-                    buildTarget = BuildTarget.N3DS;
-                    return true;
                 case "PS4":
                     buildTarget = BuildTarget.PS4;
                     return true;
