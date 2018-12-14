@@ -3,7 +3,7 @@
 
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Services;
-using Microsoft.MixedReality.Toolkit.SDK.Input;
+using Microsoft.MixedReality.Toolkit.Core.Services.InputSystem;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -19,7 +19,7 @@ namespace Microsoft.MixedReality.Toolkit.Tests.InputSystem
 
             // Add Input System
             MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile = InputSystemTestUtilities.SetupInputSystemProfile();
-            MixedRealityToolkit.Instance.RegisterService(typeof(IMixedRealityInputSystem), new MixedRealityInputManager(MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile));
+            MixedRealityToolkit.Instance.RegisterService(typeof(IMixedRealityInputSystem), new MixedRealityInputSystem(MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile));
 
             // Tests
             Assert.IsNotEmpty(MixedRealityToolkit.ActiveSystems);
@@ -34,7 +34,7 @@ namespace Microsoft.MixedReality.Toolkit.Tests.InputSystem
 
             // Add Input System
             MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile = InputSystemTestUtilities.SetupInputSystemProfile();
-            MixedRealityToolkit.Instance.RegisterService(typeof(IMixedRealityInputSystem), new MixedRealityInputManager(MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile));
+            MixedRealityToolkit.Instance.RegisterService(typeof(IMixedRealityInputSystem), new MixedRealityInputSystem(MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile));
 
             // Retrieve Input System
             var inputSystem = MixedRealityToolkit.Instance.GetService<IMixedRealityInputSystem>();

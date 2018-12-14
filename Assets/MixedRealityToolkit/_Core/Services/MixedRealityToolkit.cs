@@ -7,6 +7,7 @@ using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Extensions;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.BoundarySystem;
+using Microsoft.MixedReality.Toolkit.Core.Interfaces.DataProviders.Controllers;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.DataProviders.SpatialObservers;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.Diagnostics;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
@@ -197,15 +198,29 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
                 Utilities.Editor.InputMappingAxisUtility.CheckUnityInputManagerMappings(Definitions.Devices.ControllerMappingLibrary.UnityInputManagerAxes);
 #endif
 
-                if (!RegisterService<IMixedRealityInputSystem>(ActiveProfile.InputSystemType, ActiveProfile.InputSystemProfile) || InputSystem == null)
+                if (RegisterService<IMixedRealityInputSystem>(ActiveProfile.InputSystemType, ActiveProfile.InputSystemProfile) || InputSystem != null)
+                {
+                    if (RegisterService<IMixedRealityFocusProvider>(ActiveProfile.InputSystemProfile.FocusProviderType))
+                    {
+                        if (ActiveProfile.InputSystemProfile.ControllerDataProvidersProfile != null)
+                        {
+                            for (int i = 0; i < ActiveProfile.InputSystemProfile.ControllerDataProvidersProfile.RegisteredControllerDataProviders.Length; i++)
+                            {
+                                var controllerDataProvider = ActiveProfile.InputSystemProfile.ControllerDataProvidersProfile.RegisteredControllerDataProviders[i];
+
+                                RegisterService<IMixedRealityControllerDataProvider>(controllerDataProvider.DataProviderType, controllerDataProvider.RuntimePlatform, controllerDataProvider.DataProviderName, controllerDataProvider.Priority);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        inputSystem = null;
+                        Debug.LogError("Failed to register the focus provider! The input system will not function without it.");
+                    }
+                }
+                else
                 {
                     Debug.LogError("Failed to start the Input System!");
-                }
-
-                if (!RegisterService<IMixedRealityFocusProvider>(ActiveProfile.InputSystemProfile.FocusProviderType))
-                {
-                    Debug.LogError("Failed to register the focus provider! The input system will not function without it.");
-                    return;
                 }
             }
             else
