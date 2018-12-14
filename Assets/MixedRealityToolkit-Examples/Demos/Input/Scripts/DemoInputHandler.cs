@@ -11,19 +11,19 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos.Input
     {
         [SerializeField]
         [Tooltip("The action that will be used for selecting objects.")]
-        private MixedRealityInputAction selectAction;
+        private MixedRealityInputAction selectAction = MixedRealityInputAction.None;
 
         [SerializeField]
         [Tooltip("The action that will move the camera forward, back, left, and right.")]
-        private MixedRealityInputAction movementAction;
+        private MixedRealityInputAction movementAction = MixedRealityInputAction.None;
 
         [SerializeField]
         [Tooltip("The action that will pivot the camera on it's axis.")]
-        private MixedRealityInputAction rotateAction;
+        private MixedRealityInputAction rotateAction = MixedRealityInputAction.None;
 
         [SerializeField]
         [Tooltip("The action that will move the camera up or down vertically.")]
-        private MixedRealityInputAction heightAction;
+        private MixedRealityInputAction heightAction = MixedRealityInputAction.None;
 
         private Vector3 newPosition = Vector3.zero;
 

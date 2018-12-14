@@ -12,7 +12,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
     public class MixedRealityControllerDataProvidersProfile : BaseMixedRealityProfile
     {
         [SerializeField]
-        private ControllerDataProviderConfiguration[] registeredControllerDataProviders;
+        private ControllerDataProviderConfiguration[] registeredControllerDataProviders = null;
 
         /// <summary>
         /// The currently registered controller data providers for this input system.
