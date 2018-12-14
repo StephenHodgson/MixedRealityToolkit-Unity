@@ -1,12 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers;
-using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Services;
 using Microsoft.MixedReality.Toolkit.Core.Services.InputSystem;
-using Microsoft.MixedReality.Toolkit.SDK.Input;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -20,22 +17,9 @@ namespace Microsoft.MixedReality.Toolkit.Tests.InputSystem
         {
             TestUtilities.InitializeMixedRealityToolkitScene();
 
-            // Create a Input System Profiles
-            var inputSystemProfile = ScriptableObject.CreateInstance<MixedRealityInputSystemProfile>();
-            inputSystemProfile.FocusProviderType = typeof(FocusProvider);
-            inputSystemProfile.InputActionsProfile = ScriptableObject.CreateInstance<MixedRealityInputActionsProfile>();
-            inputSystemProfile.InputActionRulesProfile = ScriptableObject.CreateInstance<MixedRealityInputActionRulesProfile>();
-            inputSystemProfile.PointerProfile = ScriptableObject.CreateInstance<MixedRealityPointerProfile>();
-            inputSystemProfile.PointerProfile.GazeProviderType = typeof(GazeProvider);
-            inputSystemProfile.GesturesProfile = ScriptableObject.CreateInstance<MixedRealityGesturesProfile>();
-            inputSystemProfile.SpeechCommandsProfile = ScriptableObject.CreateInstance<MixedRealitySpeechCommandsProfile>();
-            inputSystemProfile.ControllerVisualizationProfile = ScriptableObject.CreateInstance<MixedRealityControllerVisualizationProfile>();
-            inputSystemProfile.ControllerMappingProfiles = ScriptableObject.CreateInstance<MixedRealityControllerMappingProfiles>();
-
-            MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile = inputSystemProfile;
-
             // Add Input System
-            MixedRealityToolkit.Instance.RegisterService(typeof(IMixedRealityInputSystem), new MixedRealityInputSystem());
+            MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile = InputSystemTestUtilities.SetupInputSystemProfile();
+            MixedRealityToolkit.Instance.RegisterService(typeof(IMixedRealityInputSystem), new MixedRealityInputSystem(MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile));
 
             // Tests
             Assert.IsNotEmpty(MixedRealityToolkit.ActiveSystems);
@@ -46,7 +30,11 @@ namespace Microsoft.MixedReality.Toolkit.Tests.InputSystem
         [Test]
         public void Test02_TestGetMixedRealityInputSystem()
         {
-            TestUtilities.InitializeMixedRealityToolkitScene(true);
+            TestUtilities.InitializeMixedRealityToolkitScene();
+
+            // Add Input System
+            MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile = InputSystemTestUtilities.SetupInputSystemProfile();
+            MixedRealityToolkit.Instance.RegisterService(typeof(IMixedRealityInputSystem), new MixedRealityInputSystem(MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile));
 
             // Retrieve Input System
             var inputSystem = MixedRealityToolkit.Instance.GetService<IMixedRealityInputSystem>();
@@ -58,6 +46,7 @@ namespace Microsoft.MixedReality.Toolkit.Tests.InputSystem
         [Test]
         public void Test03_TestMixedRealityInputSystemDoesNotExist()
         {
+            // Initialize without the default profile configuration
             TestUtilities.InitializeMixedRealityToolkitScene();
 
             // Check for Input System
@@ -71,6 +60,7 @@ namespace Microsoft.MixedReality.Toolkit.Tests.InputSystem
         [Test]
         public void Test04_TestMixedRealityInputSystemExists()
         {
+            // Initialize with the default profile configuration
             TestUtilities.InitializeMixedRealityToolkitScene(true);
 
             // Check for Input System
