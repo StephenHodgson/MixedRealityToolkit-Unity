@@ -22,6 +22,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities
         BoundaryVisualization,
         SpatialAwareness,
         SpatialAwarenessDataProviders,
+        Networking,
         Diagnostics,
         RegisteredServiceProviders,
     }

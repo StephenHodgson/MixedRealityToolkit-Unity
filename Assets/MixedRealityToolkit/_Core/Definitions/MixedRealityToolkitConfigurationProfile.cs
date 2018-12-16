@@ -5,12 +5,14 @@ using Microsoft.MixedReality.Toolkit.Core.Attributes;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.BoundarySystem;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Diagnostics;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
+using Microsoft.MixedReality.Toolkit.Core.Definitions.NetworkingSystem;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.SpatialAwarenessSystem;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.BoundarySystem;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.Diagnostics;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
+using Microsoft.MixedReality.Toolkit.Core.Interfaces.NetworkingSystem;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.SpatialAwarenessSystem;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.TeleportSystem;
 using System;
@@ -227,6 +229,46 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions
         }
 
         [SerializeField]
+        [Tooltip("Profile for wiring up networking assets.")]
+        private MixedRealityNetworkSystemProfile networkingSystemProfile;
+
+        /// <summary>
+        /// Active profile for diagnostic configuration
+        /// </summary>
+        public MixedRealityNetworkSystemProfile NetworkingSystemProfile
+        {
+            get { return networkingSystemProfile; }
+            internal set { networkingSystemProfile = value; }
+        }
+
+        [SerializeField]
+        [Tooltip("Enable networking system")]
+        private bool enableNetworkingSystem = false;
+
+        /// <summary>
+        /// Is the networking system properly configured and enabled?
+        /// </summary>
+        public bool IsNetworkingSystemEnabled
+        {
+            get { return enableNetworkingSystem && NetworkingSystemSystemType?.Type != null && networkingSystemProfile != null; }
+            internal set { enableNetworkingSystem = value; }
+        }
+
+        [SerializeField]
+        [Tooltip("Networking System Class to instantiate at runtime.")]
+        [Implements(typeof(IMixedRealityNetworkingSystem), TypeGrouping.ByNamespaceFlat)]
+        private SystemType networkingSystemType;
+
+        /// <summary>
+        /// Diagnostics System Script File to instantiate at runtime
+        /// </summary>
+        public SystemType NetworkingSystemSystemType
+        {
+            get { return networkingSystemType; }
+            internal set { networkingSystemType = value; }
+        }
+
+        [SerializeField]
         [Tooltip("Profile for wiring up diagnostic assets.")]
         private MixedRealityDiagnosticsProfile diagnosticsSystemProfile;
 
@@ -244,7 +286,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions
         private bool enableDiagnosticsSystem = false;
 
         /// <summary>
-        /// Is the Diagnostics System enabled?
+        /// Is the diagnostics system properly configured and enabled?
         /// </summary>
         public bool IsDiagnosticsSystemEnabled
         {
