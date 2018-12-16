@@ -85,14 +85,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities
 
             for (int i = 0; i < renderers.Length; ++i)
             {
-                Renderer renderer = renderers[i];
+                Renderer _renderer = renderers[i];
 
-                if (!renderer)
+                if (!_renderer)
                 {
                     continue;
                 }
 
-                Material material = GetMaterial(renderer);
+                Material material = GetMaterial(_renderer);
 
                 if (material)
                 {
@@ -129,16 +129,16 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities
 
             for (int i = 0; i < renderers.Length; ++i)
             {
-                Renderer renderer = renderers[i];
+                Renderer _renderer = renderers[i];
 
-                if (!renderer)
+                if (!_renderer)
                 {
                     continue;
                 }
 
-                renderer.GetPropertyBlock(materialPropertyBlock);
+                _renderer.GetPropertyBlock(materialPropertyBlock);
                 materialPropertyBlock.SetVector(clipPlaneID, plane);
-                renderer.SetPropertyBlock(materialPropertyBlock);
+                _renderer.SetPropertyBlock(materialPropertyBlock);
             }
         }
 
@@ -151,14 +151,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities
 
             for (int i = 0; i < renderers.Length; ++i)
             {
-                Renderer renderer = renderers[i];
+                Renderer _renderer = renderers[i];
 
-                if (!renderer)
+                if (!_renderer)
                 {
                     continue;
                 }
 
-                Material material = GetMaterial(renderer);
+                Material material = GetMaterial(_renderer);
 
                 if (material)
                 {

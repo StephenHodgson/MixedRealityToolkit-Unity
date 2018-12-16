@@ -130,18 +130,18 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Utilities
 
             for (int i = 0; i < hoverLightCount; ++i)
             {
-                HoverLight light = (i >= activeHoverLights.Count) ? null : activeHoverLights[i];
+                HoverLight _light = (i >= activeHoverLights.Count) ? null : activeHoverLights[i];
                 int dataIndex = i * hoverLightDataSize;
 
-                if (light)
+                if (_light)
                 {
-                    hoverLightData[dataIndex] = new Vector4(light.transform.position.x,
-                                                            light.transform.position.y,
-                                                            light.transform.position.z,
-                                                            light.Radius);
-                    hoverLightData[dataIndex + 1] = new Vector4(light.Color.r,
-                                                                light.Color.g,
-                                                                light.Color.b,
+                    hoverLightData[dataIndex] = new Vector4(_light.transform.position.x,
+                                                            _light.transform.position.y,
+                                                            _light.transform.position.z,
+                                                            _light.Radius);
+                    hoverLightData[dataIndex + 1] = new Vector4(_light.Color.r,
+                                                                _light.Color.g,
+                                                                _light.Color.b,
                                                                 1.0f);
                 }
                 else

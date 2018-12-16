@@ -307,32 +307,32 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
         public override void AssignNewShaderToMaterial(Material material, Shader oldShader, Shader newShader)
         {
             // Cache old shader properties with potentially different names than the new shader.
-            float? smoothness = GetFloatProperty(material, "_Glossiness");
+            float? _smoothness = GetFloatProperty(material, "_Glossiness");
             float? diffuse = GetFloatProperty(material, "_UseDiffuse");
-            float? specularHighlights = GetFloatProperty(material, "_SpecularHighlights");
-            float? normalMap = null;
+            float? _specularHighlights = GetFloatProperty(material, "_SpecularHighlights");
+            float? _normalMap = null;
             Texture normalMapTexture = material.GetTexture("_BumpMap");
-            float? normalMapScale = GetFloatProperty(material, "_BumpScale");
+            float? _normalMapScale = GetFloatProperty(material, "_BumpScale");
             float? emission = null;
             Color? emissionColor = GetColorProperty(material, "_EmissionColor");
-            float? reflections = null;
+            float? _reflections = null;
             float? rimLighting = null;
             Vector4? textureScaleOffset = null;
-            float? cullMode = GetFloatProperty(material, "_Cull");
+            float? _cullMode = GetFloatProperty(material, "_Cull");
 
             if (oldShader)
             {
                 if (oldShader.name.Contains("Standard"))
                 {
-                    normalMap = material.IsKeywordEnabled("_NORMALMAP") ? 1.0f : 0.0f;
+                    _normalMap = material.IsKeywordEnabled("_NORMALMAP") ? 1.0f : 0.0f;
                     emission = material.IsKeywordEnabled("_EMISSION") ? 1.0f : 0.0f;
-                    reflections = GetFloatProperty(material, "_GlossyReflections");
+                    _reflections = GetFloatProperty(material, "_GlossyReflections");
                 }
                 else if (oldShader.name.Contains("Fast Configurable"))
                 {
-                    normalMap = material.IsKeywordEnabled("_USEBUMPMAP_ON") ? 1.0f : 0.0f;
+                    _normalMap = material.IsKeywordEnabled("_USEBUMPMAP_ON") ? 1.0f : 0.0f;
                     emission = GetFloatProperty(material, "_UseEmissionColor");
-                    reflections = GetFloatProperty(material, "_UseReflections");
+                    _reflections = GetFloatProperty(material, "_UseReflections");
                     rimLighting = GetFloatProperty(material, "_UseRimLighting");
                     textureScaleOffset = GetVectorProperty(material, "_TextureScaleOffset");
                 }
@@ -341,23 +341,23 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
             base.AssignNewShaderToMaterial(material, oldShader, newShader);
 
             // Apply old shader properties to the new shader.
-            SetFloatProperty(material, null, "_Smoothness", smoothness);
+            SetFloatProperty(material, null, "_Smoothness", _smoothness);
             SetFloatProperty(material, "_DIRECTIONAL_LIGHT", "_DirectionalLight", diffuse);
-            SetFloatProperty(material, "_SPECULAR_HIGHLIGHTS", "_SpecularHighlights", specularHighlights);
-            SetFloatProperty(material, "_NORMAL_MAP", "_EnableNormalMap", normalMap);
+            SetFloatProperty(material, "_SPECULAR_HIGHLIGHTS", "_SpecularHighlights", _specularHighlights);
+            SetFloatProperty(material, "_NORMAL_MAP", "_EnableNormalMap", _normalMap);
 
             if (normalMapTexture)
             {
                 material.SetTexture("_NormalMap", normalMapTexture);
             }
 
-            SetFloatProperty(material, null, "_NormalMapScale", normalMapScale);
+            SetFloatProperty(material, null, "_NormalMapScale", _normalMapScale);
             SetFloatProperty(material, "_EMISSION", "_EnableEmission", emission);
             SetColorProperty(material, "_EmissiveColor", emissionColor);
-            SetFloatProperty(material, "_REFLECTIONS", "_Reflections", reflections);
+            SetFloatProperty(material, "_REFLECTIONS", "_Reflections", _reflections);
             SetFloatProperty(material, "_RIM_LIGHT", "_RimLight", rimLighting);
             SetVectorProperty(material, "_MainTex_ST", textureScaleOffset);
-            SetFloatProperty(material, null, "_CullMode", cullMode);
+            SetFloatProperty(material, null, "_CullMode", _cullMode);
 
             // Setup the rendering mode based on the old shader.
             if (oldShader == null || !oldShader.name.Contains("Legacy Shaders/"))
