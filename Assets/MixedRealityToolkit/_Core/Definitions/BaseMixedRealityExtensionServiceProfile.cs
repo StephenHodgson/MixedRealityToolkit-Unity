@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.﻿
 
-using Microsoft.MixedReality.Toolkit.Core.Interfaces;
 using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Definitions
@@ -12,15 +11,16 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions
     public abstract class BaseMixedRealityExtensionServiceProfile : BaseMixedRealityProfile
     {
         [SerializeField]
-        private DataModelConfiguration<IMixedRealityDataProvider>[] configurations = null;
+        [Tooltip("Currently registered IMixedRealityDataProvider configurations for this extension service.")]
+        private DataModelConfiguration[] registeredDataProviders = null;
 
         /// <summary>
-        /// Currently registered system and manager configurations.
+        /// Currently registered <see cref="Interfaces.IMixedRealityDataProvider"/> configurations for this extension service.
         /// </summary>
-        public virtual DataModelConfiguration<IMixedRealityDataProvider>[] Configurations
+        public DataModelConfiguration[] RegisteredDataProviders
         {
-            get { return configurations; }
-            set { configurations = value; }
+            get { return registeredDataProviders; }
+            set { registeredDataProviders = value; }
         }
     }
 }

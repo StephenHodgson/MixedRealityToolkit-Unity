@@ -3,47 +3,48 @@
 
 using Microsoft.MixedReality.Toolkit.Core.Attributes;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
+using Microsoft.MixedReality.Toolkit.Core.Interfaces;
 using System;
 using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Definitions
 {
     [Serializable]
-    public struct DataModelConfiguration<T>
+    public struct DataModelConfiguration
     {
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="componentType">The concrete type for the system, feature or manager.</param>
-        /// <param name="componentName">The simple, human readable name for the system, feature, or manager.</param>
+        /// <param name="dataModelType">The concrete type for the system, feature or manager.</param>
+        /// <param name="dataModelName">The simple, human readable name for the system, feature, or manager.</param>
         /// <param name="priority">The priority this system, feature, or manager will be initialized in.</param>
         /// <param name="runtimePlatform">The runtime platform(s) to run this system, feature, or manager on.</param>
         /// <param name="configurationProfile">The configuration profile for the system, feature, or manager.</param>
-        public DataModelConfiguration(SystemType componentType, string componentName, uint priority, SupportedPlatforms runtimePlatform, BaseMixedRealityProfile configurationProfile)
+        public DataModelConfiguration(SystemType dataModelType, string dataModelName, uint priority, SupportedPlatforms runtimePlatform, BaseMixedRealityProfile configurationProfile)
         {
-            this.componentType = componentType;
-            this.componentName = componentName;
+            this.dataModelType = dataModelType;
+            this.dataModelName = dataModelName;
             this.priority = priority;
             this.runtimePlatform = runtimePlatform;
             this.configurationProfile = configurationProfile;
         }
 
         [SerializeField]
-        [Implements(typeof(T), TypeGrouping.ByNamespaceFlat)]
-        private SystemType componentType;
+        [Implements(typeof(IMixedRealityDataProvider), TypeGrouping.ByNamespaceFlat)]
+        private SystemType dataModelType;
 
         /// <summary>
         /// The concrete type for the system, feature or manager.
         /// </summary>
-        public SystemType ComponentType => componentType;
+        public SystemType DataModelType => dataModelType;
 
         [SerializeField]
-        private string componentName;
+        private string dataModelName;
 
         /// <summary>
         /// The simple, human readable name for the system, feature, or manager.
         /// </summary>
-        public string ComponentName => componentName;
+        public string DataModelName => dataModelName;
 
         [SerializeField]
         private uint priority;

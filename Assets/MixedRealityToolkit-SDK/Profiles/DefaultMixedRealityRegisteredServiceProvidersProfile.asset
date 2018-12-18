@@ -13,4 +13,11 @@ MonoBehaviour:
   m_Name: DefaultMixedRealityRegisteredServiceProvidersProfile
   m_EditorClassIdentifier: 
   isCustomProfile: 0
-  configurations: []
+  configurations:
+  - componentType:
+      reference: HoloBeam.Services.SocialGraph.SocialGraph, HoloBeam.Services.SocialGraph
+    componentName: Social Graph
+    priority: 10
+    runtimePlatform: -1
+    configurationProfile: {fileID: 11400000, guid: f49a92879a0967740983bc16494efc38,
+      type: 2}

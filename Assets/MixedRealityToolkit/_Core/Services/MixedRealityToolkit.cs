@@ -333,12 +333,32 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
                 {
                     var configuration = ActiveProfile.RegisteredServiceProvidersProfile.Configurations[i];
 
-                    if (configuration.ConfigurationProfile != null)
+                    if (RegisterService<IMixedRealityExtensionService>(
+                            configuration.ComponentType,
+                            configuration.RuntimePlatform,
+                            configuration.ComponentName,
+                            configuration.Priority,
+                            configuration.ConfigurationProfile)
+                        && configuration.ConfigurationProfile != null)
                     {
-
+                        for (int j = 0; j < configuration.ConfigurationProfile.RegisteredDataProviders.Length; j++)
+                        {
+                            var dataProvider = configuration.ConfigurationProfile.RegisteredDataProviders[i];
+                            if (!RegisterService<IMixedRealityDataProvider>(
+                                dataProvider.DataModelType,
+                                dataProvider.RuntimePlatform,
+                                dataProvider.DataModelName,
+                                dataProvider.Priority,
+                                dataProvider.ConfigurationProfile))
+                            {
+                                Debug.LogError($"Failed to register {dataProvider.DataModelName} data model for {configuration.ComponentName} extension service!");
+                            }
+                        }
                     }
-
-                    RegisterService<IMixedRealityExtensionService>(configuration.ComponentType, configuration.RuntimePlatform, configuration.ComponentName, configuration.Priority, configuration.ConfigurationProfile);
+                    else
+                    {
+                        Debug.LogError($"Failed to register {configuration.ComponentName} extension service!");
+                    }
                 }
             }
 
@@ -730,7 +750,10 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
             if (!UnityEditor.EditorUserBuildSettings.activeBuildTarget.IsPlatformSupported(supportedPlatforms))
 #endif
             {
-                return false;
+                // We return true so we don't raise en error.
+                // Even though we did not register the service,
+                // it's expected that this is the intended behavior.
+                return true;
             }
 
             T serviceInstance;
