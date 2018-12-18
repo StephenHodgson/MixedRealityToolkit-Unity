@@ -333,25 +333,27 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
                     var configuration = ActiveProfile.RegisteredServiceProvidersProfile.Configurations[i];
 
                     if (RegisterService<IMixedRealityExtensionService>(
-                            configuration.ComponentType,
-                            configuration.RuntimePlatform,
-                            configuration.ComponentName,
-                            configuration.Priority,
-                            configuration.ConfigurationProfile)
-                        && configuration.ConfigurationProfile != null)
+                        configuration.ComponentType,
+                        configuration.RuntimePlatform,
+                        configuration.ComponentName,
+                        configuration.Priority,
+                        configuration.ConfigurationProfile))
                     {
-                        for (int j = 0; j < configuration.ConfigurationProfile.RegisteredDataProviders.Length; j++)
+                        if (configuration.ConfigurationProfile != null)
                         {
-                            var dataProvider = configuration.ConfigurationProfile.RegisteredDataProviders[j];
-
-                            if (!RegisterService<IMixedRealityDataProvider>(
-                                dataProvider.DataModelType,
-                                dataProvider.RuntimePlatform,
-                                dataProvider.DataModelName,
-                                dataProvider.Priority,
-                                dataProvider.ConfigurationProfile))
+                            for (int j = 0; j < configuration.ConfigurationProfile.RegisteredDataProviders.Length; j++)
                             {
-                                Debug.LogError($"Failed to register {dataProvider.DataModelName} data model for {configuration.ComponentName} extension service!");
+                                var dataProvider = configuration.ConfigurationProfile.RegisteredDataProviders[j];
+
+                                if (!RegisterService<IMixedRealityDataProvider>(
+                                    dataProvider.DataModelType,
+                                    dataProvider.RuntimePlatform,
+                                    dataProvider.DataModelName,
+                                    dataProvider.Priority,
+                                    dataProvider.ConfigurationProfile))
+                                {
+                                    Debug.LogError($"Failed to register {dataProvider.DataModelName} data model for {configuration.ComponentName} extension service!");
+                                }
                             }
                         }
                     }
