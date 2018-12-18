@@ -332,7 +332,13 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
                 for (int i = 0; i < ActiveProfile.RegisteredServiceProvidersProfile.Configurations?.Length; i++)
                 {
                     var configuration = ActiveProfile.RegisteredServiceProvidersProfile.Configurations[i];
-                    RegisterService<IMixedRealityExtensionService>(configuration.ComponentType, configuration.RuntimePlatform, configuration.ComponentName, configuration.Priority/*, TODO: configuration.ConfigurationProfile*/);
+
+                    if (configuration.ConfigurationProfile != null)
+                    {
+
+                    }
+
+                    RegisterService<IMixedRealityExtensionService>(configuration.ComponentType, configuration.RuntimePlatform, configuration.ComponentName, configuration.Priority, configuration.ConfigurationProfile);
                 }
             }
 
@@ -793,6 +799,24 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
         /// <summary>
         /// Remove all services from the Mixed Reality Toolkit active service registry for a given type
         /// </summary>
+        public bool UnregisterService<T>()
+        {
+            return UnregisterService(typeof(T), string.Empty);
+        }
+
+        /// <summary>
+        /// Remove services from the Mixed Reality Toolkit active service registry for a given type and name
+        /// Name is only supported for Mixed Reality runtime services
+        /// </summary>
+        /// <param name="serviceName">The name of the service to be removed. (Only for runtime services) </param>
+        public bool UnregisterService<T>(string serviceName)
+        {
+            return UnregisterService(typeof(T), serviceName);
+        }
+
+        /// <summary>
+        /// Remove all services from the Mixed Reality Toolkit active service registry for a given type
+        /// </summary>
         /// <param name="interfaceType">The interface type for the system to be removed.  E.G. InputSystem, BoundarySystem</param>
         public bool UnregisterService(Type interfaceType)
         {
@@ -1169,6 +1193,17 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
         public T GetService<T>(bool showLogs = true) where T : IMixedRealityService
         {
             return (T)GetService(typeof(T), showLogs);
+        }
+
+        /// <summary>
+        /// Retrieve a service from the Mixed Reality Toolkit active service registry
+        /// </summary>
+        /// <param name="serviceName">Name of the specific service</param>
+        /// <param name="showLogs">Should the logs show when services cannot be found?</param>
+        /// <returns>The Mixed Reality Toolkit of the specified type</returns>
+        public T GetService<T>(string serviceName, bool showLogs = true) where T : IMixedRealityService
+        {
+            return (T)GetService(typeof(T), serviceName, showLogs);
         }
 
         /// <summary>

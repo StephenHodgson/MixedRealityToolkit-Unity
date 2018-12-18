@@ -7,7 +7,7 @@ namespace Microsoft.MixedReality.Toolkit.Tests.Services
 {
     internal class TestExtensionService2 : BaseExtensionService, ITestExtensionService2
     {
-        public TestExtensionService2(string name, uint priority) : base(name, priority) { }
+        public TestExtensionService2(string name) : base(name, 5, null) { }
 
         public bool IsEnabled { get; private set; }
 
