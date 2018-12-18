@@ -13,7 +13,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.NetworkingSystem
     public class MixedRealityNetworkSystemProfile : BaseMixedRealityProfile
     {
         [SerializeField]
-        private NetworkDataProviderConfiguration[] registeredNetworkDataProviders;
+        private NetworkDataProviderConfiguration[] registeredNetworkDataProviders = null;
 
         /// <summary>
         /// The list of registered network data providers.

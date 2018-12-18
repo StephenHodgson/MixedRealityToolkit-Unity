@@ -300,7 +300,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
                         for (int i = 0; i < ActiveProfile.NetworkingSystemProfile.RegisteredNetworkDataProviders.Length; i++)
                         {
                             var networkProvider = ActiveProfile.NetworkingSystemProfile.RegisteredNetworkDataProviders[i];
-
                             if (!RegisterService<IMixedRealityNetworkDataProvider>(
                                 networkProvider.DataProviderType,
                                 networkProvider.RuntimePlatform,
@@ -343,7 +342,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
                     {
                         for (int j = 0; j < configuration.ConfigurationProfile.RegisteredDataProviders.Length; j++)
                         {
-                            var dataProvider = configuration.ConfigurationProfile.RegisteredDataProviders[i];
+                            var dataProvider = configuration.ConfigurationProfile.RegisteredDataProviders[j];
+
                             if (!RegisterService<IMixedRealityDataProvider>(
                                 dataProvider.DataModelType,
                                 dataProvider.RuntimePlatform,
