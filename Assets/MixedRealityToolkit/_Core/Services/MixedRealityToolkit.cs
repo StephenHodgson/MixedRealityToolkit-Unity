@@ -762,7 +762,12 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
 
             try
             {
-                serviceInstance = (T)Activator.CreateInstance(interfaceType, args);
+                serviceInstance = (T) Activator.CreateInstance(interfaceType, args);
+            }
+            catch (System.Reflection.TargetInvocationException e)
+            {
+                Debug.LogError($"Failed to register the {interfaceType.Name} service: {e.InnerException?.GetType()} - {e.InnerException?.Message}");
+                return false;
             }
             catch (Exception e)
             {
