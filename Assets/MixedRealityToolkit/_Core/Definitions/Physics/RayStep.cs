@@ -9,17 +9,28 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Physics
     [Serializable]
     public struct RayStep
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <param name="terminus"></param>
         public RayStep(Vector3 origin, Vector3 terminus) : this()
         {
             Origin = origin;
             Terminus = terminus;
             Length = Vector3.Distance(origin, terminus);
             Direction = (Terminus - Origin).normalized;
+            epsilon = 0.01f;
         }
 
+        private readonly float epsilon;
+
         public Vector3 Origin { get; private set; }
+
         public Vector3 Terminus { get; private set; }
+
         public Vector3 Direction { get; private set; }
+
         public float Length { get; private set; }
 
         public Vector3 GetPoint(float distance)
@@ -43,9 +54,19 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Physics
             Terminus = Origin + (Direction * Length);
         }
 
-        public static implicit operator Ray(RayStep r)
+        /// <summary>
+        /// Does this ray step contain the point provided?
+        /// </summary>
+        /// <param name="point">The point to find in the ray step.</param>
+        /// <returns>True if this ray step contains the point provided.</returns>
+        public bool Contains(Vector3 point)
         {
-            return new Ray(r.Origin, r.Direction);
+            return Vector3.Distance(Origin, point) + Vector3.Distance(point, Terminus) - Length < epsilon;
+        }
+
+        public static implicit operator Ray(RayStep step)
+        {
+            return new Ray(step.Origin, step.Direction);
         }
 
         #region static utility functions

@@ -176,10 +176,17 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
                     return graphicData;
                 }
             }
+
             private GraphicInputEventData graphicData;
-
             private FocusDetails focusDetails = new FocusDetails();
+            private Vector3 pointLocalSpace;
+            private Vector3 normalLocalSpace;
+            private bool pointerWasLocked;
 
+            /// <summary>
+            /// Constructor.
+            /// </summary>
+            /// <param name="pointer"></param>
             public PointerData(IMixedRealityPointer pointer)
             {
                 Pointer = pointer;
@@ -214,6 +221,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
                 focusDetails.Point = hit.point;
                 focusDetails.Normal = hit.normal;
                 focusDetails.Object = result.gameObject;
+
+                pointerWasLocked = false;
             }
 
             public void UpdateHit()
@@ -229,6 +238,41 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
                 focusDetails.Point = finalStep.Terminus;
                 focusDetails.Normal = -finalStep.Direction;
                 focusDetails.Object = null;
+
+                pointerWasLocked = false;
+            }
+
+            /// <summary>
+            /// Update focus information while focus is locked. If the object is moving,
+            /// this updates the hit point to its new world transform.
+            /// </summary>
+            public void UpdateFocusLockedHit()
+            {
+                if (!pointerWasLocked)
+                {
+                    PreviousPointerTarget = focusDetails.Object;
+                    pointLocalSpace = focusDetails.Object.transform.InverseTransformPoint(focusDetails.Point);
+                    normalLocalSpace = focusDetails.Object.transform.InverseTransformDirection(focusDetails.Normal);
+                    pointerWasLocked = true;
+                }
+
+                // In case the focused object is moving, we need to update the focus point based on the object's new transform.
+                focusDetails.Point = focusDetails.Object.transform.TransformPoint(pointLocalSpace);
+                focusDetails.Normal = focusDetails.Object.transform.TransformDirection(normalLocalSpace);
+
+                StartPoint = Pointer.Rays[0].Origin;
+
+                // In order to provide a correct RayStepIndex, we
+                // need to check to see which RayStep now contains the hit point.
+                // This is needed if the object moved closer or further away.
+                for (int i = 0; i < Pointer.Rays.Length; i++)
+                {
+                    if (Pointer.Rays[i].Contains(focusDetails.Point))
+                    {
+                        RayStepIndex = i;
+                        break;
+                    }
+                }
             }
 
             public void ResetFocusedObjects(bool clearPreviousObject = true)
@@ -321,11 +365,9 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
                 return null;
             }
 
-            FocusDetails focusDetails;
-            if (!TryGetFocusDetails(pointingSource, out focusDetails)) { return null; }
+            if (!TryGetFocusDetails(pointingSource, out FocusDetails focusDetails)) { return null; }
 
-            GraphicInputEventData graphicInputEventData;
-            if (TryGetSpecificPointerGraphicEventData(pointingSource, out graphicInputEventData))
+            if (TryGetSpecificPointerGraphicEventData(pointingSource, out GraphicInputEventData graphicInputEventData))
             {
                 graphicInputEventData.selectedObject = focusDetails.Object;
             }
@@ -336,22 +378,20 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
         /// <inheritdoc />
         public bool TryGetFocusDetails(IMixedRealityPointer pointer, out FocusDetails focusDetails)
         {
-            PointerData pointerData;
-            if (TryGetPointerData(pointer, out pointerData))
+            if (TryGetPointerData(pointer, out PointerData pointerData))
             {
                 focusDetails = pointerData.Details;
                 return true;
             }
 
-            focusDetails = default(FocusDetails);
+            focusDetails = default;
             return false;
         }
 
         /// <inheritdoc />
         public bool TryGetSpecificPointerGraphicEventData(IMixedRealityPointer pointer, out GraphicInputEventData graphicInputEventData)
         {
-            PointerData pointerData;
-            if (TryGetPointerData(pointer, out pointerData))
+            if (TryGetPointerData(pointer, out PointerData pointerData))
             {
                 graphicInputEventData = pointerData.GraphicEventData;
                 return true;
@@ -435,8 +475,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
         public bool IsPointerRegistered(IMixedRealityPointer pointer)
         {
             Debug.Assert(pointer.PointerId != 0, $"{pointer} does not have a valid pointer id!");
-            PointerData pointerData;
-            return TryGetPointerData(pointer, out pointerData);
+            return TryGetPointerData(pointer, out PointerData _);
         }
 
         /// <inheritdoc />
@@ -472,8 +511,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
         {
             Debug.Assert(pointer.PointerId != 0, $"{pointer} does not have a valid pointer id!");
 
-            PointerData pointerData;
-            if (!TryGetPointerData(pointer, out pointerData)) { return false; }
+            if (!TryGetPointerData(pointer, out PointerData pointerData)) { return false; }
 
             // Raise focus events if needed.
             if (pointerData.CurrentPointerTarget != null)
@@ -483,7 +521,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
 
                 foreach (var otherPointer in pointers)
                 {
-                    if (otherPointer.Pointer != pointer && otherPointer.CurrentPointerTarget == unfocusedObject)
+                    if (otherPointer.Pointer.PointerId != pointer.PointerId && otherPointer.CurrentPointerTarget == unfocusedObject)
                     {
                         objectIsStillFocusedByOtherPointer = true;
                         break;
@@ -590,6 +628,10 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
                     // Set the pointer's result last
                     pointer.Pointer.Result = pointer;
                 }
+                else
+                {
+                    pointer.UpdateFocusLockedHit();
+                }
             }
 
             // Call the pointer's OnPostRaycast function
@@ -609,8 +651,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
         {
             bool isHit = false;
             int rayStepIndex = 0;
-            RayStep rayStep = default(RayStep);
-            RaycastHit physicsHit = default(RaycastHit);
+            RayStep rayStep = default;
+            RaycastHit physicsHit = default;
 
             if (pointerData.Pointer.Rays == null)
             {
@@ -681,9 +723,9 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
         {
             Debug.Assert(UIRaycastCamera != null, "Missing UIRaycastCamera!");
 
-            RaycastResult raycastResult = default(RaycastResult);
+            RaycastResult raycastResult = default;
             bool overridePhysicsRaycast = false;
-            RayStep rayStep = default(RayStep);
+            RayStep rayStep = default;
             int rayStepIndex = 0;
 
             if (pointerData.Pointer.Rays == null)
@@ -885,7 +927,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
 
             for (var i = 0; i < eventData.InputSource.Pointers.Length; i++)
             {
-                // Special unregistration for Gaze
+                // Special un-registration for Gaze
                 if (gazeProviderPointingData != null && eventData.InputSource.Pointers[i].PointerId == gazeProviderPointingData.Pointer.PointerId)
                 {
                     // If the source lost is the gaze input source, then reset it.
