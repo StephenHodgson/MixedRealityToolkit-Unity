@@ -17,7 +17,6 @@ using Microsoft.MixedReality.Toolkit.Core.Interfaces.TeleportSystem;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-[assembly: InternalsVisibleTo("Microsoft.MixedReality.Toolkit.Tests")]
 namespace Microsoft.MixedReality.Toolkit.Core.Definitions
 {
     /// <summary>
