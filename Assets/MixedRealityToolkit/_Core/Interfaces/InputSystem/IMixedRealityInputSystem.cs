@@ -108,6 +108,18 @@ namespace Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem
         /// </summary>
         void ClearFallbackInputStack();
 
+        #region IMixedRealityController Utilities
+
+        /// <summary>
+        /// Tried to get a <see cref="IMixedRealityController"/> from the <see cref="DetectedControllers"/> list.
+        /// </summary>
+        /// <param name="inputSource">The <see cref="IMixedRealityInputSource"/> you want to get a controller reference for.</param>
+        /// <param name="controller">The <see cref="IMixedRealityController"/> that was found in the list of <see cref="DetectedControllers"/></param>
+        /// <returns>True, if an <see cref="IMixedRealityController"/> is found.</returns>
+        bool TryGetController(IMixedRealityInputSource inputSource, out IMixedRealityController controller);
+
+        #endregion IMixedRealityController Utilities
+
         #region Input Events
 
         #region Input Source Events
@@ -227,7 +239,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem
         /// </summary>
         /// <param name="pointer">The pointer where the event originates.</param>
         /// <param name="inputAction"></param>
-        void RaisePointerDown(IMixedRealityPointer pointer, MixedRealityInputAction inputAction);
+        /// <param name="inputSource"></param>
+        void RaisePointerDown(IMixedRealityPointer pointer, MixedRealityInputAction inputAction, IMixedRealityInputSource inputSource = null);
 
         /// <summary>
         /// Raise the pointer down event.
@@ -235,6 +248,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem
         /// <param name="pointer">The pointer where the event originates.</param>
         /// <param name="handedness">The handedness of the event.</param>
         /// <param name="inputAction"></param>
+        [Obsolete("Use RaisePointerDown(IMixedRealityPointer pointer, MixedRealityInputAction inputAction, IMixedRealityInputSource inputSource = null)")]
         void RaisePointerDown(IMixedRealityPointer pointer, Handedness handedness, MixedRealityInputAction inputAction);
 
         #endregion Pointer Down
@@ -247,7 +261,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem
         /// <param name="pointer"></param>
         /// <param name="inputAction"></param>
         /// <param name="count"></param>
-        void RaisePointerClicked(IMixedRealityPointer pointer, MixedRealityInputAction inputAction, int count);
+        /// <param name="inputSource"></param>
+        void RaisePointerClicked(IMixedRealityPointer pointer, MixedRealityInputAction inputAction, int count, IMixedRealityInputSource inputSource = null);
 
         /// <summary>
         /// Raise the pointer clicked event.
@@ -256,6 +271,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem
         /// <param name="handedness"></param>
         /// <param name="inputAction"></param>
         /// <param name="count"></param>
+        [Obsolete("Use RaisePointerClicked(IMixedRealityPointer pointer, MixedRealityInputAction inputAction, IMixedRealityInputSource inputSource = null)")]
         void RaisePointerClicked(IMixedRealityPointer pointer, Handedness handedness, MixedRealityInputAction inputAction, int count);
 
         #endregion Pointer Click
@@ -267,7 +283,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem
         /// </summary>
         /// <param name="pointer"></param>
         /// <param name="inputAction"></param>
-        void RaisePointerUp(IMixedRealityPointer pointer, MixedRealityInputAction inputAction);
+        /// <param name="inputSource"></param>
+        void RaisePointerUp(IMixedRealityPointer pointer, MixedRealityInputAction inputAction, IMixedRealityInputSource inputSource = null);
 
         /// <summary>
         /// Raise the pointer up event.
@@ -275,6 +292,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem
         /// <param name="pointer"></param>
         /// <param name="handedness"></param>
         /// <param name="inputAction"></param>
+        [Obsolete("Use RaisePointerUp(IMixedRealityPointer pointer, MixedRealityInputAction inputAction, IMixedRealityInputSource inputSource = null)")]
         void RaisePointerUp(IMixedRealityPointer pointer, Handedness handedness, MixedRealityInputAction inputAction);
 
         #endregion Pointer Up

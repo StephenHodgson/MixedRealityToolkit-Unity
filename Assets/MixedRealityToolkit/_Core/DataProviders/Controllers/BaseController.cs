@@ -107,10 +107,17 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
                     controllerMappings[i].Handedness == ControllerHandedness &&
                     controllerMappings[i].Interactions.Length > 0)
                 {
-                    Debug.Log($"Assigning {controllerMappings[i].Interactions.Length} interactions for {controllerMappings[i].Description}...");
+                    MixedRealityInteractionMapping[] profileInteractions = controllerMappings[i].Interactions;
+                    MixedRealityInteractionMapping[] newInteractions = new MixedRealityInteractionMapping[profileInteractions.Length];
+
+                    for (int j = 0; j < profileInteractions.Length; j++)
+                    {
+                        newInteractions[j] = new MixedRealityInteractionMapping(profileInteractions[j]);
+                    }
+
                     AssignControllerMappings(controllerMappings[i].Interactions);
                     profileFound = true;
-
+                    
                     // If no controller mappings found, warn the user.  Does not stop the project from running.
                     if (Interactions == null || Interactions.Length < 1)
                     {

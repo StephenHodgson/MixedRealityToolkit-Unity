@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
@@ -11,7 +12,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.EventDatum.Input
     /// <summary>
     /// Describes an Input Event that involves a tap, click, or touch.
     /// </summary>
-    public class MixedRealityPointerEventData : InputEventData
+    public class MixedRealityPointerEventData : BaseInputEventData
     {
         /// <summary>
         /// Pointer for the Input Event
@@ -31,10 +32,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.EventDatum.Input
         /// </summary>
         /// <param name="pointer"></param>
         /// <param name="inputAction"></param>
+        /// <param name="inputSource"></param>
         /// <param name="count"></param>
-        public void Initialize(IMixedRealityPointer pointer, MixedRealityInputAction inputAction, int count = 0)
+        public void Initialize(IMixedRealityPointer pointer, MixedRealityInputAction inputAction, IMixedRealityInputSource inputSource = null, int count = 0)
         {
-            Initialize(pointer.InputSourceParent, inputAction);
+            BaseInitialize(inputSource ?? pointer.InputSourceParent, inputAction);
             Pointer = pointer;
             Count = count;
         }
@@ -46,9 +48,10 @@ namespace Microsoft.MixedReality.Toolkit.Core.EventDatum.Input
         /// <param name="count"></param>
         /// <param name="inputAction"></param>
         /// <param name="handedness"></param>
+        [Obsolete("Use Initialize(IMixedRealityPointer pointer, MixedRealityInputAction inputAction, IMixedRealityInputSource inputSource = null, int count = 0)")]
         public void Initialize(IMixedRealityPointer pointer, Handedness handedness, MixedRealityInputAction inputAction, int count = 0)
         {
-            Initialize(pointer.InputSourceParent, handedness, inputAction);
+            BaseInitialize(pointer.InputSourceParent, inputAction);
             Pointer = pointer;
             Count = count;
         }
