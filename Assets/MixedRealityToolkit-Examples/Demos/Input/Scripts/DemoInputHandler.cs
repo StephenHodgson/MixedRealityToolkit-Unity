@@ -2,12 +2,14 @@
 using Microsoft.MixedReality.Toolkit.Core.EventDatum.Input;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem.Handlers;
 using Microsoft.MixedReality.Toolkit.SDK.Input.Handlers;
-using System;
 using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Examples.Demos.Input
 {
-    public class DemoInputHandler : BaseInputHandler, IMixedRealityInputHandler<Vector2>, IMixedRealitySourceStateHandler
+    public class DemoInputHandler : BaseInputHandler, 
+            IMixedRealitySourceStateHandler,
+            IMixedRealityInputHandler<float>,
+            IMixedRealityInputHandler<Vector2>
     {
         [SerializeField]
         [Tooltip("The action that will be used for selecting objects.")]
@@ -45,7 +47,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos.Input
             }
         }
 
-        public void OnInputPressed(InputEventData<float> eventData)
+        public void OnInputChanged(InputEventData<float> eventData)
         {
             if (eventData.MixedRealityInputAction == heightAction)
             {
@@ -73,12 +75,6 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos.Input
                 newRotation.x = eventData.InputData.x;
                 newRotation.y = eventData.InputData.y;
             }
-        }
-
-        [Obsolete]
-        public void OnPositionInputChanged(InputEventData<Vector2> eventData)
-        {
-            // Obsolete
         }
 
         public void OnSourceDetected(SourceStateEventData eventData)

@@ -3,16 +3,12 @@
 
 using Microsoft.MixedReality.Toolkit.Core.Definitions;
 using Microsoft.MixedReality.Toolkit.Core.Utilities.Editor.Setup;
-using System;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 {
-    [Obsolete("Use BaseMixedRealityToolkitConfigurationProfileInspector instead")]
-    public abstract class MixedRealityBaseConfigurationProfileInspector { }
-
     /// <summary>
     /// Base class for all Mixed Reality Toolkit specific <see cref="BaseMixedRealityProfile"/> inspectors to inherit from.
     /// </summary>

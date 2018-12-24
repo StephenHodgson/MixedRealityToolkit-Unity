@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
-using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.EventDatum.Input;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.DataProviders.Controllers;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
@@ -13,7 +11,6 @@ using Microsoft.MixedReality.Toolkit.Core.Services.InputSystem.Sources;
 using Microsoft.MixedReality.Toolkit.Core.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Utilities.Async;
 using Microsoft.MixedReality.Toolkit.Core.Utilities.Physics;
-using System;
 using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.SDK.Input
@@ -76,8 +73,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
         /// <inheritdoc />
         public bool Enabled
         {
-            get { return enabled; }
-            set { enabled = value; }
+            get => enabled;
+            set => enabled = value;
         }
 
         /// <inheritdoc />
@@ -327,6 +324,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
 
         #region IMixedRealityInputHandler Implementation
 
+        /// <inheritdoc />
         public void OnInputUp(InputEventData eventData)
         {
             for (int i = 0; i < eventData.InputSource.Pointers.Length; i++)
@@ -340,6 +338,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
             }
         }
 
+        /// <inheritdoc />
         public void OnInputDown(InputEventData eventData)
         {
             for (int i = 0; i < eventData.InputSource.Pointers.Length; i++)
@@ -351,12 +350,6 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
                 }
             }
         }
-
-        [Obsolete]
-        public void OnInputPressed(InputEventData<float> eventData) { }
-
-        [Obsolete]
-        public void OnPositionInputChanged(InputEventData<Vector2> eventData) { }
 
         #endregion IMixedRealityInputHandler Implementation
 

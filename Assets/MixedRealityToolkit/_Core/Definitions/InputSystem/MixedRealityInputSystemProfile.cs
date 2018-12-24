@@ -7,7 +7,6 @@ using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.DataProviders.Controllers;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Services;
-using System;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
@@ -30,8 +29,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem
         /// </summary>
         public SystemType FocusProviderType
         {
-            get { return focusProviderType; }
-            internal set { focusProviderType = value; }
+            get => focusProviderType;
+            internal set => focusProviderType = value;
         }
 
         [SerializeField]
@@ -43,8 +42,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem
         /// </summary>
         public MixedRealityInputActionsProfile InputActionsProfile
         {
-            get { return inputActionsProfile; }
-            internal set { inputActionsProfile = value; }
+            get => inputActionsProfile;
+            internal set => inputActionsProfile = value;
         }
 
         [SerializeField]
@@ -56,8 +55,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem
         /// </summary>
         public MixedRealityInputActionRulesProfile InputActionRulesProfile
         {
-            get { return inputActionRulesProfile; }
-            internal set { inputActionRulesProfile = value; }
+            get => inputActionRulesProfile;
+            internal set => inputActionRulesProfile = value;
         }
 
         [SerializeField]
@@ -69,8 +68,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem
         /// </summary>
         public MixedRealityPointerProfile PointerProfile
         {
-            get { return pointerProfile; }
-            internal set { pointerProfile = value; }
+            get => pointerProfile;
+            internal set => pointerProfile = value;
         }
 
         [SerializeField]
@@ -82,8 +81,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem
         /// </summary>
         public MixedRealityGesturesProfile GesturesProfile
         {
-            get { return gesturesProfile; }
-            internal set { gesturesProfile = value; }
+            get => gesturesProfile;
+            internal set => gesturesProfile = value;
         }
 
         /// <summary>
@@ -100,20 +99,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem
         /// </summary>
         public MixedRealitySpeechCommandsProfile SpeechCommandsProfile
         {
-            get { return speechCommandsProfile; }
-            internal set { speechCommandsProfile = value; }
+            get => speechCommandsProfile;
+            internal set => speechCommandsProfile = value;
         }
 
         /// <summary>
         /// Is Dictation Enabled?
         /// </summary>
         public bool IsDictationEnabled => MixedRealityToolkit.Instance.ActiveProfile.IsInputSystemEnabled && DictationDataProvider != null;
-
-        /// <summary>
-        /// Enable and configure the devices for your application.
-        /// </summary>
-        [Obsolete("Removed. Controller mapping is now enabled by default if a controller data provider is registered in the MixedRealityControllerDataProvidersProfile.")]
-        public bool IsControllerMappingEnabled => false;
 
         [SerializeField]
         [Tooltip("Device profile for registering platform specific input data sources.")]
@@ -124,12 +117,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem
         /// </summary>
         public MixedRealityControllerDataProvidersProfile ControllerDataProvidersProfile
         {
-            get { return controllerDataProvidersProfile; }
-            internal set { controllerDataProvidersProfile = value; }
+            get => controllerDataProvidersProfile;
+            internal set => controllerDataProvidersProfile = value;
         }
-
-        [Obsolete("Property renamed to ControllerMappingProfiles")]
-        public MixedRealityControllerMappingProfile ControllerMappingProfile = null;
 
         [SerializeField]
         private MixedRealityControllerMappingProfiles controllerMappingProfiles;
@@ -139,8 +129,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem
         /// </summary>
         public MixedRealityControllerMappingProfiles ControllerMappingProfiles
         {
-            get { return controllerMappingProfiles; }
-            internal set { controllerMappingProfiles = value; }
+            get => controllerMappingProfiles;
+            internal set => controllerMappingProfiles = value;
         }
 
         [SerializeField]
@@ -152,8 +142,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem
         /// </summary>
         public MixedRealityControllerVisualizationProfile ControllerVisualizationProfile
         {
-            get { return controllerVisualizationProfile; }
-            internal set { controllerVisualizationProfile = value; }
+            get => controllerVisualizationProfile;
+            internal set => controllerVisualizationProfile = value;
         }
 
         private IMixedRealityFocusProvider focusProvider;

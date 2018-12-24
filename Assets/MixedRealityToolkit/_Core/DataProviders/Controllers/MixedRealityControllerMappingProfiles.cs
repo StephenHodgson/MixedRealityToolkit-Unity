@@ -3,15 +3,11 @@
 
 using Microsoft.MixedReality.Toolkit.Core.Definitions;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
 {
-    [Obsolete("Profile was renamed to MixedRealityControllerMappingProfiles")]
-    public class MixedRealityControllerMappingProfile { }
-
     [CreateAssetMenu(menuName = "Mixed Reality Toolkit/Mixed Reality Controller Mapping Profiles", fileName = "MixedRealityControllerMappingProfiles", order = (int)CreateProfileMenuItemIndices.ControllerMappings)]
     public class MixedRealityControllerMappingProfiles : BaseMixedRealityProfile
     {

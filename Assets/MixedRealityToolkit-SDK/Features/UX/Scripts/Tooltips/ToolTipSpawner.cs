@@ -142,39 +142,6 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.ToolTips
         }
 
         /// <inheritdoc />
-        void IMixedRealityInputHandler.OnInputPressed(InputEventData<float> eventData)
-        {
-            //if (eventData.InputData > .95f)
-            //{
-            //tappedTime = Time.unscaledTime;
-            //}
-            //if (toolTip == null || !toolTip.gameObject.activeSelf)
-            //{
-            //  switch (vanishType)
-            //  {
-            //      case VanishType.VanishOnTap:
-            //          toolTip.gameObject.SetActive(false);
-            //          break;
-
-            //      default:
-            //          break;
-            //  }
-            //  switch (appearType)
-            //  {
-            //      case AppearType.AppearOnTap:
-            //          ShowToolTip();
-            //          break;
-
-            //      default:
-            //          break;
-            //  }
-            //}
-        }
-
-        /// <inheritdoc />
-        void IMixedRealityInputHandler.OnPositionInputChanged(InputEventData<Vector2> eventData) { }
-
-        /// <inheritdoc />
         void IMixedRealityInputHandler.OnInputDown(InputEventData eventData)
         {
             if (tooltipToggleAction.Id == eventData.MixedRealityInputAction.Id)

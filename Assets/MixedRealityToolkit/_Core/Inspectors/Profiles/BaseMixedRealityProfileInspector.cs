@@ -5,7 +5,6 @@ using Microsoft.MixedReality.Toolkit.Core.Definitions;
 using Microsoft.MixedReality.Toolkit.Core.Extensions.EditorClassExtensions;
 using Microsoft.MixedReality.Toolkit.Core.Services;
 using Microsoft.MixedReality.Toolkit.Core.Utilities.Async;
-using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -27,12 +26,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
         {
             targetProfile = serializedObject;
             profile = target as BaseMixedRealityProfile;
-        }
-
-        [Obsolete("Use MixedRealityInspectorUtility.CheckMixedRealityConfigured instead")]
-        public static bool CheckMixedRealityConfigured(bool flag = true)
-        {
-            return false;
         }
 
         /// <summary>

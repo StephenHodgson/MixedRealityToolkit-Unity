@@ -756,8 +756,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
 
             ExecuteEvents.ExecuteHierarchy(focusedObject, focusEventData, OnFocusEnterEventHandler);
 
-            GraphicInputEventData graphicEventData;
-            if (FocusProvider.TryGetSpecificPointerGraphicEventData(pointer, out graphicEventData))
+            if (FocusProvider.TryGetSpecificPointerGraphicEventData(pointer, out GraphicInputEventData graphicEventData))
             {
                 ExecuteEvents.ExecuteHierarchy(focusedObject, graphicEventData, ExecuteEvents.pointerEnterHandler);
             }
@@ -777,8 +776,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
 
             ExecuteEvents.ExecuteHierarchy(unfocusedObject, focusEventData, OnFocusExitEventHandler);
 
-            GraphicInputEventData graphicEventData;
-            if (FocusProvider.TryGetSpecificPointerGraphicEventData(pointer, out graphicEventData))
+            if (FocusProvider.TryGetSpecificPointerGraphicEventData(pointer, out GraphicInputEventData graphicEventData))
             {
                 ExecuteEvents.ExecuteHierarchy(unfocusedObject, graphicEventData, ExecuteEvents.pointerExitHandler);
             }
@@ -813,21 +811,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
             ExecutePointerDown(HandlePointerDown(pointer));
         }
 
-        [Obsolete("Use RaisePointerDown(IMixedRealityPointer pointer, MixedRealityInputAction inputAction, IMixedRealityInputSource inputSource = null)")]
-        public void RaisePointerDown(IMixedRealityPointer pointer, Handedness handedness, MixedRealityInputAction inputAction)
-        {
-            // Create input event
-            pointerEventData.Initialize(pointer, handedness, inputAction);
-
-            ExecutePointerDown(HandlePointerDown(pointer));
-        }
-
         private GraphicInputEventData HandlePointerDown(IMixedRealityPointer pointer)
         {
             // Pass handler through HandleEvent to perform modal/fallback logic
             HandleEvent(pointerEventData, OnPointerDownEventHandler);
-            GraphicInputEventData graphicEventData;
-            FocusProvider.TryGetSpecificPointerGraphicEventData(pointer, out graphicEventData);
+            FocusProvider.TryGetSpecificPointerGraphicEventData(pointer, out GraphicInputEventData graphicEventData);
             return graphicEventData;
         }
 
@@ -855,15 +843,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         {
             // Create input event
             pointerEventData.Initialize(pointer, inputAction, inputSource, count);
-
-            HandleClick();
-        }
-
-        [Obsolete("Use RaisePointerClicked(IMixedRealityPointer pointer, MixedRealityInputAction inputAction, int count, IMixedRealityInputSource inputSource = null)")]
-        public void RaisePointerClicked(IMixedRealityPointer pointer, Handedness handedness, MixedRealityInputAction inputAction, int count)
-        {
-            // Create input event
-            pointerEventData.Initialize(pointer, handedness, inputAction, count);
 
             HandleClick();
         }
@@ -896,15 +875,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
             ExecutePointerUp(HandlePointerUp(pointer));
         }
 
-        [Obsolete("Use RaisePointerUp(IMixedRealityPointer pointer, MixedRealityInputAction inputAction, IMixedRealityInputSource inputSource = null)")]
-        public void RaisePointerUp(IMixedRealityPointer pointer, Handedness handedness, MixedRealityInputAction inputAction)
-        {
-            // Create input event
-            pointerEventData.Initialize(pointer, handedness, inputAction);
-
-            ExecutePointerUp(HandlePointerUp(pointer));
-        }
-
         private static void ExecutePointerUp(GraphicInputEventData graphicInputEventData)
         {
             if (graphicInputEventData != null)
@@ -924,8 +894,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
             // Pass handler through HandleEvent to perform modal/fallback logic
             HandleEvent(pointerEventData, OnPointerUpEventHandler);
 
-            GraphicInputEventData graphicEventData;
-            FocusProvider.TryGetSpecificPointerGraphicEventData(pointer, out graphicEventData);
+            FocusProvider.TryGetSpecificPointerGraphicEventData(pointer, out GraphicInputEventData graphicEventData);
             return graphicEventData;
         }
 

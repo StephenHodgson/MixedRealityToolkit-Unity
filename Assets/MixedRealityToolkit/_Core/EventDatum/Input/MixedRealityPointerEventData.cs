@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
-using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
 using UnityEngine.EventSystems;
 
@@ -37,21 +35,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.EventDatum.Input
         public void Initialize(IMixedRealityPointer pointer, MixedRealityInputAction inputAction, IMixedRealityInputSource inputSource = null, int count = 0)
         {
             BaseInitialize(inputSource ?? pointer.InputSourceParent, inputAction);
-            Pointer = pointer;
-            Count = count;
-        }
-
-        /// <summary>
-        /// Used to initialize/reset the event and populate the data.
-        /// </summary>
-        /// <param name="pointer"></param>
-        /// <param name="count"></param>
-        /// <param name="inputAction"></param>
-        /// <param name="handedness"></param>
-        [Obsolete("Use Initialize(IMixedRealityPointer pointer, MixedRealityInputAction inputAction, IMixedRealityInputSource inputSource = null, int count = 0)")]
-        public void Initialize(IMixedRealityPointer pointer, Handedness handedness, MixedRealityInputAction inputAction, int count = 0)
-        {
-            BaseInitialize(pointer.InputSourceParent, inputAction);
             Pointer = pointer;
             Count = count;
         }

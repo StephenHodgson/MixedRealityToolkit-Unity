@@ -4,7 +4,6 @@
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Services;
 using Microsoft.MixedReality.Toolkit.Core.Utilities.Async;
-using System;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -15,9 +14,6 @@ using UnityEngine.Windows.Speech;
 
 namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsMixedReality
 {
-    [Obsolete("Use WindowsDictationDataProvider instead.")]
-    public class WindowsDictationInputDeviceManager { }
-
     /// <summary>
     /// Dictation data provider for Windows 10 based platforms.
     /// </summary>

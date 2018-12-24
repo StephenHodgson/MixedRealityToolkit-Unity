@@ -12,9 +12,6 @@ using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.UnityInput
 {
-    [Obsolete("Use UnityJoystickDataProvider instead.")]
-    public class UnityJoystickManager { }
-
     /// <summary>
     /// Manages joysticks using unity input system.
     /// </summary>

@@ -17,9 +17,6 @@ using WsaGestureSettings = UnityEngine.XR.WSA.Input.GestureSettings;
 
 namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsMixedReality
 {
-    [System.Obsolete("Use WindowsMixedRealityDataProvider instead.")]
-    public class WindowsMixedRealityDeviceManager { }
-
     /// <summary>
     /// The device manager for Windows Mixed Reality controllers.
     /// </summary>

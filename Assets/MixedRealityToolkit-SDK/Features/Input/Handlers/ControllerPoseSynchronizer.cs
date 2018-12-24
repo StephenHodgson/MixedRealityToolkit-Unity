@@ -1,13 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Devices;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.EventDatum.Input;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.DataProviders.Controllers;
-using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem.Handlers;
 using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
@@ -26,8 +24,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
         /// <inheritdoc />
         public Handedness Handedness
         {
-            get { return handedness; }
-            set { handedness = value; }
+            get => handedness;
+            set => handedness = value;
         }
 
         [SerializeField]
@@ -37,8 +35,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
         /// <inheritdoc />
         public bool DestroyOnSourceLost
         {
-            get { return destroyOnSourceLost; }
-            set { destroyOnSourceLost = value; }
+            get => destroyOnSourceLost;
+            set => destroyOnSourceLost = value;
         }
 
         /// <summary>
@@ -56,7 +54,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
         /// <inheritdoc />
         public virtual IMixedRealityController Controller
         {
-            get { return controller; }
+            get => controller;
             set
             {
                 handedness = value.ControllerHandedness;
@@ -72,8 +70,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
         /// <inheritdoc />
         public bool UseSourcePoseData
         {
-            get { return useSourcePoseData; }
-            set { useSourcePoseData = value; }
+            get => useSourcePoseData;
+            set => useSourcePoseData = value;
         }
 
         [SerializeField]
@@ -83,8 +81,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
         /// <inheritdoc />
         public MixedRealityInputAction PoseAction
         {
-            get { return poseAction; }
-            set { poseAction = value; }
+            get => poseAction;
+            set => poseAction = value;
         }
 
         #endregion IMixedRealityControllerPoseSynchronizer Implementation
@@ -160,14 +158,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
         public virtual void OnInputDown(InputEventData eventData) { }
 
         /// <inheritdoc />
-        [Obsolete("Use ControllerPoseSynchronizer.OnInputChanged(InputEventData<float> eventData)")]
-        public virtual void OnInputPressed(InputEventData<float> eventData) { }
-
-        /// <inheritdoc />
         public virtual void OnInputChanged(InputEventData<float> eventData) { }
-
-        [Obsolete("Use ControllerPoseSynchronizer.OnInputChanged(InputEventData<Vector2> eventData)")]
-        public virtual void OnPositionInputChanged(InputEventData<Vector2> eventData) { }
 
         /// <inheritdoc />
         public virtual void OnInputChanged(InputEventData<Vector2> eventData) { }
@@ -219,18 +210,5 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
         }
 
         #endregion  IMixedRealityInputHandler Implementation
-
-        #region IMixedRealitySpatialInputHandler Implementation
-
-        [Obsolete("Use ControllerPoseSynchronizer.OnInputChanged(InputEventData<Vector3> eventData)")]
-        public virtual void OnPositionChanged(InputEventData<Vector3> eventData) { }
-
-        [Obsolete("Use ControllerPoseSynchronizer.OnInputChanged(InputEventData<Quaternion> eventData)")]
-        public virtual void OnRotationChanged(InputEventData<Quaternion> eventData) { }
-
-        [Obsolete("Use ControllerPoseSynchronizer.OnInputChanged(InputEventData<MixedRealityPose> eventData)")]
-        public virtual void OnPoseInputChanged(InputEventData<MixedRealityPose> eventData) { }
-
-        #endregion IMixedRealitySpatialInputHandler Implementation 
     }
 }

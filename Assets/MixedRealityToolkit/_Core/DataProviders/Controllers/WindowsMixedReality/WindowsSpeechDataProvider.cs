@@ -14,9 +14,6 @@ using UnityEngine.Windows.Speech;
 
 namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsMixedReality
 {
-    [Obsolete("Use WindowsSpeechDataProvider instead.")]
-    public class WindowsSpeechInputDeviceManager { }
-
     /// <summary>
     /// Speech data provider for windows 10 based platforms.
     /// </summary>

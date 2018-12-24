@@ -10,9 +10,6 @@ using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.OpenVR
 {
-    [Obsolete("Use OpenVRDataProvider instead.")]
-    public class OpenVRDeviceManager { }
-
     /// <summary>
     /// Manages Open VR Devices using unity's input system.
     /// </summary>

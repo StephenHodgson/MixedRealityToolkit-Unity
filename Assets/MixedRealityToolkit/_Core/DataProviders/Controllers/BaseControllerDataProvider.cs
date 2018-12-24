@@ -5,16 +5,12 @@ using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.DataProviders.Controllers;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Services;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
 {
-    [Obsolete("Use BaseControllerDataProvider instead.")]
-    public class BaseDeviceManager { }
-
     /// <summary>
     /// Base controller data provider to inherit from when implementing <see cref="IMixedRealityControllerDataProvider"/>s
     /// </summary>
