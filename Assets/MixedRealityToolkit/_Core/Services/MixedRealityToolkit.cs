@@ -33,12 +33,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
     {
         #region Mixed Reality Toolkit Profile configuration
 
-        private const string MixedRealityPlayspaceName = "MixedRealityPlayspace";
-
-        private static bool isInitializing = false;
-
-        private static bool isApplicationQuitting = false;
-
         /// <summary>
         /// Checks if there is a valid instance of the MixedRealityToolkit, then checks if there is there a valid Active Profile.
         /// </summary>
@@ -134,13 +128,157 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
         /// </summary>
         public static IReadOnlyList<Tuple<Type, IMixedRealityService>> RegisteredMixedRealityServices => registeredMixedRealityServices;
 
-        /// <summary>
-        /// Local service registry for the Mixed Reality Toolkit, to allow runtime use of the <see cref="IMixedRealityService"/>.
-        /// </summary>
-        [Obsolete("Use RegisteredMixedRealityServices instead.")]
-        public List<Tuple<Type, IMixedRealityExtensionService>> MixedRealityComponents => null;
-
         #endregion Mixed Reality runtime service registry
+
+        /// <summary>
+        /// Returns the Singleton instance of the classes type.
+        /// If no instance is found, then we search for an instance in the scene.
+        /// If more than one instance is found, we log an error and no instance is returned.
+        /// </summary>
+        public static MixedRealityToolkit Instance
+        {
+            get
+            {
+                if (IsInitialized)
+                {
+                    return instance;
+                }
+
+                if (Application.isPlaying && !searchForInstance)
+                {
+                    return null;
+                }
+
+                var objects = FindObjectsOfType<MixedRealityToolkit>();
+                searchForInstance = false;
+                MixedRealityToolkit newInstance;
+
+                switch (objects.Length)
+                {
+                    case 0:
+                        newInstance = new GameObject(nameof(MixedRealityToolkit)).AddComponent<MixedRealityToolkit>();
+                        break;
+                    case 1:
+                        newInstance = objects[0];
+                        break;
+                    default:
+                        Debug.LogError($"Expected exactly 1 {nameof(MixedRealityToolkit)} but found {objects.Length}.");
+                        return null;
+                }
+
+                Debug.Assert(newInstance != null);
+
+                if (!isApplicationQuitting)
+                {
+                    // Setup any additional things the instance needs.
+                    newInstance.InitializeInstance();
+                }
+                else
+                {
+                    // Don't do any additional setup because the app is quitting.
+                    instance = newInstance;
+                }
+
+                Debug.Assert(instance != null);
+
+                return instance;
+            }
+        }
+
+        private static MixedRealityToolkit instance;
+
+        /// <summary>
+        /// Lock property for the Mixed Reality Toolkit to prevent reinitialization
+        /// </summary>
+        private static readonly object initializedLock = new object();
+
+        private void InitializeInstance()
+        {
+            lock (initializedLock)
+            {
+                if (IsInitialized) { return; }
+
+                instance = this;
+
+                if (Application.isPlaying)
+                {
+                    DontDestroyOnLoad(instance.transform.root);
+                }
+
+                Application.quitting += () =>
+                {
+                    isApplicationQuitting = true;
+                };
+
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.playModeStateChanged += playModeState =>
+                {
+                    if (playModeState == UnityEditor.PlayModeStateChange.ExitingEditMode ||
+                        playModeState == UnityEditor.PlayModeStateChange.EnteredEditMode)
+                    {
+                        isApplicationQuitting = false;
+                    }
+
+                    if (playModeState == UnityEditor.PlayModeStateChange.ExitingEditMode && activeProfile == null)
+                    {
+                        UnityEditor.EditorApplication.isPlaying = false;
+                        UnityEditor.Selection.activeObject = Instance;
+                        UnityEditor.EditorGUIUtility.PingObject(Instance);
+                    }
+                };
+
+                UnityEditor.EditorApplication.hierarchyChanged += () =>
+                {
+                    if (instance != null)
+                    {
+                        Debug.Assert(instance.transform.parent == null, "The MixedRealityToolkit should not be parented under any other GameObject!");
+                        Debug.Assert(instance.transform.childCount == 0, "The MixedRealityToolkit should not have GameObject children!");
+                    }
+                };
+#endif // UNITY_EDITOR
+
+                if (HasActiveProfile)
+                {
+                    InitializeServiceLocator();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Flag to search for instance the first time Instance property is called.
+        /// Subsequent attempts will generally switch this flag false, unless the instance was destroyed.
+        /// </summary>
+        // ReSharper disable once StaticMemberInGenericType
+        private static bool searchForInstance = true;
+
+        private static bool isInitializing = false;
+
+        private static bool isApplicationQuitting = false;
+
+        /// <summary>
+        /// Expose an assertion whether the MixedRealityToolkit class is initialized.
+        /// </summary>
+        public static void AssertIsInitialized()
+        {
+            Debug.Assert(IsInitialized, "The MixedRealityToolkit has not been initialized.");
+        }
+
+        /// <summary>
+        /// Returns whether the instance has been initialized or not.
+        /// </summary>
+        public static bool IsInitialized => instance != null;
+
+        /// <summary>
+        /// Static function to determine if the MixedRealityToolkit class has been initialized or not.
+        /// </summary>
+        /// <returns></returns>
+        public static bool ConfirmInitialized()
+        {
+            // ReSharper disable once UnusedVariable
+            // Assigning the Instance to access is used Implicitly.
+            MixedRealityToolkit access = Instance;
+            return IsInitialized;
+        }
 
         /// <summary>
         /// Once all services are registered and properties updated, the Mixed Reality Toolkit will initialize all active services.
@@ -391,13 +529,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
             isInitializing = false;
         }
 
-        private void EnsureMixedRealityRequirements()
+        private static void EnsureMixedRealityRequirements()
         {
             // There's lots of documented cases that if the camera doesn't start at 0,0,0, things break with the WMR SDK specifically.
             // We'll enforce that here, then tracking can update it to the appropriate position later.
             CameraCache.Main.transform.position = Vector3.zero;
 
             bool addedComponents = false;
+
             if (!Application.isPlaying)
             {
                 var eventSystems = FindObjectsOfType<EventSystem>();
@@ -433,155 +572,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
             }
         }
 
-        #region MonoBehaviour Implementation
-
-        private static MixedRealityToolkit instance;
-
-        /// <summary>
-        /// Returns the Singleton instance of the classes type.
-        /// If no instance is found, then we search for an instance in the scene.
-        /// If more than one instance is found, we log an error and no instance is returned.
-        /// </summary>
-        public static MixedRealityToolkit Instance
-        {
-            get
-            {
-                if (IsInitialized)
-                {
-                    return instance;
-                }
-
-                if (Application.isPlaying && !searchForInstance)
-                {
-                    return null;
-                }
-
-                var objects = FindObjectsOfType<MixedRealityToolkit>();
-                searchForInstance = false;
-                MixedRealityToolkit newInstance;
-
-                switch (objects.Length)
-                {
-                    case 0:
-                        newInstance = new GameObject(nameof(MixedRealityToolkit)).AddComponent<MixedRealityToolkit>();
-                        break;
-                    case 1:
-                        newInstance = objects[0];
-                        break;
-                    default:
-                        Debug.LogError($"Expected exactly 1 {nameof(MixedRealityToolkit)} but found {objects.Length}.");
-                        return null;
-                }
-
-                Debug.Assert(newInstance != null);
-
-                if (!isApplicationQuitting)
-                {
-                    // Setup any additional things the instance needs.
-                    newInstance.InitializeInstance();
-                }
-                else
-                {
-                    // Don't do any additional setup because the app is quitting.
-                    instance = newInstance;
-                }
-
-                Debug.Assert(instance != null);
-
-                return instance;
-            }
-        }
-
-        /// <summary>
-        /// Lock property for the Mixed Reality Toolkit to prevent reinitialization
-        /// </summary>
-        private static readonly object initializedLock = new object();
-
-        private void InitializeInstance()
-        {
-            lock (initializedLock)
-            {
-                if (IsInitialized) { return; }
-
-                instance = this;
-
-                if (Application.isPlaying)
-                {
-                    DontDestroyOnLoad(instance.transform.root);
-                }
-
-                Application.quitting += () =>
-                {
-                    isApplicationQuitting = true;
-                };
-
-#if UNITY_EDITOR
-                UnityEditor.EditorApplication.playModeStateChanged += playModeState =>
-                {
-                    if (playModeState == UnityEditor.PlayModeStateChange.ExitingEditMode ||
-                        playModeState == UnityEditor.PlayModeStateChange.EnteredEditMode)
-                    {
-                        isApplicationQuitting = false;
-                    }
-
-                    if (playModeState == UnityEditor.PlayModeStateChange.ExitingEditMode && activeProfile == null)
-                    {
-                        UnityEditor.EditorApplication.isPlaying = false;
-                        UnityEditor.Selection.activeObject = Instance;
-                        UnityEditor.EditorGUIUtility.PingObject(Instance);
-                    }
-                };
-
-                UnityEditor.EditorApplication.hierarchyChanged += () =>
-                {
-                    if (instance != null)
-                    {
-                        Debug.Assert(instance.transform.parent == null, "The MixedRealityToolkit should not be parented under any other GameObject!");
-                        Debug.Assert(instance.transform.childCount == 0, "The MixedRealityToolkit should not have GameObject children!");
-                    }
-                };
-#endif // UNITY_EDITOR
-
-                if (HasActiveProfile)
-                {
-                    InitializeServiceLocator();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Flag to search for instance the first time Instance property is called.
-        /// Subsequent attempts will generally switch this flag false, unless the instance was destroyed.
-        /// </summary>
-        // ReSharper disable once StaticMemberInGenericType
-        private static bool searchForInstance = true;
-
-        /// <summary>
-        /// Expose an assertion whether the MixedRealityToolkit class is initialized.
-        /// </summary>
-        public static void AssertIsInitialized()
-        {
-            Debug.Assert(IsInitialized, "The MixedRealityToolkit has not been initialized.");
-        }
-
-        /// <summary>
-        /// Returns whether the instance has been initialized or not.
-        /// </summary>
-        public static bool IsInitialized => instance != null;
-
-        /// <summary>
-        /// Static function to determine if the MixedRealityToolkit class has been initialized or not.
-        /// </summary>
-        /// <returns></returns>
-        public static bool ConfirmInitialized()
-        {
-            // ReSharper disable once UnusedVariable
-            // Assigning the Instance to access is used Implicitly.
-            MixedRealityToolkit access = Instance;
-            return IsInitialized;
-        }
-
         private Transform mixedRealityPlayspace;
+
+        private const string MixedRealityPlayspaceName = "MixedRealityPlayspace";
 
         /// <summary>
         /// Returns the MixedRealityPlayspace for the local player
@@ -620,7 +613,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
                 }
 
                 // It's very important that the MixedRealityPlayspace align with the tracked space,
-                // otherwise reality-locked things like playspace boundaries won't be aligned properly.
+                // otherwise world-locked things like playspace boundaries won't be aligned properly.
                 // For now, we'll just assume that when the playspace is first initialized, the
                 // tracked space origin overlaps with the world space origin. If a platform ever does
                 // something else (i.e, placing the lower left hand corner of the tracked space at world 
@@ -628,6 +621,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
                 return mixedRealityPlayspace;
             }
         }
+
+        #region MonoBehaviour Implementation
 
 #if UNITY_EDITOR
         private void OnValidate()
