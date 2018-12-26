@@ -40,7 +40,7 @@ namespace Microsoft.MixedReality.Toolkit.Tests
                 : ScriptableObject.CreateInstance<MixedRealityToolkitConfigurationProfile>();
 
             Assert.IsTrue(configuration != null, "Failed to find the Default Mixed Reality Configuration Profile");
-            MixedRealityToolkit.Instance.ActiveProfile = configuration;
+            MixedRealityToolkit.Instance.ResetConfiguration(configuration);
             Assert.IsTrue(MixedRealityToolkit.Instance.ActiveProfile != null);
             Assert.IsTrue(MixedRealityToolkit.IsInitialized);
         }

@@ -1333,18 +1333,18 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
             }
             else
             {
-                for (int i = 0; i < registeredMixedRealityServices.Count; i++)
-                {
-                    if (CheckServiceMatch(interfaceType, serviceName, registeredMixedRealityServices[i].Item1, registeredMixedRealityServices[i].Item2))
-                    {
-                        if (registeredMixedRealityServices.Count > 1)
-                        {
-                            Debug.LogWarning($"Found multiple instances of {interfaceType.Name}! The first one found was returned.\nFor better results, pass the name of the service.");
-                        }
+                var foundServices = GetActiveServices(interfaceType, serviceName);
 
-                        serviceInstance = registeredMixedRealityServices[i].Item2;
+                switch (foundServices.Count)
+                {
+                    case 0:
+                        return false;
+                    case 1:
+                        serviceInstance = foundServices[0];
                         return true;
-                    }
+                    default:
+                        Debug.LogError($"Found multiple instances of {interfaceType.Name}! For better results, pass the name of the service or use GetActiveServices<T>()");
+                        return false;
                 }
             }
 

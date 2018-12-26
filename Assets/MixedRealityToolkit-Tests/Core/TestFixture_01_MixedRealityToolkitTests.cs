@@ -143,7 +143,7 @@ namespace Microsoft.MixedReality.Toolkit.Tests.Core
 
             // Add test ExtensionService
             MixedRealityToolkit.RegisterService<ITestDataProvider1>(new TestDataProvider1("Test Data Provider 1"));
-            MixedRealityToolkit.RegisterService<ITestDataProvider2>(new TestDataProvider2("Test Data Provider 2", 10));
+            MixedRealityToolkit.RegisterService<ITestDataProvider2>(new TestDataProvider2("Test Data Provider 2"));
 
             // Retrieve all registered IMixedRealityExtensionServices
             var extensionServices = MixedRealityToolkit.GetActiveServices<IMixedRealityDataProvider>();
@@ -162,7 +162,7 @@ namespace Microsoft.MixedReality.Toolkit.Tests.Core
 
             // Add test ExtensionService
             MixedRealityToolkit.RegisterService<ITestDataProvider1>(new TestDataProvider1("Test Data Provider 1"));
-            MixedRealityToolkit.RegisterService<ITestDataProvider2>(new TestDataProvider2("Test Data Provider 2", 10));
+            MixedRealityToolkit.RegisterService<ITestDataProvider2>(new TestDataProvider2("Test Data Provider 2"));
 
             // Retrieve all registered IMixedRealityExtensionServices
             var extensionServices = MixedRealityToolkit.GetActiveServices<IMixedRealityDataProvider>();

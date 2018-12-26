@@ -7,7 +7,7 @@ namespace Microsoft.MixedReality.Toolkit.Tests.Services
 {
     internal class TestDataProvider2 : BaseServiceWithConstructor, ITestDataProvider2
     {
-        public TestDataProvider2(string name, uint priority) : base(name, priority) { }
+        public TestDataProvider2(string name, uint priority = 10) : base(name, priority) { }
 
         public bool IsEnabled { get; private set; }
 
@@ -21,11 +21,6 @@ namespace Microsoft.MixedReality.Toolkit.Tests.Services
         {
             base.Disable();
             IsEnabled = false;
-        }
-
-        public override void Destroy()
-        {
-            base.Destroy();
         }
     }
 }

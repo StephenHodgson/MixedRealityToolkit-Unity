@@ -61,7 +61,10 @@ namespace Microsoft.MixedReality.Toolkit.Tests.InputSystem
         public void Test04_TestMixedRealityInputSystemExists()
         {
             // Initialize with the default profile configuration
-            TestUtilities.InitializeMixedRealityToolkitScene(true);
+            TestUtilities.InitializeMixedRealityToolkitScene();
+            // Add Input System
+            MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile = InputSystemTestUtilities.SetupInputSystemProfile();
+            MixedRealityToolkit.RegisterService<IMixedRealityInputSystem>(new MixedRealityInputSystem(MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile));
 
             // Check for Input System
             var inputSystemExists = MixedRealityToolkit.IsServiceRegistered<IMixedRealityInputSystem>();

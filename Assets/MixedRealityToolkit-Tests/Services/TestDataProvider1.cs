@@ -20,9 +20,5 @@ namespace Microsoft.MixedReality.Toolkit.Tests.Services
         {
             IsEnabled = false;
         }
-
-        public override void Destroy()
-        {
-        }
     }
 }
