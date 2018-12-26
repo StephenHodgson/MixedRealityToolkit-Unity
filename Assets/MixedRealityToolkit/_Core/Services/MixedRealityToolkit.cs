@@ -569,55 +569,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
             isInitializing = false;
         }
 
-        #endregion Instance Management
-
-        private static void EnsureMixedRealityRequirements()
-        {
-            // There's lots of documented cases that if the camera doesn't start at 0,0,0, things break with the WMR SDK specifically.
-            // We'll enforce that here, then tracking can update it to the appropriate position later.
-            CameraCache.Main.transform.position = Vector3.zero;
-
-            bool addedComponents = false;
-
-            if (!Application.isPlaying)
-            {
-                var eventSystems = FindObjectsOfType<EventSystem>();
-
-                if (eventSystems.Length == 0)
-                {
-                    CameraCache.Main.gameObject.EnsureComponent<EventSystem>();
-                    addedComponents = true;
-                }
-                else
-                {
-                    bool raiseWarning;
-
-                    if (eventSystems.Length == 1)
-                    {
-                        raiseWarning = eventSystems[0].gameObject != CameraCache.Main.gameObject;
-                    }
-                    else
-                    {
-                        raiseWarning = true;
-                    }
-
-                    if (raiseWarning)
-                    {
-                        Debug.LogWarning("Found an existing event system in your scene. The Mixed Reality Toolkit requires only one, and must be found on the main camera.");
-                    }
-                }
-            }
-
-            if (!addedComponents)
-            {
-                CameraCache.Main.gameObject.EnsureComponent<EventSystem>();
-            }
-        }
-
-        private Transform mixedRealityPlayspace;
-
-        private const string MixedRealityPlayspaceName = "MixedRealityPlayspace";
-
         /// <summary>
         /// Returns the MixedRealityPlayspace for the local player
         /// </summary>
@@ -663,6 +614,55 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
                 return mixedRealityPlayspace;
             }
         }
+
+        private Transform mixedRealityPlayspace;
+
+        private const string MixedRealityPlayspaceName = "MixedRealityPlayspace";
+
+        private static void EnsureMixedRealityRequirements()
+        {
+            // There's lots of documented cases that if the camera doesn't start at 0,0,0, things break with the WMR SDK specifically.
+            // We'll enforce that here, then tracking can update it to the appropriate position later.
+            CameraCache.Main.transform.position = Vector3.zero;
+
+            bool addedComponents = false;
+
+            if (!Application.isPlaying)
+            {
+                var eventSystems = FindObjectsOfType<EventSystem>();
+
+                if (eventSystems.Length == 0)
+                {
+                    CameraCache.Main.gameObject.EnsureComponent<EventSystem>();
+                    addedComponents = true;
+                }
+                else
+                {
+                    bool raiseWarning;
+
+                    if (eventSystems.Length == 1)
+                    {
+                        raiseWarning = eventSystems[0].gameObject != CameraCache.Main.gameObject;
+                    }
+                    else
+                    {
+                        raiseWarning = true;
+                    }
+
+                    if (raiseWarning)
+                    {
+                        Debug.LogWarning("Found an existing event system in your scene. The Mixed Reality Toolkit requires only one, and must be found on the main camera.");
+                    }
+                }
+            }
+
+            if (!addedComponents)
+            {
+                CameraCache.Main.gameObject.EnsureComponent<EventSystem>();
+            }
+        }
+
+        #endregion Instance Management
 
         #region MonoBehaviour Implementation
 
@@ -959,7 +959,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
         /// </summary>
         /// <typeparam name="T">The interface type for the system to be enabled.  E.G. InputSystem, BoundarySystem</typeparam>
         /// <param name="serviceName"></param>
-        public static void EnableServiceByName<T>(string serviceName) where T : IMixedRealityService
+        public static void EnableService<T>(string serviceName) where T : IMixedRealityService
         {
             EnableAllServicesByTypeAndName(typeof(T), serviceName);
         }
@@ -1000,7 +1000,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
         /// </summary>
         /// <typeparam name="T">The interface type for the system to be enabled.  E.G. InputSystem, BoundarySystem</typeparam>
         /// <param name="serviceName">Name of the specific service</param>
-        public static void DisableServiceByName<T>(string serviceName) where T : IMixedRealityService
+        public static void DisableService<T>(string serviceName) where T : IMixedRealityService
         {
             DisableAllServicesByTypeAndName(typeof(T), serviceName);
         }
@@ -1035,17 +1035,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
         public static List<IMixedRealityService> GetActiveServices<T>() where T : IMixedRealityService
         {
             return GetActiveServices(typeof(T));
-        }
-
-        /// <summary>
-        /// Retrieve all services from the Mixed Reality Toolkit active service registry for a given type and an optional name
-        /// </summary>
-        /// <typeparam name="T">The interface type for the system to be retrieved.  E.G. InputSystem, BoundarySystem.</typeparam>
-        /// <param name="serviceName">Name of the specific service</param>
-        /// <returns>An array of services that meet the search criteria</returns>
-        private static List<IMixedRealityService> GetActiveServices<T>(string serviceName) where T : IMixedRealityService
-        {
-            return GetActiveServices(typeof(T), string.Empty);
         }
 
         /// <summary>
