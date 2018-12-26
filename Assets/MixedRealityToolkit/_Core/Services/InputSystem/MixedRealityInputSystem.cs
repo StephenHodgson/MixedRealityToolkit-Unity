@@ -60,7 +60,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         private IMixedRealityFocusProvider focusProvider = null;
 
         /// <inheritdoc />
-        public IMixedRealityFocusProvider FocusProvider => focusProvider ?? (focusProvider = MixedRealityToolkit.Instance.GetService<IMixedRealityFocusProvider>());
+        public IMixedRealityFocusProvider FocusProvider => focusProvider ?? (focusProvider = MixedRealityToolkit.GetService<IMixedRealityFocusProvider>());
 
         /// <inheritdoc />
         public IMixedRealityGazeProvider GazeProvider { get; private set; }

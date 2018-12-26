@@ -149,20 +149,20 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem
         /// <summary>
         /// Current Registered <see cref="IMixedRealityFocusProvider"/>.
         /// </summary>
-        public IMixedRealityFocusProvider FocusProvider => focusProvider ?? (focusProvider = MixedRealityToolkit.Instance.GetService<IMixedRealityFocusProvider>());
+        public IMixedRealityFocusProvider FocusProvider => focusProvider ?? (focusProvider = MixedRealityToolkit.GetService<IMixedRealityFocusProvider>());
 
         private IMixedRealitySpeechDataProvider speechDataProvider;
 
         /// <summary>
         /// Current Registered <see cref="IMixedRealitySpeechDataProvider"/>
         /// </summary>
-        public IMixedRealitySpeechDataProvider SpeechDataProvider => speechDataProvider ?? (speechDataProvider = MixedRealityToolkit.Instance.GetService<IMixedRealitySpeechDataProvider>());
+        public IMixedRealitySpeechDataProvider SpeechDataProvider => speechDataProvider ?? (speechDataProvider = MixedRealityToolkit.GetService<IMixedRealitySpeechDataProvider>());
 
         private IMixedRealityDictationDataProvider dictationDataProvider;
 
         /// <summary>
         /// Current Registered <see cref="IMixedRealityDictationDataProvider"/>.
         /// </summary>
-        public IMixedRealityDictationDataProvider DictationDataProvider => dictationDataProvider ?? (dictationDataProvider = MixedRealityToolkit.Instance.GetService<IMixedRealityDictationDataProvider>());
+        public IMixedRealityDictationDataProvider DictationDataProvider => dictationDataProvider ?? (dictationDataProvider = MixedRealityToolkit.GetService<IMixedRealityDictationDataProvider>());
     }
 }

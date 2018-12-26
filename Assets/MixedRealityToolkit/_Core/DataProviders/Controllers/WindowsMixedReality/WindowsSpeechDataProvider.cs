@@ -45,7 +45,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
             }
 
             RecognitionConfidenceLevel = MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile.SpeechCommandsProfile.SpeechRecognitionConfidenceLevel;
-            keywordRecognizer = new KeywordRecognizer(newKeywords, (ConfidenceLevel)RecognitionConfidenceLevel);
+
+            if (keywordRecognizer == null)
+            {
+                keywordRecognizer = new KeywordRecognizer(newKeywords, (ConfidenceLevel)RecognitionConfidenceLevel);
+            }
 #endif // UNITY_STANDALONE_WIN || UNITY_WSA || UNITY_EDITOR_WIN
         }
 
@@ -100,7 +104,10 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
 
         protected override void OnDispose(bool finalizing)
         {
-            keywordRecognizer.Dispose();
+            if (finalizing)
+            {
+                keywordRecognizer.Dispose();
+            }
 
             base.OnDispose(finalizing);
         }
@@ -119,7 +126,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
         /// </summary>
         public IMixedRealityInputSource InputSource = null;
 
-        private readonly KeywordRecognizer keywordRecognizer;
+        private static KeywordRecognizer keywordRecognizer;
 
         /// <inheritdoc />
         public override bool IsRecognitionActive => keywordRecognizer.IsRunning;

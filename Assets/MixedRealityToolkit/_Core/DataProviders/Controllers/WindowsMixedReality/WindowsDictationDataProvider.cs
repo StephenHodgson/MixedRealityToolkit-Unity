@@ -28,7 +28,10 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
         public WindowsDictationDataProvider(string name, uint priority) : base(name, priority)
         {
 #if UNITY_STANDALONE_WIN || UNITY_WSA || UNITY_EDITOR_WIN
-            dictationRecognizer = new DictationRecognizer();
+            if (dictationRecognizer == null)
+            {
+                dictationRecognizer = new DictationRecognizer();
+            }
 #endif // UNITY_STANDALONE_WIN || UNITY_WSA || UNITY_EDITOR_WIN
         }
 
@@ -85,7 +88,10 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
 
         protected override void OnDispose(bool finalizing)
         {
-            dictationRecognizer.Dispose();
+            if (finalizing)
+            {
+                dictationRecognizer.Dispose();
+            }
 
             base.OnDispose(finalizing);
         }

@@ -113,7 +113,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                 {
                     list.DeleteArrayElementAtIndex(i);
                     serializedObject.ApplyModifiedProperties();
-                    MixedRealityToolkit.Instance.ResetConfiguration(MixedRealityToolkit.Instance.ActiveProfile);
+                    EditorApplication.delayCall += () => MixedRealityToolkit.Instance.ResetConfiguration(MixedRealityToolkit.Instance.ActiveProfile);
                     EditorGUILayout.EndHorizontal();
                     GUILayout.EndVertical();
                     break;
@@ -135,7 +135,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                     if (EditorGUI.EndChangeCheck())
                     {
                         serializedObject.ApplyModifiedProperties();
-                        MixedRealityToolkit.Instance.ResetConfiguration(MixedRealityToolkit.Instance.ActiveProfile);
+                        EditorApplication.delayCall += () => MixedRealityToolkit.Instance.ResetConfiguration(MixedRealityToolkit.Instance.ActiveProfile);
                     }
 
                     EditorGUI.indentLevel--;
