@@ -2,13 +2,13 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.MixedReality.Toolkit.Core.DataProviders.SpatialObservers.WindowsMixedReality.Profiles;
+using Microsoft.MixedReality.Toolkit.Core.Services;
+using System;
 
 #if UNITY_WSA
 using Microsoft.MixedReality.Toolkit.Core.Definitions.SpatialAwarenessSystem;
 using Microsoft.MixedReality.Toolkit.Core.Extensions;
-using Microsoft.MixedReality.Toolkit.Core.Services;
 using Microsoft.MixedReality.Toolkit.Core.Utilities;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.WSA;
