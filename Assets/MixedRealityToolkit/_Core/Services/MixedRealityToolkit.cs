@@ -917,12 +917,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
 
             if (GetServiceByNameInternal(interfaceType, serviceName, out IMixedRealityService serviceInstance))
             {
-                if (IsInitialized)
-                {
-                    serviceInstance.Disable();
-                    serviceInstance.Destroy();
-                    serviceInstance.Dispose();
-                }
+                serviceInstance.Disable();
+                serviceInstance.Destroy();
+                serviceInstance.Dispose();
 
                 if (IsCoreSystem(interfaceType))
                 {
@@ -1126,9 +1123,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
             // If the Mixed Reality Toolkit is not configured, stop.
             if (activeProfile == null) { return; }
 
-            // If the Mixed Reality Toolkit is not initialized, stop.
-            if (!IsInitialized) { return; }
-
             // Reset all systems
             foreach (var system in activeSystems)
             {
@@ -1146,9 +1140,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
         {
             // If the Mixed Reality Toolkit is not configured, stop.
             if (activeProfile == null) { return; }
-
-            // If the Mixed Reality Toolkit is not initialized, stop.
-            if (!IsInitialized) { return; }
 
             // Enable all systems
             foreach (var system in activeSystems)
@@ -1168,9 +1159,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
             // If the Mixed Reality Toolkit is not configured, stop.
             if (activeProfile == null) { return; }
 
-            // If the Mixed Reality Toolkit is not initialized, stop.
-            if (!IsInitialized) { return; }
-
             // Update all systems
             foreach (var system in activeSystems)
             {
@@ -1189,9 +1177,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
             // If the Mixed Reality Toolkit is not configured, stop.
             if (activeProfile == null) { return; }
 
-            // If the Mixed Reality Toolkit is not initialized, stop.
-            if (!IsInitialized) { return; }
-
             // Disable all systems
             foreach (var system in activeSystems)
             {
@@ -1209,9 +1194,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
         {
             // If the Mixed Reality Toolkit is not configured, stop.
             if (activeProfile == null) { return; }
-
-            // If the Mixed Reality Toolkit is not initialized, stop.
-            if (!IsInitialized) { return; }
 
             // Destroy all systems
             foreach (var system in activeSystems)
@@ -1463,12 +1445,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
         {
             if (isApplicationQuitting)
             {
-                return false;
-            }
-
-            if (!IsInitialized)
-            {
-                Debug.LogError("The Mixed Reality Toolkit has not been initialized!");
                 return false;
             }
 
