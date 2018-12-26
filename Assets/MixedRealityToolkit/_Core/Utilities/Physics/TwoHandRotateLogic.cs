@@ -70,9 +70,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Physics
 
             var rotationDelta = Quaternion.FromToRotation(prevHandlebarDirectionProjected, handlebarDirectionProjected);
 
-            float angle;
-            Vector3 axis;
-            rotationDelta.ToAngleAxis(out angle, out axis);
+            rotationDelta.ToAngleAxis(out float angle, out Vector3 axis);
             angle *= RotationMultiplier;
 
             if (currentRotationConstraint == RotationConstraintType.YAxisOnly)

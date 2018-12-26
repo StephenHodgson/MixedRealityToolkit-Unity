@@ -205,9 +205,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.SpatialObservers
         /// <param name="meshId">The id of the mesh to be removed.</param>
         protected void RemoveMeshObject(int meshId)
         {
-            SpatialMeshObject mesh;
-
-            if (spatialMeshObjects.TryGetValue(meshId, out mesh))
+            if (spatialMeshObjects.TryGetValue(meshId, out SpatialMeshObject mesh))
             {
                 // Remove the mesh object from the collection.
                 spatialMeshObjects.Remove(meshId);

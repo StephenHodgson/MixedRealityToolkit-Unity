@@ -66,9 +66,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
 
                 if (updateSolverTargetToClickSource && solverHandler != null)
                 {
-                    IMixedRealityController controller;
-
-                    if (MixedRealityToolkit.InputSystem.TryGetController(eventData.InputSource, out controller))
+                    if (MixedRealityToolkit.InputSystem.TryGetController(eventData.InputSource, out IMixedRealityController controller))
                     {
                         if (controller.ControllerHandedness == Handedness.Right)
                         {

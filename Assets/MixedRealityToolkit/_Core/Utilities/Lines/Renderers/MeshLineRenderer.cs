@@ -205,9 +205,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.Renderers
         private void OnWillRenderObject()
         {
             Camera currentCamera = Camera.current;
-            CommandBuffer buffer;
 
-            if (!cameras.TryGetValue(currentCamera, out buffer))
+            if (!cameras.TryGetValue(currentCamera, out CommandBuffer buffer))
             {
                 buffer = new CommandBuffer { name = $"LineDataProvider Mesh Renderer {currentCamera.name}" };
                 currentCamera.AddCommandBuffer(CameraEvent.AfterForwardOpaque, buffer);

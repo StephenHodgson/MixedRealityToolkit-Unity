@@ -80,8 +80,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Physics
                         direction = step.Direction;
                     }
 
-                    RaycastHit rayHit;
-                    hits[index] = RaycastSimplePhysicsStep(new RayStep(origin, direction.normalized * maxDistance), prioritizedLayerMasks, out rayHit);
+                    hits[index] = RaycastSimplePhysicsStep(new RayStep(origin, direction.normalized * maxDistance), prioritizedLayerMasks, out RaycastHit rayHit);
 
                     if (hits[index])
                     {

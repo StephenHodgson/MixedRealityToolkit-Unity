@@ -14,7 +14,6 @@ using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.NetworkingSystem;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.SpatialAwarenessSystem;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.TeleportSystem;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Definitions

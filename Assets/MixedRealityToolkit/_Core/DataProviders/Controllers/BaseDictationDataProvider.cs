@@ -16,6 +16,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
         /// <param name="priority"></param>
         protected BaseDictationDataProvider(string name, uint priority) : base(name, priority) { }
 
+        #region IMixedRealityDictationDataProvider Implementation
+
         /// <inheritdoc />
         public virtual bool IsListening { get; protected set; } = false;
 
@@ -40,5 +42,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
         {
             return null;
         }
+
+        #endregion IMixedRealityDictationDataProvider Implementation
     }
 }

@@ -154,9 +154,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Utilities
 
             for (int i = 0; i < targetRenderers.Length; i++)
             {
-                List<Material> preFocusMaterials;
-
-                if (!materialsBeforeFocus.TryGetValue(targetRenderers[i], out preFocusMaterials))
+                if (!materialsBeforeFocus.TryGetValue(targetRenderers[i], out List<Material> preFocusMaterials))
                 {
                     preFocusMaterials = new List<Material>();
                     materialsBeforeFocus.Add(targetRenderers[i], preFocusMaterials);

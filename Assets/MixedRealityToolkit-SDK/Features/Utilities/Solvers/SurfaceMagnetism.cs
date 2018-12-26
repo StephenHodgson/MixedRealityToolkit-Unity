@@ -275,10 +275,9 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Utilities.Solvers
         private void SimpleRaycastStepUpdate(RayStep rayStep)
         {
             bool isHit;
-            RaycastHit result;
 
             // Do the cast!
-            isHit = MixedRealityRaycaster.RaycastSimplePhysicsStep(rayStep, maxDistance, magneticSurfaces, out result);
+            isHit = MixedRealityRaycaster.RaycastSimplePhysicsStep(rayStep, maxDistance, magneticSurfaces, out RaycastHit result);
 
             OnSurface = isHit;
 
@@ -302,12 +301,11 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Utilities.Solvers
         private void SphereRaycastStepUpdate(RayStep rayStep)
         {
             bool isHit;
-            RaycastHit result;
             float scaleOverride = ScaleOverride;
 
             // Do the cast!
             float size = scaleOverride > 0 ? scaleOverride : transform.lossyScale.x * sphereSize;
-            isHit = MixedRealityRaycaster.RaycastSpherePhysicsStep(rayStep, size, maxDistance, magneticSurfaces, out result);
+            isHit = MixedRealityRaycaster.RaycastSpherePhysicsStep(rayStep, size, maxDistance, magneticSurfaces, out RaycastHit result);
 
             OnSurface = isHit;
 
@@ -353,17 +351,10 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Utilities.Solvers
 
             Vector3 extents = boxCollider.size;
 
-            Vector3[] positions;
-            Vector3[] normals;
-            bool[] hits;
-
-            if (MixedRealityRaycaster.RaycastBoxPhysicsStep(rayStep, extents, transform.position, targetMatrix, maxDistance, magneticSurfaces, boxRaysPerEdge, orthographicBoxCast, out positions, out normals, out hits))
+            if (MixedRealityRaycaster.RaycastBoxPhysicsStep(rayStep, extents, transform.position, targetMatrix, maxDistance, magneticSurfaces, boxRaysPerEdge, orthographicBoxCast, out Vector3[] positions, out Vector3[] normals, out bool[] hits))
             {
-                Plane plane;
-                float distance;
-
                 // Place an unconstrained plane down the ray. Don't use vertical constrain.
-                FindPlacementPlane(rayStep.Origin, rayStep.Direction, positions, normals, hits, boxCollider.size.x, maximumNormalVariance, false, orientationMode == OrientModeEnum.None, out plane, out distance);
+                FindPlacementPlane(rayStep.Origin, rayStep.Direction, positions, normals, hits, boxCollider.size.x, maximumNormalVariance, false, orientationMode == OrientModeEnum.None, out Plane plane, out float distance);
 
                 // If placing on a horizontal surface, need to adjust the calculated distance by half the app height
                 float verticalCorrectionOffset = 0;
@@ -578,9 +569,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Utilities.Solvers
             // Figure out how far the plane should be.
             if (!useClosestDistance && closestPoint >= 0)
             {
-                float centerPlaneDistance;
-
-                if (plane.Raycast(new Ray(origin, originalDirection), out centerPlaneDistance) || !centerPlaneDistance.Equals(0.0f))
+                if (plane.Raycast(new Ray(origin, originalDirection), out float centerPlaneDistance) || !centerPlaneDistance.Equals(0.0f))
                 {
                     // When the plane is nearly parallel to the user, we need to clamp the distance to where the raycasts hit.
                     closestDistance = Mathf.Clamp(centerPlaneDistance, closestDistance, farthestDistance + assetWidth * 0.5f);

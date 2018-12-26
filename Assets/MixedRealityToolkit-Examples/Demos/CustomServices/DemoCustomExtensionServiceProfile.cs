@@ -10,7 +10,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos.CustomExtensionServices
     /// This is the custom configuration profile for your custom extension service.
     /// In this file you'll want to put as much customizable options into it for the application to consume at runtime.
     /// </summary>
-    [CreateAssetMenu(menuName = "Demo/MixedRealityToolkit/CustomExtensionServiceProfile", fileName = "DemoCustomExtensionServiceProfile")]
+    [CreateAssetMenu(menuName = "Mixed Reality Toolkit/Demos/CustomExtensionServiceProfile", fileName = "DemoCustomExtensionServiceProfile", order = 99)]
     public class DemoCustomExtensionServiceProfile : BaseMixedRealityExtensionServiceProfile
     {
         [SerializeField]

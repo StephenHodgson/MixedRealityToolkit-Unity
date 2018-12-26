@@ -96,9 +96,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities
 
                 if (material)
                 {
-                    bool clippingPlaneOn;
-
-                    if (modifiedMaterials.TryGetValue(material, out clippingPlaneOn))
+                    if (modifiedMaterials.TryGetValue(material, out bool clippingPlaneOn))
                     {
                         ToggleClippingPlaneKeyword(material, clippingPlaneOn);
                     }

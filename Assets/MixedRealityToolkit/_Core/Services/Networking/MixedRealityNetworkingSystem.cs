@@ -21,11 +21,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.Networking
         {
         }
 
-        /// <inheritdoc />
-        public override void Initialize()
-        {
-        }
-
         #region IMixedRealityNetworkingSystem Implementation
 
         /// <inheritdoc />

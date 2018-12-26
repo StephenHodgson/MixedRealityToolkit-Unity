@@ -100,8 +100,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
 
             for (int i = 0; i < controllerMappings?.Count; i++)
             {
-                Debug.Log($"Checking {controllerMappings[i].Description} with type: {controllerMappings[i].ControllerType?.Type?.Name}");
-
                 // Assign any known interaction mappings.
                 if (controllerMappings[i].ControllerType?.Type == controllerType &&
                     controllerMappings[i].Handedness == ControllerHandedness &&

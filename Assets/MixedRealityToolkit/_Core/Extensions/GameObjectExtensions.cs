@@ -69,8 +69,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Extensions
 
             foreach (var child in root.transform.EnumerateHierarchy())
             {
-                int layer;
-                if (!cache.TryGetValue(child.gameObject, out layer)) { continue; }
+                if (!cache.TryGetValue(child.gameObject, out int layer)) { continue; }
                 child.gameObject.layer = layer;
                 cache.Remove(child.gameObject);
             }

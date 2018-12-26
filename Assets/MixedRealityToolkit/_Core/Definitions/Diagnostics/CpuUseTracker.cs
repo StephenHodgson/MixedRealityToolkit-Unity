@@ -1,9 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+#if !WINDOWS_UWP
 using System;
-
-#if ENABLE_IL2CPP && !WINDOWS_UWP
 using System.Diagnostics;
 using System.Linq;
 #endif
@@ -21,7 +20,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Diagnostics
         /// <param name="buffer">The number of readings for this tracker.</param>
         public CpuUseTracker(int buffer = 20)
         {
-#if ENABLE_IL2CPP && !WINDOWS_UWP
+#if !WINDOWS_UWP
             currentProcess = Process.GetCurrentProcess();
             readings = new TimeSpan[buffer];
             processorTime = null;
@@ -29,7 +28,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Diagnostics
 #endif
         }
 
-#if ENABLE_IL2CPP && !WINDOWS_UWP
+#if !WINDOWS_UWP
         private readonly Process currentProcess;
         private readonly TimeSpan[] readings;
         private TimeSpan? processorTime;
@@ -43,7 +42,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Diagnostics
         {
             get
             {
-#if ENABLE_IL2CPP && !WINDOWS_UWP
+#if !WINDOWS_UWP
                 if (!processorTime.HasValue)
                 {
                     try
@@ -78,7 +77,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Diagnostics
         /// </summary>
         public void Reset()
         {
-#if ENABLE_IL2CPP && !WINDOWS_UWP
+#if !WINDOWS_UWP
             processorTime = null;
 #endif
         }

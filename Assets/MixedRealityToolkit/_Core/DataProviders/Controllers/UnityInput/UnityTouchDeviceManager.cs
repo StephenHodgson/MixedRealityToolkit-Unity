@@ -28,6 +28,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.UnityInp
         /// <inheritdoc />
         public override void Update()
         {
+            base.Update();
+
             for (var i = 0; i < Input.touches.Length; i++)
             {
                 Touch touch = Input.touches[i];
@@ -60,6 +62,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.UnityInp
         /// <inheritdoc />
         public override void Disable()
         {
+            base.Disable();
+
             foreach (var controller in ActiveTouches)
             {
                 if (controller.Value == null || MixedRealityToolkit.InputSystem == null) { continue; }
@@ -78,9 +82,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.UnityInp
 
         private void AddTouchController(Touch touch, Ray ray)
         {
-            UnityTouchController controller;
-
-            if (!ActiveTouches.TryGetValue(touch.fingerId, out controller))
+            if (!ActiveTouches.TryGetValue(touch.fingerId, out UnityTouchController controller))
             {
                 IMixedRealityInputSource inputSource = null;
 
@@ -117,11 +119,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.UnityInp
             UpdateTouchData(touch, ray);
         }
 
-        private void UpdateTouchData(Touch touch, Ray ray)
+        private static void UpdateTouchData(Touch touch, Ray ray)
         {
-            UnityTouchController controller;
-
-            if (!ActiveTouches.TryGetValue(touch.fingerId, out controller))
+            if (!ActiveTouches.TryGetValue(touch.fingerId, out UnityTouchController controller))
             {
                 return;
             }
@@ -132,11 +132,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.UnityInp
             controller.Update();
         }
 
-        private void RemoveTouchController(Touch touch)
+        private static void RemoveTouchController(Touch touch)
         {
-            UnityTouchController controller;
-
-            if (!ActiveTouches.TryGetValue(touch.fingerId, out controller))
+            if (!ActiveTouches.TryGetValue(touch.fingerId, out UnityTouchController controller))
             {
                 return;
             }

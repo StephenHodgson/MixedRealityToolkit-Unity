@@ -34,6 +34,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.UnityInp
         /// <inheritdoc />
         public override void Update()
         {
+            base.Update();
+
             deviceRefreshTimer += Time.unscaledDeltaTime;
 
             if (deviceRefreshTimer >= DeviceRefreshInterval)
@@ -51,6 +53,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.UnityInp
         /// <inheritdoc />
         public override void Disable()
         {
+            base.Disable();
+
             foreach (var genericOpenVRController in ActiveControllers)
             {
                 if (genericOpenVRController.Value != null)
@@ -63,10 +67,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.UnityInp
         }
 
         /// <inheritdoc/>
-        public override IMixedRealityController[] GetActiveControllers()
-        {
-            return ActiveControllers.Values.ToArray<IMixedRealityController>();
-        }
+        public override IMixedRealityController[] GetActiveControllers() => ActiveControllers.Values.ToArray<IMixedRealityController>();
 
         private void RefreshDevices()
         {

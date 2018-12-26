@@ -29,7 +29,20 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <param name="profile"></param>
         public MixedRealityInputSystem(MixedRealityInputSystemProfile profile) : base(profile)
         {
-            // TODO Move profile assignments here in Input System refactor.
+            if (MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile.InputActionRulesProfile == null)
+            {
+                throw new Exception("The Input system is missing the required Input Action Rules Profile!");
+            }
+
+            if (MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile.PointerProfile == null)
+            {
+                throw new Exception("The Input system is missing the required Pointer Profile!");
+            }
+
+            if (MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile.PointerProfile.GazeProviderType?.Type == null)
+            {
+                throw new Exception("The Input system is missing the required GazeProviderType!");
+            }
         }
 
         /// <inheritdoc />
@@ -81,7 +94,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         private SpeechEventData speechEventData;
         private DictationEventData dictationEventData;
 
-        private MixedRealityInputActionRulesProfile CurrentInputActionRulesProfile { get; set; }
+        private MixedRealityInputActionRulesProfile CurrentInputActionRulesProfile { get; } = MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile.InputActionRulesProfile;
 
         #region IMixedRealityManager Implementation
 
@@ -94,6 +107,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public override void Initialize()
         {
+            base.Initialize();
+
             bool addedComponents = false;
 
             if (!Application.isPlaying)
@@ -133,33 +148,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
                 CameraCache.Main.gameObject.EnsureComponent<StandaloneInputModule>();
             }
 
-            if (MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile.InputActionRulesProfile != null)
-            {
-                CurrentInputActionRulesProfile = MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile.InputActionRulesProfile;
-            }
-            else
-            {
-                Debug.LogError("The Input system is missing the required Input Action Rules Profile!");
-                return;
-            }
-
-            if (MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile.PointerProfile != null)
-            {
-                if (MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile.PointerProfile.GazeProviderType?.Type != null)
-                {
-                    GazeProvider = CameraCache.Main.gameObject.EnsureComponent(MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile.PointerProfile.GazeProviderType.Type) as IMixedRealityGazeProvider;
-                }
-                else
-                {
-                    Debug.LogError("The Input system is missing the required GazeProviderType!");
-                    return;
-                }
-            }
-            else
-            {
-                Debug.LogError("The Input system is missing the required Pointer Profile!");
-                return;
-            }
+            GazeProvider = CameraCache.Main.gameObject.EnsureComponent(MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile.PointerProfile.GazeProviderType.Type) as IMixedRealityGazeProvider;
 
             sourceStateEventData = new SourceStateEventData(EventSystem.current);
 
@@ -188,14 +177,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         public override void Enable()
         {
             InputEnabled?.Invoke();
-        }
-
-        /// <inheritdoc />
-        public override void Reset()
-        {
-            Disable();
-            Initialize();
-            Enable();
         }
 
         /// <inheritdoc />

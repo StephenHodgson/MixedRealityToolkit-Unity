@@ -146,11 +146,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.BoundarySystem
             {
                 for (int pointIndex = 0; pointIndex < startingPoints.Length; pointIndex++)
                 {
-                    Vector2 topCollisionPoint;
-                    Vector2 bottomCollisionPoint;
-                    Vector2 leftCollisionPoint;
-                    Vector2 rightCollisionPoint;
-
                     float angleRadians = MathUtilities.DegreesToRadians(fitAngles[angleIndex]);
 
                     // Find the collision point of a cross through the given point at the given angle.
@@ -160,10 +155,10 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.BoundarySystem
                         geometryEdges, 
                         startingPoints[pointIndex], 
                         angleRadians,
-                        out topCollisionPoint, 
-                        out bottomCollisionPoint, 
-                        out leftCollisionPoint, 
-                        out rightCollisionPoint);
+                        out Vector2 topCollisionPoint, 
+                        out Vector2 bottomCollisionPoint, 
+                        out Vector2 leftCollisionPoint, 
+                        out Vector2 rightCollisionPoint);
 
                     float newWidth;
                     float newHeight;
@@ -475,14 +470,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.BoundarySystem
             width = 0.0f;
             height = 0.0f;
 
-            Vector2 topCollisionPoint;
-            Vector2 bottomCollisionPoint;
-            Vector2 leftCollisionPoint;
-            Vector2 rightCollisionPoint;
-
             // Find the collision points with the geometry
             if (!FindSurroundingCollisionPoints(geometryEdges, centerPoint, angleRadians,
-                out topCollisionPoint, out bottomCollisionPoint, out leftCollisionPoint, out rightCollisionPoint))
+                out Vector2 topCollisionPoint, out Vector2 bottomCollisionPoint, out Vector2 leftCollisionPoint, out Vector2 rightCollisionPoint))
             {
                 return false;
             }

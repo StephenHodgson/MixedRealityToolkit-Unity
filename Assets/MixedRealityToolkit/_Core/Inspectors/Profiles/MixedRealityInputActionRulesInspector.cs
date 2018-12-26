@@ -541,8 +541,7 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
                 {
                     EditorGUI.indentLevel++;
 
-                    MixedRealityInputAction newBaseAction;
-                    baseActionId.intValue = RenderBaseInputAction(baseActionId.intValue, out newBaseAction, true);
+                    baseActionId.intValue = RenderBaseInputAction(baseActionId.intValue, out MixedRealityInputAction newBaseAction, true);
                     baseActionDescription.stringValue = newBaseAction.Description;
                     baseActionConstraint.intValue = (int)newBaseAction.AxisConstraint;
 
@@ -556,8 +555,7 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
 
                     RenderCriteriaField(newBaseAction, criteria);
 
-                    MixedRealityInputAction newRuleAction;
-                    ruleActionId.intValue = RenderRuleInputAction(ruleActionId.intValue, out newRuleAction);
+                    ruleActionId.intValue = RenderRuleInputAction(ruleActionId.intValue, out MixedRealityInputAction newRuleAction);
                     ruleActionDescription.stringValue = newRuleAction.Description;
                     ruleActionConstraint.intValue = (int)newRuleAction.AxisConstraint;
                     EditorGUI.indentLevel--;

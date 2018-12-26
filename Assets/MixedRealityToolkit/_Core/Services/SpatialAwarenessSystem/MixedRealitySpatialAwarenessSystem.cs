@@ -60,9 +60,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.SpatialAwarenessSystem
         private GameObject CreateSecondGenerationParent(string name)
         {
             var secondGeneration = new GameObject(name);
-
             secondGeneration.transform.parent = SpatialAwarenessRootParent.transform;
-
             return secondGeneration;
         }
 
@@ -102,7 +100,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.SpatialAwarenessSystem
         }
 
         /// <inheritdoc />
-        public void ResumeObserver(IMixedRealitySpatialObserverDataProvider observer)
+        public void StartObserver(IMixedRealitySpatialObserverDataProvider observer)
         {
             foreach (var spatialObserver in DetectedSpatialObservers)
             {
@@ -149,6 +147,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.SpatialAwarenessSystem
         /// <inheritdoc/>
         public override void Initialize()
         {
+            base.Initialize();
+
             meshEventData = new MixedRealitySpatialAwarenessEventData<SpatialMeshObject>(EventSystem.current);
             surfaceFindingEventData = new MixedRealitySpatialAwarenessEventData<GameObject>(EventSystem.current);
         }
@@ -156,6 +156,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.SpatialAwarenessSystem
         /// <inheritdoc/>
         public override void Destroy()
         {
+            base.Destroy();
+
             // Cleanup game objects created during execution.
             if (Application.isPlaying)
             {

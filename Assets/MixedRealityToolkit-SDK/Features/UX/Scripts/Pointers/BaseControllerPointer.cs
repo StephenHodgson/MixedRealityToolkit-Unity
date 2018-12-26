@@ -326,8 +326,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Pointers
         /// <inheritdoc />
         public virtual bool TryGetPointingRay(out Ray pointingRay)
         {
-            Vector3 pointerPosition;
-            TryGetPointerPosition(out pointerPosition);
+            TryGetPointerPosition(out Vector3 pointerPosition);
             pointingRay = pointerRay;
             pointingRay.origin = pointerPosition;
             pointingRay.direction = PointerDirection;

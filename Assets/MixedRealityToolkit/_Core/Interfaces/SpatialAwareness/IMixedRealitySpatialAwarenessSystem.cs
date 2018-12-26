@@ -46,7 +46,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Interfaces.SpatialAwarenessSystem
         /// Starts / restarts the spatial observer.
         /// </summary>
         /// <remarks>This will cause spatial awareness events to resume.</remarks>
-        void ResumeObserver(IMixedRealitySpatialObserverDataProvider observer);
+        void StartObserver(IMixedRealitySpatialObserverDataProvider observer);
 
         /// <summary>
         /// Stops / pauses the spatial observer.

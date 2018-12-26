@@ -246,11 +246,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
 
             await BackgroundThread;
 
-            Vector3 position;
-            Quaternion rotation;
-            Vector3 scale;
-
-            node.Matrix = node.GetTrsProperties(out position, out rotation, out scale);
+            node.Matrix = node.GetTrsProperties(out Vector3 position, out Quaternion rotation, out Vector3 scale);
 
             if (node.Matrix == Matrix4x4.identity)
             {

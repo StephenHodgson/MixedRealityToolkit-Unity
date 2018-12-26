@@ -40,8 +40,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Pointers
         /// <inheritdoc />
         public override void OnPreRaycast()
         {
-            Ray pointingRay;
-            if (TryGetPointingRay(out pointingRay))
+            if (TryGetPointingRay(out Ray pointingRay))
             {
                 Rays[0].CopyRay(pointingRay, PointerExtent);
 

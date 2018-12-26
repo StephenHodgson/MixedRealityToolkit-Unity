@@ -4,7 +4,6 @@
 using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.EventDatum.Input;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem.Handlers;
-using Microsoft.MixedReality.Toolkit.Core.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Utilities.Async;
 using Microsoft.MixedReality.Toolkit.Core.Utilities.Async.AwaitYieldInstructions;
 using Microsoft.MixedReality.Toolkit.SDK.Input.Handlers;
@@ -280,7 +279,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.ToolTips
                 switch (pivotDirectionOrient)
                 {
                     case ConnectorOrientType.OrientToCamera:
-                        relativeTo = CameraCache.Main.transform;
+                        relativeTo = Core.Utilities.CameraCache.Main.transform;
                         break;
 
                     case ConnectorOrientType.OrientToObject:

@@ -2,9 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
-#if WINDOWS_UWP && !ENABLE_IL2CPP
-using Microsoft.MixedReality.Toolkit.Core.Extensions;
-#endif // WINDOWS_UWP && !ENABLE_IL2CPP
 using System;
 using UnityEngine;
 
@@ -34,11 +31,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Attributes
         /// <param name="grouping">Gets or sets grouping of selectable classes. Defaults to <see cref="TypeGrouping.ByNamespaceFlat"/> unless explicitly specified.</param>
         public SystemTypeAttribute(Type type, TypeGrouping grouping = TypeGrouping.ByNamespaceFlat)
         {
-#if WINDOWS_UWP && !ENABLE_IL2CPP
-            bool isValid = type.IsClass() || type.IsInterface() || type.IsValueType() && !type.IsEnum();
-#else
             bool isValid = type.IsClass || type.IsInterface || type.IsValueType && !type.IsEnum;
-#endif // WINDOWS_UWP && !ENABLE_IL2CPP
             Debug.Assert(isValid, $"Invalid Type {type} in attribute.");
             Grouping = grouping;
         }
@@ -53,11 +46,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Attributes
         /// </returns>
         public virtual bool IsConstraintSatisfied(Type type)
         {
-#if WINDOWS_UWP && !ENABLE_IL2CPP
-            return AllowAbstract || !type.IsAbstract();
-#else
             return AllowAbstract || !type.IsAbstract;
-#endif // WINDOWS_UWP && !ENABLE_IL2CPP
         }
     }
 }

@@ -313,6 +313,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
         /// <inheritdoc />
         public override void Initialize()
         {
+            base.Initialize();
+
             if (!IsSetupValid) { return; }
 
             foreach (var inputSource in MixedRealityToolkit.InputSystem.DetectedInputSources)
@@ -329,6 +331,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
         /// <inheritdoc />
         public override void Update()
         {
+            base.Update();
+
             if (!IsSetupValid) { return; }
 
             UpdatePointers();
@@ -337,6 +341,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
 
         public override void Destroy()
         {
+            base.Destroy();
+
             if (uiRaycastCamera != null)
             {
                 if (Application.isEditor)

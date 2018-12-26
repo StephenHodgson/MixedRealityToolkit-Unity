@@ -4,8 +4,10 @@
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Diagnostics;
 using Microsoft.MixedReality.Toolkit.Core.EventDatum.Diagnostics;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.Diagnostics;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Object = UnityEngine.Object;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Services.DiagnosticsSystem
 {
@@ -17,6 +19,10 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.DiagnosticsSystem
         public MixedRealityDiagnosticsSystem(MixedRealityDiagnosticsProfile profile)
             : base(profile)
         {
+            if (MixedRealityToolkit.Instance.ActiveProfile.DiagnosticsSystemProfile == null)
+            {
+                throw new Exception("Missing Diagnostics system profile!");
+            }
         }
 
         #region IMixedRealityService
@@ -24,6 +30,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.DiagnosticsSystem
         /// <inheritdoc />
         public override void Initialize()
         {
+            base.Initialize();
+
             if (!Application.isPlaying) { return; }
 
             eventData = new DiagnosticsEventData(EventSystem.current);
@@ -44,6 +52,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.DiagnosticsSystem
         /// <inheritdoc />
         public override void Destroy()
         {
+            base.Destroy();
+
             diagnosticsHandler = null;
 
             if (diagnosticVisualization != null)
@@ -80,11 +90,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.DiagnosticsSystem
         /// <inheritdoc />
         public bool Visible
         {
-            get
-            {
-                return visible;
-            }
-
+            get => visible;
             set
             {
                 if (value != visible)
@@ -102,11 +108,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.DiagnosticsSystem
         /// <inheritdoc />
         public bool ShowCpu
         {
-            get
-            {
-                return showCpu;
-            }
-
+            get => showCpu;
             set
             {
                 if (value != showCpu)
@@ -131,10 +133,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.DiagnosticsSystem
         /// <inheritdoc />
         public bool ShowFps
         {
-            get
-            {
-                return showFps;
-            }
+            get => showFps;
             set
             {
                 if (value != showFps)
@@ -153,10 +152,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.DiagnosticsSystem
         /// <inheritdoc />
         public bool ShowMemory
         {
-            get
-            {
-                return showMemory;
-            }
+            get => showMemory;
             set
             {
                 if (value != showMemory)

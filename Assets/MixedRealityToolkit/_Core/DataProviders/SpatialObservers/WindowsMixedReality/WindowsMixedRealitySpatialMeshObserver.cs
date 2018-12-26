@@ -29,6 +29,17 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.SpatialObservers.Win
         /// <param name="profile"></param>
         public WindowsMixedRealitySpatialMeshObserver(string name, uint priority, WindowsMixedRealitySpatialMeshObserverProfile profile) : base(name, priority, profile)
         {
+            if (MixedRealityToolkit.SpatialAwarenessSystem == null)
+            {
+                throw new Exception("Missing a registered spatial awareness system!");
+            }
+
+#if UNITY_WSA
+            observer = new SurfaceObserver();
+
+            // Apply the initial observer volume settings.
+            ConfigureObserverVolume(ObservationExtents, ObserverOrigin);
+#endif // UNITY_WSA
         }
 
 #if UNITY_WSA
@@ -36,34 +47,12 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.SpatialObservers.Win
         #region IMixedRealityService implementation
 
         /// <inheritdoc />
-        public override void Initialize()
-        {
-            // Only initialize if the Spatial Awareness system has been enabled in the configuration profile.
-            if (!Application.isPlaying ||
-                !MixedRealityToolkit.Instance.ActiveProfile.IsSpatialAwarenessSystemEnabled ||
-                MixedRealityToolkit.SpatialAwarenessSystem == null)
-            {
-                return;
-            }
-
-            if (observer == null)
-            {
-                observer = new SurfaceObserver();
-            }
-
-            Debug.Assert(observer != null);
-
-            // Apply the initial observer volume settings.
-            ConfigureObserverVolume(ObservationExtents, ObserverOrigin);
-
-            base.Initialize();
-        }
-
-        /// <inheritdoc />
         public override void Update()
         {
+            base.Update();
+
             // Only update the observer if it is running.
-            if (MixedRealityToolkit.SpatialAwarenessSystem == null || !Application.isPlaying || !IsRunning) { return; }
+            if (!Application.isPlaying || !IsRunning) { return; }
 
             // If we have a mesh to work on...
             if (!pendingSpatialObject.HasValue && meshWorkQueue.Count > 0)
@@ -91,24 +80,16 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.SpatialObservers.Win
         }
 
         /// <inheritdoc />
-        public override void Disable()
+        protected override void OnDispose(bool finalizing)
         {
-            base.Disable();
+            observer.Dispose();
 
             if (pendingSpatialObject.HasValue)
             {
                 DestroyMeshObject(pendingSpatialObject.Value);
             }
-        }
 
-        /// <inheritdoc />
-        public override void Destroy()
-        {
-            if (observer != null)
-            {
-                observer.Dispose();
-                observer = null;
-            }
+            base.OnDispose(finalizing);
         }
 
         #endregion IMixedRealityService implementation
@@ -118,7 +99,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.SpatialObservers.Win
         /// <summary>
         /// The surface observer providing the spatial data.
         /// </summary>
-        private SurfaceObserver observer = null;
+        private readonly SurfaceObserver observer = null;
 
         /// <summary>
         /// The current location of the surface observer.

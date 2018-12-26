@@ -306,9 +306,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Cursors
                 return;
             }
 
-            FocusDetails focusDetails;
-
-            if (!MixedRealityToolkit.InputSystem.FocusProvider.TryGetFocusDetails(Pointer, out focusDetails))
+            if (!MixedRealityToolkit.InputSystem.FocusProvider.TryGetFocusDetails(Pointer, out FocusDetails focusDetails))
             {
                 if (MixedRealityToolkit.InputSystem.FocusProvider.IsPointerRegistered(Pointer))
                 {

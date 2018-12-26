@@ -2,9 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
-#if WINDOWS_UWP && !ENABLE_IL2CPP
-using Microsoft.MixedReality.Toolkit.Core.Extensions;
-#endif // WINDOWS_UWP && !ENABLE_IL2CPP
 using System;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Attributes
@@ -25,7 +22,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Attributes
         /// </summary>
         /// <param name="interfaceType">Type of interface that selectable classes must implement.</param>
         /// <param name="grouping">Gets or sets grouping of selectable classes. Defaults to <see cref="TypeGrouping.ByNamespaceFlat"/> unless explicitly specified.</param>
-        public ImplementsAttribute(Type interfaceType, TypeGrouping grouping) : base(interfaceType, grouping)
+        public ImplementsAttribute(Type interfaceType, TypeGrouping grouping) 
+                : base(interfaceType, grouping)
         {
             InterfaceType = interfaceType;
         }
@@ -36,6 +34,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Attributes
             if (base.IsConstraintSatisfied(type))
             {
                 var interfaces = type.GetInterfaces();
+
                 for (var i = 0; i < interfaces.Length; i++)
                 {
                     if (interfaces[i] == InterfaceType)

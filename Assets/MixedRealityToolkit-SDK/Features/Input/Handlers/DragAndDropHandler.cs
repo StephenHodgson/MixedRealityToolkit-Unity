@@ -134,8 +134,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
             currentInputSource = eventData.InputSource;
             currentPointer = eventData.Pointer;
 
-            FocusDetails focusDetails;
-            Vector3 initialDraggingPosition = MixedRealityToolkit.InputSystem.FocusProvider.TryGetFocusDetails(currentPointer, out focusDetails)
+            Vector3 initialDraggingPosition = MixedRealityToolkit.InputSystem.FocusProvider.TryGetFocusDetails(currentPointer, out FocusDetails focusDetails)
                     ? focusDetails.Point
                     : hostTransform.position;
 
@@ -213,8 +212,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
 
             Transform cameraTransform = CameraCache.Main.transform;
 
-            Vector3 inputPosition;
-            currentPointer.TryGetPointerPosition(out inputPosition);
+            currentPointer.TryGetPointerPosition(out Vector3 inputPosition);
 
             Vector3 pivotPosition = GetHandPivotPosition(cameraTransform);
             handRefDistance = Vector3.Magnitude(inputPosition - pivotPosition);
@@ -250,8 +248,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
         {
             Transform cameraTransform = CameraCache.Main.transform;
 
-            Vector3 inputPosition;
-            currentPointer.TryGetPointerPosition(out inputPosition);
+            currentPointer.TryGetPointerPosition(out Vector3 inputPosition);
 
             Vector3 pivotPosition = GetHandPivotPosition(cameraTransform);
             Vector3 newHandDirection = Vector3.Normalize(inputPosition - pivotPosition);

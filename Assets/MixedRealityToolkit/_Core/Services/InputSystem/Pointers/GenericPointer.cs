@@ -101,8 +101,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem.Pointers
         /// <inheritdoc />
         public virtual void OnPreRaycast()
         {
-            Ray pointingRay;
-            if (TryGetPointingRay(out pointingRay))
+            if (TryGetPointingRay(out Ray pointingRay))
             {
                 Rays[0].CopyRay(pointingRay, PointerExtent);
             }

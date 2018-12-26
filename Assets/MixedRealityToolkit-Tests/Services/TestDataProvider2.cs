@@ -13,16 +13,19 @@ namespace Microsoft.MixedReality.Toolkit.Tests.Services
 
         public override void Enable()
         {
+            base.Enable();
             IsEnabled = true;
         }
 
         public override void Disable()
         {
+            base.Disable();
             IsEnabled = false;
         }
 
         public override void Destroy()
         {
+            base.Destroy();
         }
     }
 }

@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.MixedReality.Toolkit.Core.DataProviders.Networking.Profiles;
+using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Networking.WebRTC
@@ -9,7 +10,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Networking.WebRTC
     /// <summary>
     /// The Web RTC Network provider profile configuration.
     /// </summary>
-    [CreateAssetMenu(menuName = "Mixed Reality Toolkit/DataProviders/Networking/WebRTC Profile", fileName = "MixedRealityWebRtcNetworkProviderProfile")]
+    [CreateAssetMenu(menuName = "Mixed Reality Toolkit/Networking/WebRTC Profile", fileName = "MixedRealityWebRtcNetworkProviderProfile", order = (int)CreateProfileMenuItemIndices.Networking)]
 
     public class MixedRealityWebRtcNetworkProviderProfile : BaseMixedRealityNetworkProviderProfile
     {

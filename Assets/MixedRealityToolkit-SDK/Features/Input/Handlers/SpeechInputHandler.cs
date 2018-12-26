@@ -68,10 +68,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
 
         void IMixedRealitySpeechHandler.OnSpeechKeywordRecognized(SpeechEventData eventData)
         {
-            UnityEvent keywordResponse;
-
             // Check to make sure the recognized keyword exists in the methods dictionary, then invoke the corresponding method.
-            if (enabled && responses.TryGetValue(eventData.RecognizedText.ToLower(), out keywordResponse))
+            if (enabled && responses.TryGetValue(eventData.RecognizedText.ToLower(), out UnityEvent keywordResponse))
             {
                 keywordResponse.Invoke();
             }

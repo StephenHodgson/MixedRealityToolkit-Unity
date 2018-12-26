@@ -98,12 +98,8 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         private void AddMarkers()
         {
             // Get the rectangular bounds.
-            Vector2 centerRect;
-            float angleRect;
-            float widthRect;
-            float heightRect;
 
-            if (!MixedRealityToolkit.BoundarySystem.TryGetRectangularBoundsParams(out centerRect, out angleRect, out widthRect, out heightRect))
+            if (!MixedRealityToolkit.BoundarySystem.TryGetRectangularBoundsParams(out Vector2 centerRect, out float angleRect, out float widthRect, out float heightRect))
             {
                 // If we have no boundary manager or rectangular bounds we will show no indicators
                 return;

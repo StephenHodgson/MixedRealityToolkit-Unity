@@ -21,7 +21,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.Teleportation
         /// </summary>
         /// <param name="profile"></param>
         public MixedRealityTeleportSystem(BaseMixedRealityProfile profile)
-            : base(profile) { }
+                : base(profile)
+        {
+        }
 
         private TeleportEventData teleportEventData;
 
@@ -42,11 +44,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.Teleportation
         public override void Initialize()
         {
             base.Initialize();
-            InitializeInternal();
-        }
 
-        private void InitializeInternal()
-        {
 #if UNITY_EDITOR
             if (!UnityEditor.EditorApplication.isPlaying)
             {

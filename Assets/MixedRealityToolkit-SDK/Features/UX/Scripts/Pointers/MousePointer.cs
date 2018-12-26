@@ -78,8 +78,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Pointers
         {
             transform.position = CameraCache.Main.transform.position;
 
-            Ray pointingRay;
-            if (TryGetPointingRay(out pointingRay))
+            if (TryGetPointingRay(out Ray pointingRay))
             {
                 Rays[0].CopyRay(pointingRay, PointerExtent);
 

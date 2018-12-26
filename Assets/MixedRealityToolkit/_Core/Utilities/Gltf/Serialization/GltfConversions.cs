@@ -153,9 +153,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
             await BackgroundThread;
             var array = new int[accessor.count];
 
-            int componentSize;
-            float maxValue;
-            GetTypeDetails(accessor.componentType, out componentSize, out maxValue);
+            GetTypeDetails(accessor.componentType, out int componentSize, out float maxValue);
             var stride = accessor.BufferView.byteStride > 0 ? accessor.BufferView.byteStride : componentSize;
             var byteOffset = accessor.BufferView.byteOffset;
             var bufferData = accessor.BufferView.Buffer.BufferData;
@@ -201,9 +199,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
             await BackgroundThread;
             var array = new Vector2[accessor.count];
 
-            int componentSize;
-            float maxValue;
-            GetTypeDetails(accessor.componentType, out componentSize, out maxValue);
+            GetTypeDetails(accessor.componentType, out int componentSize, out float maxValue);
             var stride = accessor.BufferView.byteStride > 0 ? accessor.BufferView.byteStride : componentSize * 2;
             var byteOffset = accessor.BufferView.byteOffset;
             var bufferData = accessor.BufferView.Buffer.BufferData;
@@ -248,9 +244,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
             await BackgroundThread;
             var array = new Vector3[accessor.count];
 
-            int componentSize;
-            float maxValue;
-            GetTypeDetails(accessor.componentType, out componentSize, out maxValue);
+            GetTypeDetails(accessor.componentType, out int componentSize, out float maxValue);
             var stride = accessor.BufferView.byteStride > 0 ? accessor.BufferView.byteStride : componentSize * 3;
             var byteOffset = accessor.BufferView.byteOffset;
             var bufferData = accessor.BufferView.Buffer.BufferData;
@@ -299,9 +293,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
             await BackgroundThread;
             var array = new Vector4[accessor.count];
 
-            int componentSize;
-            float maxValue;
-            GetTypeDetails(accessor.componentType, out componentSize, out maxValue);
+            GetTypeDetails(accessor.componentType, out int componentSize, out float maxValue);
             var stride = accessor.BufferView.byteStride > 0 ? accessor.BufferView.byteStride : componentSize * 4;
             var byteOffset = accessor.BufferView.byteOffset;
             var bufferData = accessor.BufferView.Buffer.BufferData;
@@ -353,9 +345,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
             await BackgroundThread;
             var array = new Color[accessor.count];
 
-            int componentSize;
-            float maxValue;
-            GetTypeDetails(accessor.componentType, out componentSize, out maxValue);
+            GetTypeDetails(accessor.componentType, out int componentSize, out float maxValue);
             bool hasAlpha = accessor.type == "VEC4";
 
             var stride = accessor.BufferView.byteStride > 0 ? accessor.BufferView.byteStride : componentSize * (hasAlpha ? 4 : 3);

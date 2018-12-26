@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-#if WINDOWS_UWP && !ENABLE_IL2CPP
-using Microsoft.MixedReality.Toolkit.Core.Extensions;
-#endif // WINDOWS_UWP && !ENABLE_IL2CPP
 using System;
 using UnityEngine;
 
@@ -42,11 +39,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities
             {
                 Type = Type.GetType(assemblyQualifiedClassName);
 
-#if WINDOWS_UWP && !ENABLE_IL2CPP
-                if (Type != null && Type.IsAbstract())
-#else
                 if (Type != null && Type.IsAbstract)
-#endif // WINDOWS_UWP && !ENABLE_IL2CPP
                 {
                     Type = null;
                 }
@@ -93,11 +86,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities
             {
                 if (value != null)
                 {
-#if WINDOWS_UWP && !ENABLE_IL2CPP
-                    bool isValid = value.IsValueType() && !value.IsEnum() && !value.IsAbstract() || value.IsClass();
-#else
                     bool isValid = value.IsValueType && !value.IsEnum && !value.IsAbstract || value.IsClass;
-#endif // WINDOWS_UWP && !ENABLE_IL2CPP
+
                     if (!isValid)
                     {
                         Debug.LogError($"'{value.FullName}' is not a valid class or struct type.");
