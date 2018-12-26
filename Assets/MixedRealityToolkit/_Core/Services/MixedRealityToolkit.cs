@@ -1185,21 +1185,18 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
             if (activeProfile == null) { return; }
 
             // Destroy all systems
-            foreach (var system in activeSystems)
-            {
-                system.Value.Destroy();
-                system.Value.Dispose();
-            }
-
-            activeSystems.Clear();
+            foreach (var system in activeSystems) system.Value.Destroy();
 
             // Destroy all registered runtime services
-            foreach (var service in registeredMixedRealityServices)
-            {
-                service.Item2.Destroy();
-                service.Item2.Dispose();
-            }
+            foreach (var service in registeredMixedRealityServices) service.Item2.Destroy();
 
+            // Dispose all systems
+            foreach (var system in activeSystems) system.Value.Dispose();
+
+            // Dispose all registered runtime services
+            foreach (var service in registeredMixedRealityServices) service.Item2.Dispose();
+
+            activeSystems.Clear();
             registeredMixedRealityServices.Clear();
         }
 
