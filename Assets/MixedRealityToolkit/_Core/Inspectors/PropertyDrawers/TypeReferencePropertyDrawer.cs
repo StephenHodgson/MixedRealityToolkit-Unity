@@ -123,7 +123,15 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.PropertyDrawers
 
         #region Control Drawing / Event Handling
 
-        private static string DrawTypeSelectionControl(Rect position, GUIContent label, string classRef, SystemTypeAttribute filter)
+        /// <summary>
+        /// Draws the selection control for the type.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="label"></param>
+        /// <param name="classRef"></param>
+        /// <param name="filter"></param>
+        /// <returns>True, if the class reference was successfully resolved.</returns>
+        private static bool DrawTypeSelectionControl(Rect position, GUIContent label, ref string classRef, SystemTypeAttribute filter)
         {
             if (label != null && label != GUIContent.none)
             {
@@ -133,6 +141,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.PropertyDrawers
             int controlId = GUIUtility.GetControlID(ControlHint, FocusType.Keyboard, position);
 
             bool triggerDropDown = false;
+            bool foundValidReference = true;
 
             switch (Event.current.GetTypeForControl(controlId))
             {
@@ -190,6 +199,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.PropertyDrawers
                     else if (ResolveType(classRef) == null)
                     {
                         TempContent.text += " {Missing}";
+                        foundValidReference = false;
                     }
 
                     EditorStyles.popup.Draw(position, TempContent, controlId);
@@ -204,22 +214,35 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.PropertyDrawers
                 DisplayDropDown(position, GetFilteredTypes(filter), ResolveType(classRef), filter?.Grouping ?? TypeGrouping.ByNamespaceFlat);
             }
 
-            return classRef;
+            return foundValidReference;
         }
 
-        private static void DrawTypeSelectionControl(Rect position, SerializedProperty property, GUIContent label, SystemTypeAttribute filter)
+        /// <summary>
+        /// Draws the selection control for the type.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
+        /// <param name="filter"></param>
+        /// <returns>True, if the class reference was resolved successfully.</returns>
+        private static bool DrawTypeSelectionControl(Rect position, SerializedProperty property, GUIContent label, SystemTypeAttribute filter)
         {
+            bool isValidClassRef;
             try
             {
                 bool restoreShowMixedValue = EditorGUI.showMixedValue;
                 EditorGUI.showMixedValue = property.hasMultipleDifferentValues;
-                property.stringValue = DrawTypeSelectionControl(position, label, property.stringValue, filter);
+                var propertyValue = property.stringValue;
+                isValidClassRef = DrawTypeSelectionControl(position, label, ref propertyValue, filter);
+                property.stringValue = propertyValue;
                 EditorGUI.showMixedValue = restoreShowMixedValue;
             }
             finally
             {
                 ExcludedTypeCollectionGetter = null;
             }
+
+            return isValidClassRef;
         }
 
         private static void DisplayDropDown(Rect position, List<Type> types, Type selectedType, TypeGrouping grouping)
@@ -291,7 +314,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.PropertyDrawers
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            DrawTypeSelectionControl(position, property.FindPropertyRelative("reference"), label, attribute as SystemTypeAttribute);
+            var isValid = DrawTypeSelectionControl(position, property.FindPropertyRelative("reference"), label, attribute as SystemTypeAttribute);
+            if (!isValid)
+            {
+                Debug.LogError($"Failed to resolve class reference for property {property.name} on {property.serializedObject.targetObject.name}");
+            }
         }
     }
 }

@@ -81,7 +81,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities
         /// </exception>
         public Type Type
         {
-            get { return type; }
+            get => type;
             set
             {
                 if (value != null)

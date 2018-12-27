@@ -56,6 +56,3 @@ MonoBehaviour:
   - id: 14
     description: Rotation Direction
     axisConstraint: 4
-  - id: 15
-    description: My Custom Action
-    axisConstraint: 0
