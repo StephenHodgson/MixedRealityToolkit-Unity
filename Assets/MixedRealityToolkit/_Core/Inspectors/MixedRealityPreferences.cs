@@ -91,6 +91,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
 
         #endregion Show Canvas Utility Prompt
 
+        #region Start Scene Preference
+
         private static readonly GUIContent StartSceneContent = new GUIContent("Start Scene", "When pressing play in the editor, a prompt will ask you if you want to switch to this start scene.\n\nThis setting only applies to the currently running project.");
         private const string StartSceneKey = "_StartScene";
         private static SceneAsset sceneAsset;
@@ -116,6 +118,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
                 EditorPrefsUtility.SetEditorPref(StartSceneKey, scenePath);
             }
         }
+
+        #endregion  Start Scene Preference
 
         [PreferenceItem("Mixed Reality Toolkit")]
         private static void Preferences()
