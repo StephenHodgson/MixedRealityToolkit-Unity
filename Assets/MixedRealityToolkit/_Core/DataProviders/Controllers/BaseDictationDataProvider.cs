@@ -22,12 +22,12 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
         public virtual bool IsListening { get; protected set; } = false;
 
         /// <inheritdoc />
-        public virtual void StartRecording(GameObject listener, float initialSilenceTimeout = 5, float autoSilenceTimeout = 20, int recordingTime = 10, string micDeviceName = "")
+        public virtual void StartRecording(GameObject listener = null, float initialSilenceTimeout = 5, float autoSilenceTimeout = 20, int recordingTime = 10, string micDeviceName = "")
         {
         }
 
         /// <inheritdoc />
-        public virtual Task StartRecordingAsync(GameObject listener, float initialSilenceTimeout = 5, float autoSilenceTimeout = 20, int recordingTime = 10, string micDeviceName = "")
+        public virtual Task StartRecordingAsync(GameObject listener = null, float initialSilenceTimeout = 5, float autoSilenceTimeout = 20, int recordingTime = 10, string micDeviceName = "")
         {
             return null;
         }
