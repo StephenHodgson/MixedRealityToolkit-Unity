@@ -20,7 +20,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         /// <summary>
         /// Collection that tracks the IDs and count of updates for each active spatial awareness mesh.
         /// </summary>
-        private Dictionary<int, uint> meshUpdateData = new Dictionary<int, uint>();
+        private readonly Dictionary<int, uint> meshUpdateData = new Dictionary<int, uint>();
 
         private async void OnEnable()
         {
@@ -36,12 +36,12 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         /// <inheritdoc />
         public virtual void OnMeshAdded(MixedRealitySpatialAwarenessEventData<SpatialMeshObject> eventData)
         {
-            Debug.Log("DemoSpatialMeshHandler.OnMeshAdded");
+            Debug.Log($"[DemoSpatialMeshHandler.OnMeshAdded] {eventData.EventSource.SourceName}.{eventData.SpatialObject.GameObject.name}");
 
             // A new mesh has been added.
             if (!meshUpdateData.ContainsKey(eventData.Id))
             {
-                Debug.Log($"Tracking mesh {eventData.Id}");
+                Debug.Log($"[DemoSpatialMeshHandler] Started Tracking mesh {eventData.Id}.");
                 meshUpdateData.Add(eventData.Id, 0);
             }
         }
@@ -49,29 +49,25 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         /// <inheritdoc />
         public virtual void OnMeshUpdated(MixedRealitySpatialAwarenessEventData<SpatialMeshObject> eventData)
         {
-            uint updateCount = 0;
-
-            Debug.Log("DemoSpatialMeshHandler.OnMeshUpdated");
-
             // A mesh has been updated. Find it and increment the update count.
-            if (meshUpdateData.TryGetValue(eventData.Id, out updateCount))
+            if (meshUpdateData.TryGetValue(eventData.Id, out uint updateCount))
             {
                 // Set the new update count.
                 meshUpdateData[eventData.Id] = ++updateCount;
 
-                Debug.Log($"Mesh {eventData.Id} has been updated {updateCount} times.");
+                Debug.Log($"[DemoSpatialMeshHandler.OnMeshUpdated] Mesh {eventData.Id} has been updated {updateCount} times.");
             }
         }
 
         /// <inheritdoc />
         public virtual void OnMeshRemoved(MixedRealitySpatialAwarenessEventData<SpatialMeshObject> eventData)
         {
-            Debug.Log("DemoSpatialMeshHandler.OnMeshRemoved");
+            Debug.Log($"[DemoSpatialMeshHandler.OnMeshRemoved] {eventData.EventSource.SourceName}.{eventData.SpatialObject.GameObject.name}");
 
             // A mesh has been removed. We no longer need to track the count of updates.
             if (meshUpdateData.ContainsKey(eventData.Id))
             {
-                Debug.Log($"No longer tracking mesh {eventData.Id}.");
+                Debug.Log($"[DemoSpatialMeshHandler] No longer tracking mesh {eventData.Id}.");
                 meshUpdateData.Remove(eventData.Id);
             }
         }

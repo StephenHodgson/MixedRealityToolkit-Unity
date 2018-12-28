@@ -1463,7 +1463,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
                 if (!string.IsNullOrEmpty(logFilePath))
                 {
-                    Process.Start(logFilePath);
+                    try
+                    {
+                        Process.Start(logFilePath);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError($"Failed to open {logFilePath}!\n{e.Message}");
+                    }
                 }
 
                 return;

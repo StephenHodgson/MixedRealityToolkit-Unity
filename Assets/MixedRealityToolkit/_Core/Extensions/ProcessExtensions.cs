@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
-using Debug = UnityEngine.Debug;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Extensions
 {
@@ -71,7 +70,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Extensions
                 if (!string.IsNullOrEmpty(args.Data))
                 {
                     errorList.Add(args.Data);
-                    if (showDebug) { Debug.LogError(args.Data); }
+                    if (showDebug) { UnityEngine.Debug.LogError(args.Data); }
                 }
                 else
                 {
@@ -84,7 +83,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Extensions
                 if (!string.IsNullOrEmpty(args.Data))
                 {
                     outputList.Add(args.Data);
-                    if (showDebug) { Debug.Log(args.Data); }
+                    if (showDebug) { UnityEngine.Debug.Log(args.Data); }
                 }
                 else
                 {
@@ -96,7 +95,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Extensions
             {
                 if (showDebug)
                 {
-                    Debug.LogError("Failed to start process!");
+                    UnityEngine.Debug.LogError("Failed to start process!");
                 }
 
                 processResult.TrySetResult(new ProcessResult(process.ExitCode, new[] { "Failed to start process!" }, null));

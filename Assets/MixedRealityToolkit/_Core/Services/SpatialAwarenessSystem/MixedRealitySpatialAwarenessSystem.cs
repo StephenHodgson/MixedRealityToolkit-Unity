@@ -165,7 +165,16 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.SpatialAwarenessSystem
                 if (spatialAwarenessParent != null)
                 {
                     spatialAwarenessParent.transform.DetachChildren();
-                    Object.Destroy(spatialAwarenessParent);
+
+                    if (Application.isEditor)
+                    {
+                        Object.DestroyImmediate(spatialAwarenessParent);
+                    }
+                    else
+                    {
+                        Object.Destroy(spatialAwarenessParent);
+                    }
+
                     spatialAwarenessParent = null;
                 }
 
@@ -173,7 +182,16 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.SpatialAwarenessSystem
                 if (meshParent != null)
                 {
                     meshParent.transform.DetachChildren();
-                    Object.Destroy(meshParent);
+
+                    if (Application.isEditor)
+                    {
+                        Object.DestroyImmediate(meshParent);
+                    }
+                    else
+                    {
+                        Object.Destroy(meshParent);
+                    }
+
                     meshParent = null;
                 }
 
@@ -181,7 +199,16 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.SpatialAwarenessSystem
                 if (surfaceParent != null)
                 {
                     surfaceParent.transform.DetachChildren();
-                    Object.Destroy(surfaceParent);
+
+                    if (Application.isEditor)
+                    {
+                        Object.DestroyImmediate(surfaceParent);
+                    }
+                    else
+                    {
+                        Object.Destroy(surfaceParent);
+                    }
+
                     surfaceParent = null;
                 }
             }

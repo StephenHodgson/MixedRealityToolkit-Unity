@@ -39,18 +39,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.SpatialObservers
         }
 
         /// <inheritdoc />
-        public override int PhysicsLayer
-        {
-            get
-            {
-                if (SurfacePhysicsLayerOverride > -1)
-                {
-                    return base.PhysicsLayer;
-                }
+        public override int PhysicsLayer => SurfacePhysicsLayerOverride == -1 ? base.PhysicsLayer : SurfacePhysicsLayerOverride;
 
-                return SurfacePhysicsLayerOverride;
-            }
-        }
 
         /// <inheritdoc />
         public int SurfacePhysicsLayerOverride { get; }

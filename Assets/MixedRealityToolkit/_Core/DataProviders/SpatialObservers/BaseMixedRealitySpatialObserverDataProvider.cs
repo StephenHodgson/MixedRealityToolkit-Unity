@@ -58,9 +58,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.SpatialObservers
         {
             base.Disable();
 
-            MixedRealityToolkit.SpatialAwarenessSystem?.RaiseSpatialAwarenessObserverLost(this);
-
             StopObserving();
+
+            MixedRealityToolkit.SpatialAwarenessSystem?.RaiseSpatialAwarenessObserverLost(this);
         }
 
         #endregion IMixedRealityService Implementation
@@ -80,10 +80,16 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.SpatialObservers
         public bool IsRunning { get; protected set; }
 
         /// <inheritdoc />
-        public virtual void StartObserving() { }
+        public virtual void StartObserving()
+        {
+            IsRunning = true;
+        }
 
         /// <inheritdoc />
-        public virtual void StopObserving() { }
+        public virtual void StopObserving()
+        {
+            IsRunning = false;
+        }
 
         #endregion IMixedRealitySpatialObserverDataProvider Implementation
 
