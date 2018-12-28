@@ -135,7 +135,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                     if (EditorGUI.EndChangeCheck())
                     {
                         serializedObject.ApplyModifiedProperties();
-                        EditorApplication.delayCall += () => MixedRealityToolkit.Instance.ResetConfiguration(MixedRealityToolkit.Instance.ActiveProfile);
+
+                        if (!string.IsNullOrEmpty(componentType.FindPropertyRelative("reference").stringValue))
+                        {
+                            MixedRealityToolkit.Instance.ResetConfiguration(MixedRealityToolkit.Instance.ActiveProfile);
+                        }
                     }
 
                     EditorGUI.indentLevel--;

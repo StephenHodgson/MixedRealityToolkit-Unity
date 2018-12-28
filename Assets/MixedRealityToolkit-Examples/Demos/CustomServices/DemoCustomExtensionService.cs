@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.MixedReality.Toolkit.Core.Services;
+using System;
 
 namespace Microsoft.MixedReality.Toolkit.Examples.Demos.CustomExtensionServices
 {
@@ -19,6 +20,11 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos.CustomExtensionServices
         public DemoCustomExtensionService(string name, uint priority, DemoCustomExtensionServiceProfile profile)
                 : base(name, priority, profile)
         {
+            if (profile == null)
+            {
+                throw new Exception($"{GetType().Name} expects a {nameof(DemoCustomExtensionServiceProfile)}");
+            }
+
             // In the constructor, you should set any configuration data from your profile here.
             MyCustomData = profile.MyCustomStringData;
         }
