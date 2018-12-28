@@ -416,16 +416,14 @@ namespace Microsoft.MixedReality.Toolkit.Tests.Core
             Assert.IsNotNull(extensionService1);
             Assert.IsNotNull(extensionService2);
 
-            var success1 = MixedRealityToolkit.UnregisterServicesOfType<ITestExtensionService1>();
-            var success2 = MixedRealityToolkit.UnregisterServicesOfType<ITestExtensionService2>();
+            var success = MixedRealityToolkit.UnregisterServicesOfType<IMixedRealityExtensionService>();
 
             // Validate non-existent service
             var isService1Registered = MixedRealityToolkit.IsServiceRegistered<ITestExtensionService1>();
             var isService2Registered = MixedRealityToolkit.IsServiceRegistered<ITestExtensionService2>();
 
             // Tests
-            Assert.IsTrue(success1);
-            Assert.IsTrue(success2);
+            Assert.IsTrue(success);
             Assert.IsFalse(isService1Registered);
             Assert.IsFalse(isService2Registered);
             Assert.IsEmpty(MixedRealityToolkit.ActiveSystems);

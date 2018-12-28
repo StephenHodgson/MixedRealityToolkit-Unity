@@ -915,6 +915,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
                 return false;
             }
 
+            if (string.IsNullOrEmpty(serviceName))
+            {
+                return GetActiveServices(interfaceType).Aggregate(true, (current, service) => current & UnregisterServiceInternal(interfaceType, service.Name));
+            }
+
             if (GetServiceByNameInternal(interfaceType, serviceName, out IMixedRealityService serviceInstance))
             {
                 serviceInstance.Disable();
@@ -927,7 +932,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
                     return true;
                 }
 
-                var registryInstance = new Tuple<Type, IMixedRealityService>(interfaceType, serviceInstance);
+                Tuple<Type, IMixedRealityService> registryInstance = registeredMixedRealityServices.FirstOrDefault(service => service.Item2.Name == serviceName);
 
                 if (registeredMixedRealityServices.Contains(registryInstance))
                 {
@@ -935,7 +940,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
                     return true;
                 }
 
-                Debug.LogError($"Failed to find registry instance of {interfaceType.Name}.{serviceInstance.Name}!");
+                Debug.LogError($"Failed to find registry instance of [{interfaceType.Name}] \"{serviceInstance.Name}\"!");
             }
 
             return false;
