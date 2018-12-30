@@ -45,31 +45,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.Teleportation
         {
             base.Initialize();
 
-            if (!Application.isPlaying)
-            {
-                var eventSystems = Object.FindObjectsOfType<EventSystem>();
+            if (!Application.isPlaying) { return; }
 
-                if (eventSystems.Length == 0)
-                {
-                    if (!MixedRealityToolkit.Instance.ActiveProfile.IsInputSystemEnabled)
-                    {
-                        eventSystemReference = new GameObject("Event System");
-                        eventSystemReference.AddComponent<EventSystem>();
-                    }
-                    else
-                    {
-                        Debug.Log("The Input System didn't properly add an event system to your scene. Please make sure the Input System's priority is set higher than the teleport system.");
-                    }
-                }
-                else if (eventSystems.Length > 1)
-                {
-                    Debug.Log("Too many event systems in the scene. The Teleport System requires only one.");
-                }
-            }
-            else
-            {
-                teleportEventData = new TeleportEventData(EventSystem.current);
-            }
+            teleportEventData = new TeleportEventData(EventSystem.current);
         }
 
         /// <inheritdoc />
