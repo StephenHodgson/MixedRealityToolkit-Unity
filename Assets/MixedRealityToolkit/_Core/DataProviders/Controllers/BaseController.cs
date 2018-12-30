@@ -97,7 +97,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
         {
             if (controllerType == null)
             {
-                throw new ArgumentException("controllerType cannot be null");
+                Debug.LogError("controllerType cannot be null");
+                return false;
             }
 
             // We can only enable controller profiles if mappings exist.
