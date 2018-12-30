@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -12,7 +13,13 @@ namespace Microsoft.MixedReality.Toolkit.Core.EventDatum.Input
     public class GraphicInputEventData : PointerEventData
     {
         /// <inheritdoc />
-        public GraphicInputEventData(EventSystem eventSystem) : base(eventSystem) { }
+        public GraphicInputEventData(EventSystem eventSystem) : base(eventSystem)
+        {
+            if (eventSystem == null)
+            {
+                throw new Exception("Event system cannot be null!");
+            }
+        }
 
         /// <summary>
         /// Clears the pointer data and calls the base <see cref="PointerEventData"/>'s Reset method.
@@ -26,12 +33,12 @@ namespace Microsoft.MixedReality.Toolkit.Core.EventDatum.Input
             delta = Vector2.zero;
             dragging = false;
             eligibleForClick = false;
-            pointerCurrentRaycast = default(RaycastResult);
+            pointerCurrentRaycast = default;
             pointerDrag = null;
             pointerEnter = null;
             pointerId = 0;
             pointerPress = null;
-            pointerPressRaycast = default(RaycastResult);
+            pointerPressRaycast = default;
             position = Vector2.zero;
             pressPosition = Vector2.zero;
             rawPointerPress = null;

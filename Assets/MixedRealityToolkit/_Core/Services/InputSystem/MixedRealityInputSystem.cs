@@ -142,6 +142,30 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
                     }
                 }
             }
+            else
+            {
+                sourceStateEventData = new SourceStateEventData(EventSystem.current);
+
+                sourceTrackingEventData = new SourcePoseEventData<TrackingState>(EventSystem.current);
+                sourceVector2EventData = new SourcePoseEventData<Vector2>(EventSystem.current);
+                sourcePositionEventData = new SourcePoseEventData<Vector3>(EventSystem.current);
+                sourceRotationEventData = new SourcePoseEventData<Quaternion>(EventSystem.current);
+                sourcePoseEventData = new SourcePoseEventData<MixedRealityPose>(EventSystem.current);
+
+                focusEventData = new FocusEventData(EventSystem.current);
+
+                inputEventData = new InputEventData(EventSystem.current);
+                pointerEventData = new MixedRealityPointerEventData(EventSystem.current);
+
+                floatInputEventData = new InputEventData<float>(EventSystem.current);
+                vector2InputEventData = new InputEventData<Vector2>(EventSystem.current);
+                positionInputEventData = new InputEventData<Vector3>(EventSystem.current);
+                rotationInputEventData = new InputEventData<Quaternion>(EventSystem.current);
+                poseInputEventData = new InputEventData<MixedRealityPose>(EventSystem.current);
+
+                speechEventData = new SpeechEventData(EventSystem.current);
+                dictationEventData = new DictationEventData(EventSystem.current);
+            }
 
             if (!addedComponents)
             {
@@ -149,28 +173,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
             }
 
             GazeProvider = CameraCache.Main.gameObject.EnsureComponent(MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile.PointerProfile.GazeProviderType.Type) as IMixedRealityGazeProvider;
-
-            sourceStateEventData = new SourceStateEventData(EventSystem.current);
-
-            sourceTrackingEventData = new SourcePoseEventData<TrackingState>(EventSystem.current);
-            sourceVector2EventData = new SourcePoseEventData<Vector2>(EventSystem.current);
-            sourcePositionEventData = new SourcePoseEventData<Vector3>(EventSystem.current);
-            sourceRotationEventData = new SourcePoseEventData<Quaternion>(EventSystem.current);
-            sourcePoseEventData = new SourcePoseEventData<MixedRealityPose>(EventSystem.current);
-
-            focusEventData = new FocusEventData(EventSystem.current);
-
-            inputEventData = new InputEventData(EventSystem.current);
-            pointerEventData = new MixedRealityPointerEventData(EventSystem.current);
-
-            floatInputEventData = new InputEventData<float>(EventSystem.current);
-            vector2InputEventData = new InputEventData<Vector2>(EventSystem.current);
-            positionInputEventData = new InputEventData<Vector3>(EventSystem.current);
-            rotationInputEventData = new InputEventData<Quaternion>(EventSystem.current);
-            poseInputEventData = new InputEventData<MixedRealityPose>(EventSystem.current);
-
-            speechEventData = new SpeechEventData(EventSystem.current);
-            dictationEventData = new DictationEventData(EventSystem.current);
         }
 
         /// <inheritdoc />

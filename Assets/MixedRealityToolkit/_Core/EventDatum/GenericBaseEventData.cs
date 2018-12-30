@@ -29,7 +29,13 @@ namespace Microsoft.MixedReality.Toolkit.Core.EventDatum
         /// Constructor.
         /// </summary>
         /// <param name="eventSystem">Usually <see cref="EventSystem.current"/></param>
-        public GenericBaseEventData(EventSystem eventSystem) : base(eventSystem) { }
+        public GenericBaseEventData(EventSystem eventSystem) : base(eventSystem)
+        {
+            if (eventSystem == null)
+            {
+                throw new Exception("Event system cannot be null!");
+            }
+        }
 
         /// <summary>
         /// Used to initialize/reset the event and populate the data.

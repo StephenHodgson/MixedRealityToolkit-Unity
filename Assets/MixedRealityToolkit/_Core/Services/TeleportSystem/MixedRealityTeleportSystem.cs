@@ -45,8 +45,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.Teleportation
         {
             base.Initialize();
 
-#if UNITY_EDITOR
-            if (!UnityEditor.EditorApplication.isPlaying)
+            if (!Application.isPlaying)
             {
                 var eventSystems = Object.FindObjectsOfType<EventSystem>();
 
@@ -67,9 +66,10 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.Teleportation
                     Debug.Log("Too many event systems in the scene. The Teleport System requires only one.");
                 }
             }
-#endif // UNITY_EDITOR
-
-            teleportEventData = new TeleportEventData(EventSystem.current);
+            else
+            {
+                teleportEventData = new TeleportEventData(EventSystem.current);
+            }
         }
 
         /// <inheritdoc />

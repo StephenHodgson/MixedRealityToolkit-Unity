@@ -150,8 +150,10 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
             /// <inheritdoc />
             public FocusDetails Details => focusDetails;
 
+            private FocusDetails focusDetails = new FocusDetails();
+
             /// <inheritdoc />
-            public GameObject CurrentPointerTarget => focusDetails.Object;
+            public GameObject CurrentPointerTarget => Details.Object;
 
             /// <inheritdoc />
             public GameObject PreviousPointerTarget { get; private set; }
@@ -169,6 +171,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
                     if (graphicData == null)
                     {
                         graphicData = new GraphicInputEventData(EventSystem.current);
+                        graphicData.Clear();
                     }
 
                     Debug.Assert(graphicData != null);
@@ -178,7 +181,6 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
             }
 
             private GraphicInputEventData graphicData;
-            private FocusDetails focusDetails = new FocusDetails();
             private Vector3 pointLocalSpace;
             private Vector3 normalLocalSpace;
             private bool pointerWasLocked;
@@ -278,7 +280,6 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
             public void ResetFocusedObjects(bool clearPreviousObject = true)
             {
                 PreviousPointerTarget = clearPreviousObject ? null : CurrentPointerTarget;
-
                 focusDetails.Point = Details.Point;
                 focusDetails.Normal = Details.Normal;
                 focusDetails.Object = null;
@@ -302,10 +303,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
             }
 
             /// <inheritdoc />
-            public override int GetHashCode()
-            {
-                return Pointer != null ? Pointer.GetHashCode() : 0;
-            }
+            public override int GetHashCode() => Pointer != null ? Pointer.GetHashCode() : 0;
         }
 
         #region IMixedRealityService Implementation
@@ -375,6 +373,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
 
             if (TryGetSpecificPointerGraphicEventData(pointingSource, out GraphicInputEventData graphicInputEventData))
             {
+                Debug.Assert(graphicInputEventData != null);
                 graphicInputEventData.selectedObject = focusDetails.Object;
             }
 
@@ -399,6 +398,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
         {
             if (TryGetPointerData(pointer, out PointerData pointerData))
             {
+                Debug.Assert(pointerData.GraphicEventData != null);
                 graphicInputEventData = pointerData.GraphicEventData;
                 return true;
             }

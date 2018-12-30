@@ -166,8 +166,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
             /// <inheritdoc />
             public override float PointerExtent
             {
-                get { return pointerExtent; }
-                set { pointerExtent = value; }
+                get => pointerExtent;
+                set => pointerExtent = value;
             }
 
             /// <summary>

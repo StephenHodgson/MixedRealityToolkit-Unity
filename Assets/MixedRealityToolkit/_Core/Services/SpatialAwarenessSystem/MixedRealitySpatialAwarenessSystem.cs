@@ -149,8 +149,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.SpatialAwarenessSystem
         {
             base.Initialize();
 
-            meshEventData = new MixedRealitySpatialAwarenessEventData<SpatialMeshObject>(EventSystem.current);
-            surfaceFindingEventData = new MixedRealitySpatialAwarenessEventData<GameObject>(EventSystem.current);
+            if (Application.isPlaying)
+            {
+                meshEventData = new MixedRealitySpatialAwarenessEventData<SpatialMeshObject>(EventSystem.current);
+                surfaceFindingEventData = new MixedRealitySpatialAwarenessEventData<GameObject>(EventSystem.current);
+            }
         }
 
         /// <inheritdoc/>
