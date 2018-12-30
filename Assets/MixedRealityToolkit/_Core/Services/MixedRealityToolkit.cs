@@ -697,10 +697,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
             {
                 InitializeInstance();
             }
-            else
-            {
-                Debug.LogError("Failed to properly initialize the MixedRealityToolkit");
-            }
         }
 
         private void OnEnable()

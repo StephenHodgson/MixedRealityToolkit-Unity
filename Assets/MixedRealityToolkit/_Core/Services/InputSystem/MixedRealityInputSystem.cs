@@ -899,6 +899,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseOnInputDown(IMixedRealityInputSource source, MixedRealityInputAction inputAction)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, true);
 
             // Create input event
@@ -911,6 +913,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseOnInputDown(IMixedRealityInputSource source, Handedness handedness, MixedRealityInputAction inputAction)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, true);
 
             // Create input event
@@ -934,6 +938,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseOnInputPressed(IMixedRealityInputSource source, MixedRealityInputAction inputAction)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, true);
 
             // Create input event
@@ -946,6 +952,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseOnInputPressed(IMixedRealityInputSource source, Handedness handedness, MixedRealityInputAction inputAction)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, true);
 
             // Create input event
@@ -958,6 +966,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseOnInputPressed(IMixedRealityInputSource source, MixedRealityInputAction inputAction, float pressAmount)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, pressAmount);
 
             // Create input event
@@ -970,6 +980,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseOnInputPressed(IMixedRealityInputSource source, Handedness handedness, MixedRealityInputAction inputAction, float pressAmount)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, pressAmount);
 
             // Create input event
@@ -993,6 +1005,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseOnInputUp(IMixedRealityInputSource source, MixedRealityInputAction inputAction)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, false);
 
             // Create input event
@@ -1005,6 +1019,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseOnInputUp(IMixedRealityInputSource source, Handedness handedness, MixedRealityInputAction inputAction)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, false);
 
             // Create input event
@@ -1028,6 +1044,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaisePositionInputChanged(IMixedRealityInputSource source, MixedRealityInputAction inputAction, Vector2 inputPosition)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, inputPosition);
 
             // Create input event
@@ -1040,6 +1058,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaisePositionInputChanged(IMixedRealityInputSource source, Handedness handedness, MixedRealityInputAction inputAction, Vector2 inputPosition)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, inputPosition);
 
             // Create input event
@@ -1059,6 +1079,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaisePositionInputChanged(IMixedRealityInputSource source, MixedRealityInputAction inputAction, Vector3 position)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, position);
 
             // Create input event
@@ -1071,6 +1093,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaisePositionInputChanged(IMixedRealityInputSource source, Handedness handedness, MixedRealityInputAction inputAction, Vector3 position)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, position);
 
             // Create input event
@@ -1094,6 +1118,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseRotationInputChanged(IMixedRealityInputSource source, MixedRealityInputAction inputAction, Quaternion rotation)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, rotation);
 
             // Create input event
@@ -1106,6 +1132,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseRotationInputChanged(IMixedRealityInputSource source, Handedness handedness, MixedRealityInputAction inputAction, Quaternion rotation)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, rotation);
 
             // Create input event
@@ -1129,6 +1157,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaisePoseInputChanged(IMixedRealityInputSource source, MixedRealityInputAction inputAction, MixedRealityPose inputData)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, inputData);
 
             // Create input event
@@ -1141,6 +1171,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaisePoseInputChanged(IMixedRealityInputSource source, Handedness handedness, MixedRealityInputAction inputAction, MixedRealityPose inputData)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             inputAction = ProcessRules(inputAction, inputData);
 
             // Create input event
@@ -1166,6 +1198,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseGestureStarted(IMixedRealityController controller, MixedRealityInputAction action)
         {
+            Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
+
             action = ProcessRules(action, true);
             inputEventData.Initialize(controller.InputSource, action);
             HandleEvent(inputEventData, OnGestureStarted);
@@ -1181,6 +1215,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseGestureUpdated(IMixedRealityController controller, MixedRealityInputAction action)
         {
+            Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
             action = ProcessRules(action, true);
             inputEventData.Initialize(controller.InputSource, action);
             HandleEvent(inputEventData, OnGestureUpdated);
@@ -1196,6 +1231,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseGestureUpdated(IMixedRealityController controller, MixedRealityInputAction action, Vector2 inputData)
         {
+            Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
             action = ProcessRules(action, inputData);
             vector2InputEventData.Initialize(controller.InputSource, controller.ControllerHandedness, action, inputData);
             HandleEvent(vector2InputEventData, OnGestureVector2PositionUpdated);
@@ -1211,6 +1247,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseGestureUpdated(IMixedRealityController controller, MixedRealityInputAction action, Vector3 inputData)
         {
+            Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
             action = ProcessRules(action, inputData);
             positionInputEventData.Initialize(controller.InputSource, controller.ControllerHandedness, action, inputData);
             HandleEvent(positionInputEventData, OnGesturePositionUpdated);
@@ -1226,6 +1263,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseGestureUpdated(IMixedRealityController controller, MixedRealityInputAction action, Quaternion inputData)
         {
+            Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
             action = ProcessRules(action, inputData);
             rotationInputEventData.Initialize(controller.InputSource, controller.ControllerHandedness, action, inputData);
             HandleEvent(rotationInputEventData, OnGestureRotationUpdated);
@@ -1241,6 +1279,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseGestureUpdated(IMixedRealityController controller, MixedRealityInputAction action, MixedRealityPose inputData)
         {
+            Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
             action = ProcessRules(action, inputData);
             poseInputEventData.Initialize(controller.InputSource, controller.ControllerHandedness, action, inputData);
             HandleEvent(poseInputEventData, OnGesturePoseUpdated);
@@ -1256,6 +1295,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseGestureCompleted(IMixedRealityController controller, MixedRealityInputAction action)
         {
+            Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
             action = ProcessRules(action, false);
             inputEventData.Initialize(controller.InputSource, action);
             HandleEvent(inputEventData, OnGestureCompleted);
@@ -1271,6 +1311,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseGestureCompleted(IMixedRealityController controller, MixedRealityInputAction action, Vector2 inputData)
         {
+            Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
             action = ProcessRules(action, inputData);
             vector2InputEventData.Initialize(controller.InputSource, controller.ControllerHandedness, action, inputData);
             HandleEvent(vector2InputEventData, OnGestureVector2PositionCompleted);
@@ -1286,6 +1327,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseGestureCompleted(IMixedRealityController controller, MixedRealityInputAction action, Vector3 inputData)
         {
+            Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
             action = ProcessRules(action, inputData);
             positionInputEventData.Initialize(controller.InputSource, controller.ControllerHandedness, action, inputData);
             HandleEvent(positionInputEventData, OnGesturePositionCompleted);
@@ -1301,6 +1343,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseGestureCompleted(IMixedRealityController controller, MixedRealityInputAction action, Quaternion inputData)
         {
+            Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
             action = ProcessRules(action, inputData);
             rotationInputEventData.Initialize(controller.InputSource, controller.ControllerHandedness, action, inputData);
             HandleEvent(rotationInputEventData, OnGestureRotationCompleted);
@@ -1316,6 +1359,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseGestureCompleted(IMixedRealityController controller, MixedRealityInputAction action, MixedRealityPose inputData)
         {
+            Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
             action = ProcessRules(action, inputData);
             poseInputEventData.Initialize(controller.InputSource, controller.ControllerHandedness, action, inputData);
             HandleEvent(poseInputEventData, OnGesturePoseCompleted);
@@ -1331,6 +1375,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseGestureCanceled(IMixedRealityController controller, MixedRealityInputAction action)
         {
+            Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
             action = ProcessRules(action, false);
             inputEventData.Initialize(controller.InputSource, action);
             HandleEvent(inputEventData, OnGestureCanceled);
@@ -1350,6 +1395,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseSpeechCommandRecognized(IMixedRealityInputSource source, MixedRealityInputAction inputAction, RecognitionConfidenceLevel confidence, TimeSpan phraseDuration, DateTime phraseStartTime, string text)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             // Create input event
             speechEventData.Initialize(source, inputAction, confidence, phraseDuration, phraseStartTime, text);
 
@@ -1371,6 +1418,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseDictationHypothesis(IMixedRealityInputSource source, string dictationHypothesis, AudioClip dictationAudioClip = null)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             // Create input event
             dictationEventData.Initialize(source, dictationHypothesis, dictationAudioClip);
 
@@ -1388,6 +1437,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseDictationResult(IMixedRealityInputSource source, string dictationResult, AudioClip dictationAudioClip = null)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             // Create input event
             dictationEventData.Initialize(source, dictationResult, dictationAudioClip);
 
@@ -1405,6 +1456,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseDictationComplete(IMixedRealityInputSource source, string dictationResult, AudioClip dictationAudioClip)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             // Create input event
             dictationEventData.Initialize(source, dictationResult, dictationAudioClip);
 
@@ -1422,6 +1475,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         /// <inheritdoc />
         public void RaiseDictationError(IMixedRealityInputSource source, string dictationResult, AudioClip dictationAudioClip = null)
         {
+            Debug.Assert(DetectedInputSources.Contains(source));
+
             // Create input event
             dictationEventData.Initialize(source, dictationResult, dictationAudioClip);
 

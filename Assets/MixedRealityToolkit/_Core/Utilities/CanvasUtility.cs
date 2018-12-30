@@ -13,10 +13,18 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities
     [RequireComponent(typeof(Canvas))]
     public class CanvasUtility : MonoBehaviour
     {
+        [SerializeField]
+        [HideInInspector]
+        private Canvas canvas;
+
         /// <summary>
         /// The canvas this helper script is targeting.
         /// </summary>
-        public Canvas Canvas { get; set; }
+        public Canvas Canvas
+        {
+            get => canvas;
+            set => canvas = value;
+        }
 
         private void Awake()
         {

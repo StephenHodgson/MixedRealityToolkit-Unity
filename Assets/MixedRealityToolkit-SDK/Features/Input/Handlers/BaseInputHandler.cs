@@ -19,8 +19,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
         /// </summary>
         public virtual bool IsFocusRequired
         {
-            get { return isFocusRequired; }
-            protected set { isFocusRequired = value; }
+            get => isFocusRequired;
+            protected set => isFocusRequired = value;
         }
 
         #region MonoBehaviour Implementation

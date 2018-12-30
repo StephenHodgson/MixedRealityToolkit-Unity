@@ -17,7 +17,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Pointers
     /// </summary>
     public class MousePointer : BaseControllerPointer, IMixedRealityMousePointer
     {
-        private float timeoutTimer = 0.0f;
+        private float lastUpdateTime = 0.0f;
 
         private bool isInteractionEnabled = false;
 
@@ -207,13 +207,11 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Pointers
         {
             if (!hideCursorWhenInactive || isDisabled) { return; }
 
-            timeoutTimer += Time.unscaledDeltaTime;
-
-            if (timeoutTimer >= hideTimeout)
+            if (Time.time - lastUpdateTime >= hideTimeout)
             {
-                timeoutTimer = 0.0f;
                 BaseCursor?.SetVisibility(false);
                 isDisabled = true;
+                lastUpdateTime = Time.time;
             }
         }
 
@@ -221,6 +219,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Pointers
 
         private void UpdateMousePosition(float mouseX, float mouseY)
         {
+            var shouldUpdate = false;
+
             if (Mathf.Abs(mouseX) >= movementThresholdToUnHide ||
                 Mathf.Abs(mouseY) >= movementThresholdToUnHide)
             {
@@ -230,12 +230,13 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Pointers
                     transform.rotation = CameraCache.Main.transform.rotation;
                 }
 
+                shouldUpdate = true;
                 isDisabled = false;
             }
 
-            if (!isDisabled)
+            if (!isDisabled && shouldUpdate)
             {
-                timeoutTimer = 0.0f;
+                lastUpdateTime = Time.time;
             }
 
             var newRotation = Vector3.zero;
