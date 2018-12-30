@@ -15,6 +15,15 @@ using UnityEngine.XR.WSA.Input;
 using WsaGestureSettings = UnityEngine.XR.WSA.Input.GestureSettings;
 #endif // UNITY_WSA
 
+#if WINDOWS_UWP
+using Microsoft.MixedReality.Toolkit.Core.Utilities;
+using System;
+using Windows.ApplicationModel.Core;
+using Windows.Perception;
+using Windows.Storage.Streams;
+using Windows.UI.Input.Spatial;
+#endif // WINDOWS_UWP
+
 namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsMixedReality
 {
     /// <summary>
@@ -271,8 +280,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
 
                 if (controller != null)
                 {
-                    controller.UpdateController(interactionManagerStates[i]);
                     MixedRealityToolkit.InputSystem?.RaiseSourceDetected(controller.InputSource, controller);
+                    controller.UpdateController(interactionManagerStates[i]);
                 }
             }
 
@@ -293,7 +302,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
 
             for (var i = 0; i < interactionManagerStates?.Length; i++)
             {
-                GetController(interactionManagerStates[i].source)?.UpdateController(interactionManagerStates[i]);
+                GetController(interactionManagerStates[i].source, false)?.UpdateController(interactionManagerStates[i]);
             }
 
             LastInteractionManagerStateReading = interactionManagerStates;
@@ -386,7 +395,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
                 return null;
             }
 
-            detectedController.TryRenderControllerModel(typeof(WindowsMixedRealityController), interactionSource.kind == InteractionSourceKind.Hand);
+            TryRenderControllerModel(interactionSource, detectedController);
 
             for (int i = 0; i < detectedController.InputSource?.Pointers?.Length; i++)
             {
@@ -395,6 +404,51 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
 
             activeControllers.Add(interactionSource.id, detectedController);
             return detectedController;
+        }
+
+        private static async void TryRenderControllerModel(InteractionSource interactionSource, WindowsMixedRealityController controller)
+        {
+            byte[] glbModelData = null;
+
+#if WINDOWS_UWP
+            IRandomAccessStreamWithContentType stream = null;
+
+            if (WindowsApiChecker.UniversalApiContractV5_IsAvailable)
+            {
+                await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
+                {
+                    var sources = SpatialInteractionManager.GetForCurrentView().GetDetectedSourcesAtTimestamp(PerceptionTimestampHelper.FromHistoricalTargetTime(DateTimeOffset.Now));
+
+                    for (var i = 0; i < sources?.Count; i++)
+                    {
+                        if (sources[i].Source.Id.Equals(interactionSource.id))
+                        {
+                            stream = await sources[i].Source.Controller.TryGetRenderableModelAsync();
+                            break;
+                        }
+                    }
+                });
+            }
+
+            if (stream != null)
+            {
+                glbModelData = new byte[stream.Size];
+
+                using (var reader = new DataReader(stream))
+                {
+                    await reader.LoadAsync((uint)stream.Size);
+                    reader.ReadBytes(glbModelData);
+                }
+            }
+            else
+            {
+                Debug.LogError("Failed to load model data!");
+            }
+#else
+            Debug.Log("Skipping gltf load...");
+#endif // WINDOWS_UWP
+
+            await controller.TryRenderControllerModelAsync(typeof(WindowsMixedRealityController), glbModelData, interactionSource.kind == InteractionSourceKind.Hand);
         }
 
         /// <summary>

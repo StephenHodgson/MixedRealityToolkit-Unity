@@ -212,6 +212,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
             // Attempt to load the controller model from glbData.
             if (controllerModel == null && glbData != null)
             {
+                Debug.Log("Attempting to load gltf data...");
+
                 var gltfObject = GltfUtility.GetGltfObjectFromGlb(glbData);
                 await gltfObject.ConstructAsync();
                 controllerModel = gltfObject.GameObjectReference;
@@ -229,6 +231,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
                     }
                     return; // Nothing left to do;
                 }
+
+                Debug.LogWarning("Failed to construct controller from provided glb data! Falling back to global controller model.");
             }
 
             // If we didn't get an override model, and we didn't load the driver model,
@@ -250,7 +254,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
             if (controllerModel != null)
             {
                 var controllerObject = UnityEngine.Object.Instantiate(controllerModel, MixedRealityToolkit.Instance.MixedRealityPlayspace);
-                controllerObject.name = $"{ControllerHandedness}_{controllerObject.name}";
+                controllerObject.name = $"{controllerType.Name}_{ControllerHandedness}_{controllerObject.name}";
                 Visualizer = controllerObject.GetComponent<IMixedRealityControllerVisualizer>();
 
                 if (Visualizer != null)

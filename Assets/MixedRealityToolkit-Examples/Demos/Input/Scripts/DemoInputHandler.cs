@@ -87,7 +87,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos.Input
 
         public void OnInputChanged(InputEventData<float> eventData)
         {
-            Debug.Log($"[OnInputChanged] {eventData.InputSource.SourceName} | {eventData.MixedRealityInputAction.Description} | {eventData.InputData}");
+            // Debug.Log($"[OnInputChanged] {eventData.InputSource.SourceName} | {eventData.MixedRealityInputAction.Description} | {eventData.InputData}");
 
             if (eventData.MixedRealityInputAction == heightAction)
             {
@@ -100,7 +100,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos.Input
 
         public void OnInputChanged(InputEventData<Vector2> eventData)
         {
-            Debug.Log($"[OnInputChanged] {eventData.InputSource.SourceName} | {eventData.MixedRealityInputAction.Description} | {eventData.InputData}");
+            // Debug.Log($"[OnInputChanged] {eventData.InputSource.SourceName} | {eventData.MixedRealityInputAction.Description} | {eventData.InputData}");
 
             if (eventData.MixedRealityInputAction == movementAction)
             {
@@ -118,17 +118,17 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos.Input
 
         public void OnInputChanged(InputEventData<Vector3> eventData)
         {
-            Debug.Log($"[OnInputChanged] {eventData.InputSource.SourceName} | {eventData.MixedRealityInputAction.Description} | {eventData.InputData}");
+            // Debug.Log($"[OnInputChanged] {eventData.InputSource.SourceName} | {eventData.MixedRealityInputAction.Description} | {eventData.InputData}");
         }
 
         public void OnInputChanged(InputEventData<Quaternion> eventData)
         {
-            Debug.Log($"[OnInputChanged] {eventData.InputSource.SourceName} | {eventData.MixedRealityInputAction.Description} | {eventData.InputData}");
+            // Debug.Log($"[OnInputChanged] {eventData.InputSource.SourceName} | {eventData.MixedRealityInputAction.Description} | {eventData.InputData}");
         }
 
         public void OnInputChanged(InputEventData<MixedRealityPose> eventData)
         {
-            Debug.Log($"[OnInputChanged] {eventData.InputSource.SourceName} | {eventData.MixedRealityInputAction.Description} | {eventData.InputData}");
+            // Debug.Log($"[OnInputChanged] {eventData.InputSource.SourceName} | {eventData.MixedRealityInputAction.Description} | {eventData.InputData}");
         }
 
         #endregion IMixedRealityInputHandler Implementation
