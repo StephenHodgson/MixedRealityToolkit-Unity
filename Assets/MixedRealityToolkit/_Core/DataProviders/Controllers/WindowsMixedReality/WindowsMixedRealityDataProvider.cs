@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 #if UNITY_WSA
-using System;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Devices;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
@@ -54,10 +53,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
         public InteractionSourceState[] LastInteractionManagerStateReading { get; protected set; }
 
         /// <inheritdoc/>
-        public override IMixedRealityController[] GetActiveControllers()
-        {
-            return activeControllers.Values.ToArray();
-        }
+        public override IMixedRealityController[] GetActiveControllers() => activeControllers.Values.ToArray();
 
         private static bool gestureRecognizerEnabled;
 
@@ -389,6 +385,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
                 // Return null so we don't raise the source detected.
                 return null;
             }
+
+            detectedController.TryRenderControllerModel(typeof(WindowsMixedRealityController), interactionSource.kind == InteractionSourceKind.Hand);
 
             for (int i = 0; i < detectedController.InputSource?.Pointers?.Length; i++)
             {

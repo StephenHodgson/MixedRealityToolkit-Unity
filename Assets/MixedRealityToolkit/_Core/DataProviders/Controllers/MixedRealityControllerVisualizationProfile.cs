@@ -3,6 +3,7 @@
 
 using Microsoft.MixedReality.Toolkit.Core.Attributes;
 using Microsoft.MixedReality.Toolkit.Core.Definitions;
+using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.DataProviders.Controllers;
 using System;
@@ -22,8 +23,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
         /// </summary>
         public bool RenderMotionControllers
         {
-            get { return renderMotionControllers; }
-            private set { renderMotionControllers = value; }
+            get => renderMotionControllers;
+            private set => renderMotionControllers = value;
         }
 
         [SerializeField]
@@ -36,8 +37,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
         /// </summary>
         public SystemType ControllerVisualizationType
         {
-            get { return controllerVisualizationType; }
-            private set { controllerVisualizationType = value; }
+            get => controllerVisualizationType;
+            private set => controllerVisualizationType = value;
         }
 
         [SerializeField]
@@ -49,8 +50,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
         /// </summary>
         public bool UseDefaultModels
         {
-            get { return useDefaultModels; }
-            private set { useDefaultModels = value; }
+            get => useDefaultModels;
+            private set => useDefaultModels = value;
         }
 
         [SerializeField]
@@ -65,8 +66,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
         /// </remarks>
         public GameObject GlobalLeftHandModel
         {
-            get { return globalLeftHandModel; }
-            private set { globalLeftHandModel = value; }
+            get => globalLeftHandModel;
+            private set => globalLeftHandModel = value;
         }
 
         [SerializeField]
@@ -81,8 +82,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
         /// </remarks>
         public GameObject GlobalRightHandModel
         {
-            get { return globalRightHandModel; }
-            private set { globalRightHandModel = value; }
+            get => globalRightHandModel;
+            private set => globalRightHandModel = value;
         }
 
         [SerializeField]
@@ -112,6 +113,32 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Gets the alternate <see cref="MixedRealityInputAction"/> pose action for this controller variant.
+        /// </summary>
+        /// <param name="controllerType">The type of controller to query for</param>
+        /// <param name="hand">The specific hand assigned to the controller</param>
+        /// <param name="alternatePoseAction">The alternate <see cref="MixedRealityInputAction"/> to use</param>
+        /// <returns>True, if a valid alternative is found.</returns>
+        public bool TryGetControllerPoseOverride(Type controllerType, Handedness hand, out MixedRealityInputAction alternatePoseAction)
+        {
+            alternatePoseAction = MixedRealityInputAction.None;
+
+            for (int i = 0; i < controllerVisualizationSettings.Length; i++)
+            {
+                if (controllerVisualizationSettings[i].ControllerType != null &&
+                    controllerVisualizationSettings[i].ControllerType.Type == controllerType &&
+                    (controllerVisualizationSettings[i].Handedness == hand || controllerVisualizationSettings[i].Handedness == Handedness.Both) &&
+                    controllerVisualizationSettings[i].AlternatePoseAction != MixedRealityInputAction.None)
+                {
+                    alternatePoseAction = controllerVisualizationSettings[i].AlternatePoseAction;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

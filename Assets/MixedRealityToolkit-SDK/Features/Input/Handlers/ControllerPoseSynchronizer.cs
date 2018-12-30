@@ -25,7 +25,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
         public Handedness Handedness
         {
             get => handedness;
-            set => handedness = value;
+            protected set => handedness = value;
         }
 
         [SerializeField]
@@ -96,7 +96,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
         public virtual void OnSourceLost(SourceStateEventData eventData)
         {
             if (eventData.SourceId == Controller?.InputSource.SourceId &&
-                eventData.Controller?.ControllerHandedness == Handedness)
+                eventData.Controller.ControllerHandedness == Handedness)
             {
                 IsTracked = false;
                 TrackingState = TrackingState.NotTracked;

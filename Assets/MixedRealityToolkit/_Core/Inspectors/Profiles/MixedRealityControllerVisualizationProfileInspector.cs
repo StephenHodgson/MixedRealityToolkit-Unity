@@ -195,6 +195,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                 EditorGUI.indentLevel++;
 
                 EditorGUILayout.PropertyField(controllerSetting.FindPropertyRelative("controllerType"));
+                EditorGUILayout.PropertyField(controllerSetting.FindPropertyRelative("controllerVisualizationType"));
 
                 if (!hasValidType)
                 {
@@ -213,6 +214,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                 {
                     mixedRealityControllerHandedness.intValue = handednessValue + 1;
                 }
+
+                EditorGUILayout.PropertyField(controllerSetting.FindPropertyRelative("alternatePoseAction"));
 
                 var overrideModel = controllerSetting.FindPropertyRelative("overrideModel");
                 var overrideModelPrefab = overrideModel.objectReferenceValue as GameObject;

@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information. 
 
 using Microsoft.MixedReality.Toolkit.Core.Attributes;
+using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.DataProviders.Controllers;
 using System;
@@ -22,12 +23,22 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
         /// <param name="controllerType">Controller Type to instantiate at runtime.</param>
         /// <param name="handedness">The designated hand that the device is managing.</param>
         /// <param name="overrideModel">The controller model prefab to be rendered.</param>
-        public MixedRealityControllerVisualizationSetting(string description, Type controllerType, Handedness handedness = Handedness.None, GameObject overrideModel = null) : this()
+        /// <param name="controllerVisualizationType">The <see cref="IMixedRealityControllerVisualizer"/> type to use for this controller setting.</param>
+        /// <param name="alternatePoseAction">The alternate pose action to use for certain controller varients.</param>
+        public MixedRealityControllerVisualizationSetting(string description, Type controllerType, Handedness handedness = Handedness.None, GameObject overrideModel = null, SystemType controllerVisualizationType = null, MixedRealityInputAction alternatePoseAction = default) : this()
         {
             this.description = description;
             this.controllerType = new SystemType(controllerType);
             this.handedness = handedness;
             this.overrideModel = overrideModel;
+            this.controllerVisualizationType = controllerVisualizationType;
+
+            if (alternatePoseAction == default)
+            {
+                alternatePoseAction = MixedRealityInputAction.None;
+            }
+
+            this.alternatePoseAction = alternatePoseAction;
             useDefaultModel = false;
         }
 
@@ -86,8 +97,17 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
         /// </summary>
         public SystemType ControllerVisualizationType
         {
-            get { return controllerVisualizationType; }
-            private set { controllerVisualizationType = value; }
+            get => controllerVisualizationType;
+            private set => controllerVisualizationType = value;
         }
+
+        [SerializeField]
+        [Tooltip("The alternate pose action to use for certain controller variants.")]
+        private MixedRealityInputAction alternatePoseAction;
+
+        /// <summary>
+        /// The alternate pose action to use for certain controller variants.
+        /// </summary>
+        public MixedRealityInputAction AlternatePoseAction => alternatePoseAction;
     }
 }
