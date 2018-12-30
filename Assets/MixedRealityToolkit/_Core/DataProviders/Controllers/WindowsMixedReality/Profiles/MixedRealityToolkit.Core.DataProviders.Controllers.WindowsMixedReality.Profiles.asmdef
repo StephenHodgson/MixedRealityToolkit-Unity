@@ -1,0 +1,15 @@
+{
+    "name": "MixedRealityToolkit.Core.DataProviders.Controllers.WindowsMixedReality.Profiles",
+    "references": [
+        "Microsoft.MixedReality.Toolkit",
+        "Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsMixedReality"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

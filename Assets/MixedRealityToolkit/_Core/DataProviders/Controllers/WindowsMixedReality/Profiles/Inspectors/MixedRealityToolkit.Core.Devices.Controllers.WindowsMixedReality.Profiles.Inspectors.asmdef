@@ -3,12 +3,17 @@
     "references": [
         "Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsMixedReality",
         "Microsoft.MixedReality.Toolkit.Core.Inspectors",
-        "Microsoft.MixedReality.Toolkit"
+        "Microsoft.MixedReality.Toolkit",
+        "MixedRealityToolkit.Core.DataProviders.Controllers.WindowsMixedReality.Profiles"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor"
     ],
     "excludePlatforms": [],
-    "allowUnsafeCode": false
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
 }
