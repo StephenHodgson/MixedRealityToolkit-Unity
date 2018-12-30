@@ -62,7 +62,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Pointers
         /// <inheritdoc />
         public override IMixedRealityController Controller
         {
-            get { return controller; }
+            get => controller;
             set
             {
                 controller = value;
@@ -143,25 +143,31 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Pointers
         /// <inheritdoc />
         public override void OnInputDown(InputEventData eventData)
         {
-            cursorWasDisabledOnDown = isDisabled;
+            if (eventData.SourceId == Controller?.InputSource.SourceId)
+            {
+                cursorWasDisabledOnDown = isDisabled;
 
-            if (cursorWasDisabledOnDown)
-            {
-                BaseCursor?.SetVisibility(true);
-                transform.rotation = CameraCache.Main.transform.rotation;
-            }
-            else
-            {
-                base.OnInputDown(eventData);
+                if (cursorWasDisabledOnDown)
+                {
+                    BaseCursor?.SetVisibility(true);
+                    transform.rotation = CameraCache.Main.transform.rotation;
+                }
+                else
+                {
+                    base.OnInputDown(eventData);
+                }
             }
         }
 
         /// <inheritdoc />
         public override void OnInputUp(InputEventData eventData)
         {
-            if (!isDisabled && !cursorWasDisabledOnDown)
+            if (eventData.SourceId == Controller?.InputSource.SourceId)
             {
-                base.OnInputUp(eventData);
+                if (!isDisabled && !cursorWasDisabledOnDown)
+                {
+                    base.OnInputUp(eventData);
+                }
             }
         }
 

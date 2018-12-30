@@ -9,6 +9,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Definitions.Devices
     public enum GestureInputType
     {
         None = 0,
+        Tap,
+        DoubleTap,
         Hold,
         Navigation,
         Manipulation

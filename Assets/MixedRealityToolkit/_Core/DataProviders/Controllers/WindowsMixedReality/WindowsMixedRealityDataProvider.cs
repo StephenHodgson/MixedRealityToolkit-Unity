@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 #if UNITY_WSA
+using System;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Devices;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
@@ -193,6 +194,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
             }
         }
 
+        private MixedRealityInputAction tapAction = MixedRealityInputAction.None;
+        private MixedRealityInputAction doubleTapAction = MixedRealityInputAction.None;
         private MixedRealityInputAction holdAction = MixedRealityInputAction.None;
         private MixedRealityInputAction navigationAction = MixedRealityInputAction.None;
         private MixedRealityInputAction manipulationAction = MixedRealityInputAction.None;
@@ -211,6 +214,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
         {
             if (!Application.isPlaying) { return; }
 
+            gestureRecognizer.Tapped += GestureRecognizer_Tapped;
             gestureRecognizer.HoldStarted += GestureRecognizer_HoldStarted;
             gestureRecognizer.HoldCompleted += GestureRecognizer_HoldCompleted;
             gestureRecognizer.HoldCanceled += GestureRecognizer_HoldCanceled;
@@ -248,6 +252,12 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
                             break;
                         case GestureInputType.Navigation:
                             navigationAction = gesture.Action;
+                            break;
+                        case GestureInputType.Tap:
+                            tapAction = gesture.Action;
+                            break;
+                        case GestureInputType.DoubleTap:
+                            doubleTapAction = gesture.Action;
                             break;
                     }
                 }
@@ -298,6 +308,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
         {
             base.Disable();
 
+            gestureRecognizer.Tapped -= GestureRecognizer_Tapped;
             gestureRecognizer.HoldStarted -= GestureRecognizer_HoldStarted;
             gestureRecognizer.HoldCompleted -= GestureRecognizer_HoldCompleted;
             gestureRecognizer.HoldCanceled -= GestureRecognizer_HoldCanceled;
@@ -438,6 +449,25 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
         #endregion Unity InteractionManager Events
 
         #region Gesture Recognizer Events
+
+        private void GestureRecognizer_Tapped(TappedEventArgs args)
+        {
+            var controller = GetController(args.source, false);
+
+            if (controller != null)
+            {
+                if (args.tapCount == 1)
+                {
+                    MixedRealityToolkit.InputSystem?.RaiseGestureStarted(controller, tapAction);
+                    MixedRealityToolkit.InputSystem?.RaiseGestureCompleted(controller, tapAction);
+                }
+                else if (args.tapCount == 2)
+                {
+                    MixedRealityToolkit.InputSystem?.RaiseGestureStarted(controller, doubleTapAction);
+                    MixedRealityToolkit.InputSystem?.RaiseGestureCompleted(controller, doubleTapAction);
+                }
+            }
+        }
 
         private void GestureRecognizer_HoldStarted(HoldStartedEventArgs args)
         {

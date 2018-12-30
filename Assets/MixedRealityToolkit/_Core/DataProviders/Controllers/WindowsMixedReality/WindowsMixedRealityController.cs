@@ -430,8 +430,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
                     break;
                 case DeviceInputType.Select:
                     {
-                        // Update the interaction data source
-                        interactionMapping.BoolData = interactionSourceState.selectPressed;
+                        interactionMapping.BoolData = interactionSourceState.source.kind == InteractionSourceKind.Hand 
+                            ? interactionSourceState.anyPressed
+                            : interactionSourceState.selectPressed;
 
                         // If our value changed raise it.
                         if (interactionMapping.Changed)
