@@ -10,7 +10,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input
     /// <summary>
     /// This component ensures that all input events are forwarded to this <see cref="GameObject"/> when focus or gaze is not required.
     /// </summary>
-    public class InputSystemGlobalListener : MonoBehaviour
+    public abstract class InputSystemGlobalListener : MonoBehaviour
     {
         private bool lateInitialize = true;
 

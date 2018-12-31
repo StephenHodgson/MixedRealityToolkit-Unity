@@ -1,19 +1,28 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-
+﻿using Microsoft.MixedReality.Toolkit.Core.Attributes;
+using Microsoft.MixedReality.Toolkit.Core.Definitions.Devices;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
+using Microsoft.MixedReality.Toolkit.Core.EventDatum.Input;
+using Microsoft.MixedReality.Toolkit.Core.Interfaces.DataProviders.Controllers;
 using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
 {
-    /// <summary>
-    /// This script keeps track of the GameObjects representations for each button on the Mixed Reality Controllers.
-    /// It also keeps track of the animation Transforms in order to properly animate according to user input.
-    /// </summary>
-    public class MixedRealityControllerInfo
+    public class WindowsMixedRealityControllerVisualizer : DefaultMixedRealityControllerVisualizer
     {
-        public readonly GameObject ControllerParent;
-        public readonly Handedness Handedness;
+        [Prefab]
+        [SerializeField]
+        private GameObject touchpadTouchVisualizer = null;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public GameObject TouchpadTouchVisualizer
+        {
+            get => touchpadTouchVisualizer;
+            set => touchpadTouchVisualizer = value;
+        }
+
+        private readonly Quaternion inverseRotation = Quaternion.Euler(0f, 180f, 0f);
 
         private GameObject home;
         private Transform homePressed;
@@ -45,7 +54,6 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
         private GameObject touchpadTouchY;
         private Transform touchpadTouchYMin;
         private Transform touchpadTouchYMax;
-        private GameObject touchpadTouchVisualizer = null;
         private GameObject pointingPose;
 
         // These values are used to determine if a button's state has changed.
@@ -59,97 +67,22 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
         private Vector2 lastTouchpadPosition;
         private double lastSelectPressedAmount;
 
-        public MixedRealityControllerInfo(GameObject controllerParent, Handedness handedness)
+        public override IMixedRealityController Controller
         {
-            ControllerParent = controllerParent;
-            Handedness = handedness;
-        }
-
-        public enum ControllerElementEnum
-        {
-            // Controller button elements
-            Home,
-            Menu,
-            Grasp,
-            Thumbstick,
-            Select,
-            Touchpad,
-            // Controller body elements & poses
-            PointingPose
-        }
-
-        public bool TryGetElement(ControllerElementEnum element, out Transform elementTransform)
-        {
-            switch (element)
+            get => base.Controller;
+            set
             {
-                // control elements
-                case ControllerElementEnum.Home:
-                    if (home != null)
-                    {
-                        elementTransform = home.transform;
-                        return true;
-                    }
-                    break;
-                case ControllerElementEnum.Menu:
-                    if (menu != null)
-                    {
-                        elementTransform = menu.transform;
-                        return true;
-                    }
-                    break;
-                case ControllerElementEnum.Select:
-                    if (select != null)
-                    {
-                        elementTransform = select.transform;
-                        return true;
-                    }
-                    break;
-                case ControllerElementEnum.Grasp:
-                    if (grasp != null)
-                    {
-                        elementTransform = grasp.transform;
-                        return true;
-                    }
-                    break;
-                case ControllerElementEnum.Thumbstick:
-                    if (thumbstickPress != null)
-                    {
-                        elementTransform = thumbstickPress.transform;
-                        return true;
-                    }
-                    break;
-                case ControllerElementEnum.Touchpad:
-                    if (touchpadPress != null)
-                    {
-                        elementTransform = touchpadPress.transform;
-                        return true;
-                    }
-                    break;
-                // body elements & poses
-                case ControllerElementEnum.PointingPose:
-                    if (pointingPose != null)
-                    {
-                        elementTransform = pointingPose.transform;
-                        return true;
-                    }
-                    break;
+                base.Controller = value;
+                GetTransformData(transform);
             }
-
-            elementTransform = null;
-            return false;
         }
 
-        /// <summary>
-        /// Iterates through the Transform array to find specifically named GameObjects.
-        /// These GameObjects specify the animation bounds and the GameObject to modify for button,
-        /// thumbstick, and touchpad animation.
-        /// </summary>
-        /// <param name="childTransforms">The transforms of the glTF model.</param>
-        /// <param name="motionControllerVisualizer"></param>
-        public void LoadInfo(Transform[] childTransforms, MixedRealityControllerVisualizer motionControllerVisualizer)
+        private void GetTransformData(Transform _transform)
         {
-            foreach (Transform child in childTransforms)
+            for (int i = 0; i < _transform.childCount; i++)
             {
+                var child = _transform.GetChild(i);
+
                 // Animation bounds are named in two pairs:
                 // pressed/unpressed and min/max. There is also a value
                 // transform, which is the transform to modify to
@@ -160,6 +93,12 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
                 {
                     case "pointing_pose":
                         pointingPose = child.gameObject;
+                        Driver = null;
+                        pointingPose.transform.parent = transform;
+                        transform.GetChild(0).parent = pointingPose.transform;
+                        Driver = pointingPose.transform;
+                        transform.localPosition = Vector3.zero;
+                        transform.localRotation = Quaternion.identity;
                         break;
                     case "pressed":
                         switch (child.parent.name.ToLower())
@@ -277,10 +216,64 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
                         }
                         break;
                 }
+
+                GetTransformData(child);
             }
         }
 
-        public void AnimateGrasp(bool isGrasped)
+        #region IMixedRealityInputHandler Implementation
+
+        public override void OnInputDown(InputEventData eventData)
+        {
+            if (eventData.SourceId != Controller?.InputSource.SourceId) { return; }
+        }
+
+        public override void OnInputUp(InputEventData eventData)
+        {
+            if (eventData.SourceId != Controller?.InputSource.SourceId) { return; }
+        }
+
+        public override void OnInputChanged(InputEventData<float> eventData)
+        {
+            if (eventData.SourceId != Controller?.InputSource.SourceId) { return; }
+        }
+
+        public override void OnInputChanged(InputEventData<Vector2> eventData)
+        {
+            if (eventData.SourceId != Controller?.InputSource.SourceId) { return; }
+        }
+
+        public override void OnInputChanged(InputEventData<Vector3> eventData)
+        {
+            if (eventData.SourceId != Controller?.InputSource.SourceId) { return; }
+        }
+
+        public override void OnInputChanged(InputEventData<Quaternion> eventData)
+        {
+            if (eventData.SourceId != Controller?.InputSource.SourceId) { return; }
+        }
+
+        public override void OnInputChanged(InputEventData<MixedRealityPose> eventData)
+        {
+            if (eventData.SourceId != Controller?.InputSource.SourceId) { return; }
+
+            if (!UseSourcePoseData &&
+                PoseAction == eventData.MixedRealityInputAction)
+            {
+                IsTracked = true;
+                TrackingState = TrackingState.Tracked;
+
+                if (Driver != null)
+                {
+                    Driver.localPosition = eventData.InputData.Position;
+                    Driver.localRotation = eventData.InputData.Rotation * inverseRotation;
+                }
+            }
+        }
+
+        #endregion IMixedRealityInputHandler Implementation
+
+        private void AnimateGrasp(bool isGrasped)
         {
             if (grasp != null && graspPressed != null && graspUnpressed != null && isGrasped != wasGrasped)
             {
@@ -289,7 +282,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
             }
         }
 
-        public void AnimateMenu(bool isMenuPressed)
+        private void AnimateMenu(bool isMenuPressed)
         {
             if (menu != null && menuPressed != null && menuUnpressed != null && isMenuPressed != wasMenuPressed)
             {
@@ -298,7 +291,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
             }
         }
 
-        public void AnimateHome(bool isHomePressed)
+        private void AnimateHome(bool isHomePressed)
         {
             if (home != null && homePressed != null && homeUnpressed != null && isHomePressed != wasHomePressed)
             {
@@ -307,7 +300,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
             }
         }
 
-        public void AnimateSelect(float newSelectPressedAmount)
+        private void AnimateSelect(float newSelectPressedAmount)
         {
             if (select != null && selectPressed != null && selectUnpressed != null && !newSelectPressedAmount.Equals((float)lastSelectPressedAmount))
             {
@@ -317,7 +310,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
             }
         }
 
-        public void AnimateThumbstick(bool isThumbstickPressed, Vector2 newThumbstickPosition)
+        private void AnimateThumbstick(bool isThumbstickPressed, Vector2 newThumbstickPosition)
         {
             if (thumbstickPress != null && thumbstickPressed != null && thumbstickUnpressed != null && isThumbstickPressed != wasThumbstickPressed)
             {
@@ -339,7 +332,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
             }
         }
 
-        public void AnimateTouchpad(bool isTouchpadPressed, bool isTouchpadTouched, Vector2 newTouchpadPosition)
+        private void AnimateTouchpad(bool isTouchpadPressed, bool isTouchpadTouched, Vector2 newTouchpadPosition)
         {
             if (touchpadPress != null && touchpadPressed != null && touchpadUnpressed != null && isTouchpadPressed != wasTouchpadPressed)
             {
@@ -347,9 +340,9 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
                 wasTouchpadPressed = isTouchpadPressed;
             }
 
-            if (touchpadTouchVisualizer != null && isTouchpadTouched != wasTouchpadTouched)
+            if (TouchpadTouchVisualizer != null && isTouchpadTouched != wasTouchpadTouched)
             {
-                touchpadTouchVisualizer.SetActive(isTouchpadTouched);
+                TouchpadTouchVisualizer.SetActive(isTouchpadTouched);
                 wasTouchpadTouched = isTouchpadTouched;
             }
 
@@ -367,19 +360,10 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
             }
         }
 
-        private void SetLocalPositionAndRotation(GameObject buttonGameObject, Transform newTransform)
+        private static void SetLocalPositionAndRotation(GameObject buttonGameObject, Transform newTransform)
         {
             buttonGameObject.transform.localPosition = newTransform.localPosition;
             buttonGameObject.transform.localRotation = newTransform.localRotation;
-        }
-
-        public void SetRenderersVisible(bool visible)
-        {
-            MeshRenderer[] renderers = ControllerParent.GetComponentsInChildren<MeshRenderer>();
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                renderers[i].enabled = visible;
-            }
         }
     }
 }

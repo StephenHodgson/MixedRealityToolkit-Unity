@@ -19,6 +19,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Interfaces.DataProviders.Controlle
             IMixedRealityInputHandler<MixedRealityPose>
     {
         /// <summary>
+        /// The <see cref="Transform"/> that will be synchronized with the controller data.
+        /// </summary>
+        /// <remarks>
+        /// Defaults to the <see cref="Transform"/> that this component is attached to.
+        /// </remarks>
+        Transform Driver { get; set; }
+
+        /// <summary>
         /// The controller handedness to synchronize with.
         /// </summary>
         Handedness Handedness { get; }

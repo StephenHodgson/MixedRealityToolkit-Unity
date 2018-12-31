@@ -17,6 +17,9 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
     {
         #region IMixedRealityControllerPoseSynchronizer Implementation
 
+        /// <inheritdoc />
+        public Transform Driver { get; set; }
+
         [SerializeField]
         [Tooltip("The handedness this controller should synchronize with.")]
         private Handedness handedness = Handedness.Left;
@@ -139,10 +142,12 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
         {
             if (eventData.SourceId == Controller?.InputSource.SourceId)
             {
-                if (UseSourcePoseData && TrackingState == TrackingState.Tracked)
+                if (Driver != null &&
+                    UseSourcePoseData &&
+                    TrackingState == TrackingState.Tracked)
                 {
-                    transform.localPosition = eventData.SourceData.Position;
-                    transform.localRotation = eventData.SourceData.Rotation;
+                    Driver.localPosition = eventData.SourceData.Position;
+                    Driver.localRotation = eventData.SourceData.Rotation;
                 }
             }
         }
@@ -203,8 +208,11 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
                 {
                     IsTracked = true;
                     TrackingState = TrackingState.Tracked;
-                    transform.localPosition = eventData.InputData.Position;
-                    transform.localRotation = eventData.InputData.Rotation;
+                    if (Driver != null)
+                    {
+                        Driver.localPosition = eventData.InputData.Position;
+                        Driver.localRotation = eventData.InputData.Rotation;
+                    }
                 }
             }
         }
