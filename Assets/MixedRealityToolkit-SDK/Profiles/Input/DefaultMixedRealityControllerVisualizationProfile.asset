@@ -33,6 +33,10 @@ MonoBehaviour:
     controllerVisualizationType:
       reference: Microsoft.MixedReality.Toolkit.SDK.UX.Controllers.MixedRealityControllerVisualizer,
         Microsoft.MixedReality.Toolkit.SDK
+    poseAction:
+      id: 4
+      description: Pointer Pose
+      axisConstraint: 7
     alternatePoseAction:
       id: 3
       description: Grip Pose
@@ -47,6 +51,10 @@ MonoBehaviour:
     controllerVisualizationType:
       reference: Microsoft.MixedReality.Toolkit.SDK.UX.Controllers.MixedRealityControllerVisualizer,
         Microsoft.MixedReality.Toolkit.SDK
+    poseAction:
+      id: 4
+      description: Pointer Pose
+      axisConstraint: 7
     alternatePoseAction:
       id: 3
       description: Grip Pose

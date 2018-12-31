@@ -215,6 +215,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                     mixedRealityControllerHandedness.intValue = handednessValue + 1;
                 }
 
+                EditorGUILayout.PropertyField(controllerSetting.FindPropertyRelative("poseAction"));
                 EditorGUILayout.PropertyField(controllerSetting.FindPropertyRelative("alternatePoseAction"));
 
                 var overrideModel = controllerSetting.FindPropertyRelative("overrideModel");

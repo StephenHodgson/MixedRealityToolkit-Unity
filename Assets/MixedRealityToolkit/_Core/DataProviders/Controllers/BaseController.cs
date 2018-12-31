@@ -217,6 +217,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
                 var gltfObject = GltfUtility.GetGltfObjectFromGlb(glbData);
                 await gltfObject.ConstructAsync();
                 controllerModel = gltfObject.GameObjectReference;
+                controllerModel.name = $"{controllerType.Name}_Visualization";
                 controllerModel.transform.SetParent(MixedRealityToolkit.Instance.MixedRealityPlayspace.transform);
                 controllerModel.AddComponent(visualizationProfile.ControllerVisualizationType.Type);
                 Visualizer = controllerModel.GetComponent<IMixedRealityControllerVisualizer>();
@@ -225,10 +226,17 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
                 {
                     Visualizer.Controller = this;
 
-                    if (useAlternatePoseAction && visualizationProfile.TryGetControllerPoseOverride(controllerType, ControllerHandedness, out MixedRealityInputAction altPoseAction))
+                    if (visualizationProfile.TryGetControllerPose(controllerType, ControllerHandedness, out MixedRealityInputAction poseAction))
                     {
+                        Visualizer.UseSourcePoseData = false;
+                        Visualizer.PoseAction = poseAction;
+                    }
+                    else if (useAlternatePoseAction && visualizationProfile.TryGetControllerPoseOverride(controllerType, ControllerHandedness, out MixedRealityInputAction altPoseAction))
+                    {
+                        Visualizer.UseSourcePoseData = false;
                         Visualizer.PoseAction = altPoseAction;
                     }
+
                     return; // Nothing left to do;
                 }
 
@@ -254,15 +262,21 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
             if (controllerModel != null)
             {
                 var controllerObject = UnityEngine.Object.Instantiate(controllerModel, MixedRealityToolkit.Instance.MixedRealityPlayspace);
-                controllerObject.name = $"{controllerType.Name}_{ControllerHandedness}_{controllerObject.name}";
+                controllerObject.name = $"{controllerType.Name}_{controllerObject.name}";
                 Visualizer = controllerObject.GetComponent<IMixedRealityControllerVisualizer>();
 
                 if (Visualizer != null)
                 {
                     Visualizer.Controller = this;
 
-                    if (useAlternatePoseAction && visualizationProfile.TryGetControllerPoseOverride(controllerType, ControllerHandedness, out MixedRealityInputAction altPoseAction))
+                    if (visualizationProfile.TryGetControllerPose(controllerType, ControllerHandedness, out MixedRealityInputAction poseAction))
                     {
+                        Visualizer.UseSourcePoseData = false;
+                        Visualizer.PoseAction = poseAction;
+                    }
+                    else if(useAlternatePoseAction && visualizationProfile.TryGetControllerPoseOverride(controllerType, ControllerHandedness, out MixedRealityInputAction altPoseAction))
+                    {
+                        Visualizer.UseSourcePoseData = false;
                         Visualizer.PoseAction = altPoseAction;
                     }
                 }

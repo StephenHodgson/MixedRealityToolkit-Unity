@@ -24,14 +24,22 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
         /// <param name="handedness">The designated hand that the device is managing.</param>
         /// <param name="overrideModel">The controller model prefab to be rendered.</param>
         /// <param name="controllerVisualizationType">The <see cref="IMixedRealityControllerVisualizer"/> type to use for this controller setting.</param>
-        /// <param name="alternatePoseAction">The alternate pose action to use for certain controller varients.</param>
-        public MixedRealityControllerVisualizationSetting(string description, Type controllerType, Handedness handedness = Handedness.None, GameObject overrideModel = null, SystemType controllerVisualizationType = null, MixedRealityInputAction alternatePoseAction = default) : this()
+        /// <param name="poseAction">The <see cref="MixedRealityInputAction"/> pose to use for tracking the controller.</param>
+        /// <param name="alternatePoseAction">The alternate pose action to use for certain controller variants.</param>
+        public MixedRealityControllerVisualizationSetting(string description, Type controllerType, Handedness handedness = Handedness.None, GameObject overrideModel = null, SystemType controllerVisualizationType = null, MixedRealityInputAction poseAction = default, MixedRealityInputAction alternatePoseAction = default) : this()
         {
             this.description = description;
             this.controllerType = new SystemType(controllerType);
             this.handedness = handedness;
             this.overrideModel = overrideModel;
             this.controllerVisualizationType = controllerVisualizationType;
+
+            if (poseAction == default)
+            {
+                poseAction = MixedRealityInputAction.None;
+            }
+
+            this.poseAction = poseAction;
 
             if (alternatePoseAction == default)
             {
@@ -100,6 +108,15 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
             get => controllerVisualizationType;
             private set => controllerVisualizationType = value;
         }
+
+        [SerializeField]
+        [Tooltip("The MixedRealityInputAction pose to use for tracking the controller.")]
+        private MixedRealityInputAction poseAction;
+
+        /// <summary>
+        /// The <see cref="MixedRealityInputAction"/> pose to use for tracking the controller.
+        /// </summary>
+        public MixedRealityInputAction PoseAction => poseAction;
 
         [SerializeField]
         [Tooltip("The alternate pose action to use for certain controller variants.")]

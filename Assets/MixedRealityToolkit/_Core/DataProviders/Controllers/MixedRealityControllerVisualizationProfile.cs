@@ -116,6 +116,32 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
         }
 
         /// <summary>
+        /// Gets the <see cref="MixedRealityInputAction"/> pose action for this controller to use when synchronizing the position of the controller's visualization.
+        /// </summary>
+        /// <param name="controllerType">The type of controller to query for.</param>
+        /// <param name="hand">The specific hand assigned to the controller.</param>
+        /// <param name="poseAction">The <see cref="MixedRealityInputAction"/> to use for tracking pose data.</param>
+        /// <returns>True, if the controller should use the pose action, otherwise false.</returns>
+        public bool TryGetControllerPose(Type controllerType, Handedness hand, out MixedRealityInputAction poseAction)
+        {
+            poseAction = MixedRealityInputAction.None;
+
+            for (int i = 0; i < controllerVisualizationSettings.Length; i++)
+            {
+                if (controllerVisualizationSettings[i].ControllerType != null &&
+                    controllerVisualizationSettings[i].ControllerType.Type == controllerType &&
+                    (controllerVisualizationSettings[i].Handedness == hand || controllerVisualizationSettings[i].Handedness == Handedness.Both) &&
+                    controllerVisualizationSettings[i].PoseAction != MixedRealityInputAction.None)
+                {
+                    poseAction = controllerVisualizationSettings[i].PoseAction;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Gets the alternate <see cref="MixedRealityInputAction"/> pose action for this controller variant.
         /// </summary>
         /// <param name="controllerType">The type of controller to query for</param>
