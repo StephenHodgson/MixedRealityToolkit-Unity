@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.MixedReality.Toolkit.Core.Extensions;
+using Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Services;
 using Microsoft.MixedReality.Toolkit.Core.Utilities;
 using UnityEditor;
@@ -23,7 +24,17 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Utilities
 
         private bool hasUtility = false;
 
-        private static bool IsUtilityValid => MixedRealityToolkit.Instance != null && MixedRealityToolkit.HasActiveProfile && MixedRealityToolkit.Instance.ActiveProfile.IsInputSystemEnabled;
+        private static bool IsUtilityValid
+        {
+            get
+            {
+                var isInputSystemValid = MixedRealityToolkit.GetService<IMixedRealityInputSystem>(false) != null;
+                return MixedRealityToolkit.Instance != null && 
+                       MixedRealityToolkit.HasActiveProfile && 
+                       MixedRealityToolkit.Instance.ActiveProfile.IsInputSystemEnabled && 
+                       isInputSystemValid;
+            }
+        }
 
         private void OnEnable()
         {
