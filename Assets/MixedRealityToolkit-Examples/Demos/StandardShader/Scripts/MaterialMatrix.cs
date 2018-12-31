@@ -78,16 +78,16 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos.StandardShader
                     element.transform.localRotation = Quaternion.Euler(localRotation);
                     position.x += positionOffset;
 
-                    Material newMaterial = new Material(material);
+                    var newMaterial = new Material(material);
                     newMaterial.SetFloat(firstPropertyId, firstProperty);
                     newMaterial.SetFloat(secondPropertyId, secondProperty);
 
-                    Renderer renderer = element.GetComponent<Renderer>();
-                    MeshFilter meshFilter = element.GetComponent<MeshFilter>();
+                    var _renderer = element.GetComponent<Renderer>();
+                    var meshFilter = element.GetComponent<MeshFilter>();
 
-                    if (Application.isPlaying == true)
+                    if (Application.isPlaying)
                     {
-                        renderer.material = newMaterial;
+                        _renderer.material = newMaterial;
 
                         if (mesh != null)
                         {
@@ -98,7 +98,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos.StandardShader
                     }
                     else
                     {
-                        renderer.sharedMaterial = newMaterial;
+                        _renderer.sharedMaterial = newMaterial;
 
                         if (mesh != null)
                         {

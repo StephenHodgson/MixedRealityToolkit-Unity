@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Microsoft.MixedReality.Toolkit.SDK.UX.Utilities
+namespace Microsoft.MixedReality.Toolkit.Core.Utilities
 {
     /// <summary>
     /// Utility component to animate and visualize a light that can be used with 
@@ -87,19 +87,19 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Utilities
             Gizmos.DrawIcon(transform.position + Vector3.back * Radius, string.Empty, false);
         }
 
-        private void AddHoverLight(HoverLight light)
+        private void AddHoverLight(HoverLight hoverLight)
         {
             if (activeHoverLights.Count >= hoverLightCount)
             {
-                Debug.LogWarningFormat("Max hover light count ({0}) exceeded.", hoverLightCount);
+                Debug.LogWarning($"Max hover light count ({hoverLightCount}) exceeded.");
             }
 
-            activeHoverLights.Add(light);
+            activeHoverLights.Add(hoverLight);
         }
 
-        private void RemoveHoverLight(HoverLight light)
+        private void RemoveHoverLight(HoverLight hoverLight)
         {
-            activeHoverLights.Remove(light);
+            activeHoverLights.Remove(hoverLight);
         }
 
         private void Initialize()
@@ -130,18 +130,18 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Utilities
 
             for (int i = 0; i < hoverLightCount; ++i)
             {
-                HoverLight _light = (i >= activeHoverLights.Count) ? null : activeHoverLights[i];
+                HoverLight activeLight = (i >= activeHoverLights.Count) ? null : activeHoverLights[i];
                 int dataIndex = i * hoverLightDataSize;
 
-                if (_light)
+                if (activeLight)
                 {
-                    hoverLightData[dataIndex] = new Vector4(_light.transform.position.x,
-                                                            _light.transform.position.y,
-                                                            _light.transform.position.z,
-                                                            _light.Radius);
-                    hoverLightData[dataIndex + 1] = new Vector4(_light.Color.r,
-                                                                _light.Color.g,
-                                                                _light.Color.b,
+                    hoverLightData[dataIndex] = new Vector4(activeLight.transform.position.x,
+                                                            activeLight.transform.position.y,
+                                                            activeLight.transform.position.z,
+                                                            activeLight.Radius);
+                    hoverLightData[dataIndex + 1] = new Vector4(activeLight.Color.r,
+                                                                activeLight.Color.g,
+                                                                activeLight.Color.b,
                                                                 1.0f);
                 }
                 else
