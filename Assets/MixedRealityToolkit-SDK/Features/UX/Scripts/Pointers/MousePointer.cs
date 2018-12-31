@@ -82,9 +82,19 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Pointers
             {
                 Rays[0].CopyRay(pointingRay, PointerExtent);
 
-                if (MixedRealityRaycaster.DebugEnabled)
+                if (RayStabilizer != null)
                 {
-                    Debug.DrawRay(pointingRay.origin, pointingRay.direction * PointerExtent, Color.green);
+                    RayStabilizer.UpdateStability(Rays[0].Origin, Rays[0].Direction);
+                    Rays[0].CopyRay(RayStabilizer.StableRay, PointerExtent);
+
+                    if (MixedRealityRaycaster.DebugEnabled)
+                    {
+                        Debug.DrawRay(RayStabilizer.StableRay.origin, RayStabilizer.StableRay.direction * PointerExtent, Color.green);
+                    }
+                }
+                else if (MixedRealityRaycaster.DebugEnabled)
+                {
+                    Debug.DrawRay(pointingRay.origin, pointingRay.direction * PointerExtent, Color.yellow);
                 }
             }
         }
