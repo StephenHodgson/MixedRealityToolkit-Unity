@@ -172,7 +172,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
         /// </summary>
         /// <param name="controllerType">The type of controller to query for</param>
         /// <param name="hand">The specific hand assigned to the controller</param>
-        public SystemType GetControllerTypeOverride(Type controllerType, Handedness hand)
+        public SystemType GetControllerVisualizationTypeOverride(Type controllerType, Handedness hand)
         {
             for (int i = 0; i < controllerVisualizationSettings.Length; i++)
             {

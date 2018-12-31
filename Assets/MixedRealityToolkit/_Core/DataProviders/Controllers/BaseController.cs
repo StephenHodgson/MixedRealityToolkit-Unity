@@ -212,14 +212,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
             // Attempt to load the controller model from glbData.
             if (controllerModel == null && glbData != null)
             {
-                Debug.Log("Attempting to load gltf data...");
-
                 var gltfObject = GltfUtility.GetGltfObjectFromGlb(glbData);
                 await gltfObject.ConstructAsync();
                 controllerModel = gltfObject.GameObjectReference;
                 controllerModel.name = $"{controllerType.Name}_Visualization";
                 controllerModel.transform.SetParent(MixedRealityToolkit.Instance.MixedRealityPlayspace.transform);
-                controllerModel.AddComponent(visualizationProfile.ControllerVisualizationType.Type);
+                var visualizationType = visualizationProfile.GetControllerVisualizationTypeOverride(controllerType, ControllerHandedness) ??
+                                        visualizationProfile.ControllerVisualizationType;
+                controllerModel.AddComponent(visualizationType.Type);
                 Visualizer = controllerModel.GetComponent<IMixedRealityControllerVisualizer>();
 
                 if (Visualizer != null)
@@ -240,7 +240,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
                     return; // Nothing left to do;
                 }
 
-                Debug.LogWarning("Failed to construct controller from provided glb data! Falling back to global controller model.");
+                Debug.LogWarning($"Failed to attach a valid IMixedRealityControllerVisualizer to {controllerModel.name}");
             }
 
             // If we didn't get an override model, and we didn't load the driver model,
@@ -274,7 +274,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
                         Visualizer.UseSourcePoseData = false;
                         Visualizer.PoseAction = poseAction;
                     }
-                    else if(useAlternatePoseAction && visualizationProfile.TryGetControllerPoseOverride(controllerType, ControllerHandedness, out MixedRealityInputAction altPoseAction))
+                    else if (useAlternatePoseAction && visualizationProfile.TryGetControllerPoseOverride(controllerType, ControllerHandedness, out MixedRealityInputAction altPoseAction))
                     {
                         Visualizer.UseSourcePoseData = false;
                         Visualizer.PoseAction = altPoseAction;
