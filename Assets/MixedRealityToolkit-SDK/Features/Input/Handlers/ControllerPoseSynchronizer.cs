@@ -18,7 +18,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
         #region IMixedRealityControllerPoseSynchronizer Implementation
 
         /// <inheritdoc />
-        public Transform Driver { get; set; }
+        public Transform PoseDriver { get; set; }
 
         [SerializeField]
         [Tooltip("The handedness this controller should synchronize with.")]
@@ -63,6 +63,11 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
                 handedness = value.ControllerHandedness;
                 controller = value;
                 gameObject.name = $"{handedness}_{gameObject.name}";
+
+                if (PoseDriver == null)
+                {
+                    PoseDriver = transform;
+                }
             }
         }
 
@@ -142,12 +147,12 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
         {
             if (eventData.SourceId == Controller?.InputSource.SourceId)
             {
-                if (Driver != null &&
+                if (PoseDriver != null &&
                     UseSourcePoseData &&
                     TrackingState == TrackingState.Tracked)
                 {
-                    Driver.localPosition = eventData.SourceData.Position;
-                    Driver.localRotation = eventData.SourceData.Rotation;
+                    PoseDriver.localPosition = eventData.SourceData.Position;
+                    PoseDriver.localRotation = eventData.SourceData.Rotation;
                 }
             }
         }
@@ -208,10 +213,11 @@ namespace Microsoft.MixedReality.Toolkit.SDK.Input.Handlers
                 {
                     IsTracked = true;
                     TrackingState = TrackingState.Tracked;
-                    if (Driver != null)
+
+                    if (PoseDriver != null)
                     {
-                        Driver.localPosition = eventData.InputData.Position;
-                        Driver.localRotation = eventData.InputData.Rotation;
+                        PoseDriver.localPosition = eventData.InputData.Position;
+                        PoseDriver.localRotation = eventData.InputData.Rotation;
                     }
                 }
             }

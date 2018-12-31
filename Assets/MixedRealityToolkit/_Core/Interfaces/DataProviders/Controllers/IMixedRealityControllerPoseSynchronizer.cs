@@ -24,7 +24,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Interfaces.DataProviders.Controlle
         /// <remarks>
         /// Defaults to the <see cref="Transform"/> that this component is attached to.
         /// </remarks>
-        Transform Driver { get; set; }
+        Transform PoseDriver { get; set; }
 
         /// <summary>
         /// The controller handedness to synchronize with.

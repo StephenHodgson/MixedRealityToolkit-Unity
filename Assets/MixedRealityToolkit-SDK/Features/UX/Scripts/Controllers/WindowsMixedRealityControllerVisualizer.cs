@@ -72,8 +72,8 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
             get => base.Controller;
             set
             {
-                base.Controller = value;
                 GetTransformData(transform);
+                base.Controller = value;
             }
         }
 
@@ -93,10 +93,10 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
                 {
                     case "pointing_pose":
                         pointingPose = child.gameObject;
-                        Driver = null;
+                        PoseDriver = null;
                         pointingPose.transform.parent = transform;
                         transform.GetChild(0).parent = pointingPose.transform;
-                        Driver = pointingPose.transform;
+                        PoseDriver = pointingPose.transform;
                         transform.localPosition = Vector3.zero;
                         transform.localRotation = Quaternion.identity;
                         break;
@@ -263,10 +263,10 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
                 IsTracked = true;
                 TrackingState = TrackingState.Tracked;
 
-                if (Driver != null)
+                if (PoseDriver != null)
                 {
-                    Driver.localPosition = eventData.InputData.Position;
-                    Driver.localRotation = eventData.InputData.Rotation * inverseRotation;
+                    PoseDriver.localPosition = eventData.InputData.Position;
+                    PoseDriver.localRotation = eventData.InputData.Rotation * inverseRotation;
                 }
             }
         }
