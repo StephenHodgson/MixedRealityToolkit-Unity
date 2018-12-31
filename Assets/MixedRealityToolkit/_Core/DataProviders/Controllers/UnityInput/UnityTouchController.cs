@@ -113,8 +113,12 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.UnityInp
                     MixedRealityToolkit.InputSystem?.RaisePositionInputChanged(InputSource, Interactions[0].MixedRealityInputAction, TouchData.deltaPosition);
                 }
 
-                lastPose.Position = InputSource.Pointers[0].BaseCursor.Position;
-                lastPose.Rotation = InputSource.Pointers[0].BaseCursor.Rotation;
+                if (InputSource.Pointers[0].BaseCursor != null)
+                {
+                    lastPose.Position = InputSource.Pointers[0].BaseCursor.Position;
+                    lastPose.Rotation = InputSource.Pointers[0].BaseCursor.Rotation;
+                }
+
                 MixedRealityToolkit.InputSystem?.RaiseSourcePoseChanged(InputSource, this, lastPose);
 
                 Interactions[1].PoseData = lastPose;
