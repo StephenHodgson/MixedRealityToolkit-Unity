@@ -252,10 +252,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
                 GUI.enabled = true;
 
-                if (GUILayout.Button("Open Player Settings"))
-                {
-                    EditorApplication.ExecuteMenuItem("Edit/Project Settings/Player");
-                }
+                OpenPlayerSettingsGUI();
 
                 EditorGUILayout.EndHorizontal();
 
@@ -294,10 +291,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
             GUI.enabled = true;
 
-            if (GUILayout.Button("Open Player Settings"))
-            {
-                Selection.activeObject = Unsupported.GetSerializedAssetInterfaceSingleton("PlayerSettings");
-            }
+            OpenPlayerSettingsGUI();
 
             EditorGUILayout.EndHorizontal();
             GUILayout.EndVertical();
@@ -334,6 +328,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             }
 
             Repaint();
+        }
+
+        private static void OpenPlayerSettingsGUI()
+        {
+            if (GUILayout.Button("Open Player Settings"))
+            {
+                Selection.activeObject = Unsupported.GetSerializedAssetInterfaceSingleton("PlayerSettings");
+            }
         }
 
         private void UnityBuildGUI()
