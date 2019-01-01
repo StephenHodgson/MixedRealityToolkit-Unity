@@ -24,7 +24,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Pointers
         /// <inheritdoc />
         public int FingerId
         {
-            get { return fingerId; }
+            get => fingerId;
             set
             {
                 if (fingerId < 0)
@@ -35,7 +35,7 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Pointers
         }
 
         /// <inheritdoc />
-        public Ray TouchRay { get; set; } = default(Ray);
+        public Ray TouchRay { get; set; } = default;
 
         /// <inheritdoc />
         public override void OnPreRaycast()
