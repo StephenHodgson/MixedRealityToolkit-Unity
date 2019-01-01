@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.﻿
 
+using Microsoft.MixedReality.Toolkit.Core.Definitions;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Diagnostics;
 using Microsoft.MixedReality.Toolkit.Core.Inspectors.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Services;
@@ -10,7 +11,7 @@ using UnityEngine;
 namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 {
     [CustomEditor(typeof(MixedRealityDiagnosticsProfile))]
-    public class MixedRealityDiagnosticsSystemProfileInspector : BaseMixedRealityToolkitConfigurationProfileInspector
+    public class MixedRealityDiagnosticsSystemProfileInspector : BaseMixedRealityProfileInspector
     {
         private SerializedProperty visible;
         private SerializedProperty handlerType;
@@ -42,7 +43,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 
         public override void OnInspectorGUI()
         {
-            RenderMixedRealityToolkitLogo();
+            MixedRealityInspectorUtility.RenderMixedRealityToolkitLogo();
+
             if (!MixedRealityInspectorUtility.CheckMixedRealityConfigured())
             {
                 return;
@@ -53,7 +55,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                 Selection.activeObject = MixedRealityToolkit.Instance.ActiveProfile;
             }
 
-            CheckProfileLock(target);
+            (target as BaseMixedRealityProfile).CheckProfileLock();
 
             serializedObject.Update();
 

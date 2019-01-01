@@ -14,7 +14,7 @@ using UnityEngine;
 namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 {
     [CustomEditor(typeof(BaseMixedRealityControllerMappingProfile))]
-    public class BaseMixedRealityControllerMappingProfileInspector : BaseMixedRealityToolkitConfigurationProfileInspector
+    public class BaseMixedRealityControllerMappingProfileInspector : BaseMixedRealityProfileInspector
     {
         private struct ControllerItem
         {
@@ -59,7 +59,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 
         public override void OnInspectorGUI()
         {
-            RenderMixedRealityToolkitLogo();
+            MixedRealityInspectorUtility.RenderMixedRealityToolkitLogo();
+
             if (!MixedRealityInspectorUtility.CheckMixedRealityConfigured())
             {
                 return;
@@ -92,7 +93,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                 return;
             }
 
-            CheckProfileLock(target, false);
+            (target as BaseMixedRealityProfile).CheckProfileLock(false);
 
             if (controllerButtonStyle == null)
             {

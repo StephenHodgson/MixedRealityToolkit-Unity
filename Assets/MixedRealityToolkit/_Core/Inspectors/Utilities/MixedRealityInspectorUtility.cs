@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Microsoft.MixedReality.Toolkit.Core.Definitions;
 using Microsoft.MixedReality.Toolkit.Core.Services;
+using Microsoft.MixedReality.Toolkit.Core.Utilities.Editor.Setup;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,7 +63,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Utilities
         /// </summary>
         public static Rect GetEditorMainWindowPos()
         {
-            var containerWinType = AppDomain.CurrentDomain.GetAllDerivedTypes(typeof(ScriptableObject)).FirstOrDefault(t => t.Name == "ContainerWindow");
+            var containerWinType = AppDomain.CurrentDomain.GetAllDerivedTypes(typeof(ScriptableObject)).FirstOrDefault(type => type.Name == "ContainerWindow");
 
             if (containerWinType == null)
             {
@@ -80,7 +82,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Utilities
 
             foreach (var win in windows)
             {
-
                 var showMode = (int)showModeField.GetValue(win);
                 if (showMode == 4) // main window
                 {
@@ -97,10 +98,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Utilities
             var result = new List<Type>();
             var assemblies = appDomain.GetAssemblies();
 
-            foreach (var assembly in assemblies)
+            for (var i = 0; i < assemblies.Length; i++)
             {
-                var types = assembly.GetTypes();
-                result.AddRange(types.Where(type => type.IsSubclassOf(aType)));
+                result.AddRange(assemblies[i].GetTypes().Where(type => type.IsSubclassOf(aType)));
             }
 
             return result.ToArray();
@@ -120,6 +120,72 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Utilities
             pos.y = main.y + h;
             window.position = pos;
         }
+
+        #region Logos
+
+        public static Texture2D DarkThemeLogo
+        {
+            get
+            {
+                if (darkThemeLogo == null)
+                {
+                    darkThemeLogo = (Texture2D)AssetDatabase.LoadAssetAtPath($"{MixedRealityEditorSettings.MixedRealityToolkit_RelativeFolderPath}/_Core/Resources/Textures/MRTK_Logo_Black.png", typeof(Texture2D));
+                }
+
+                return darkThemeLogo;
+            }
+        }
+
+        private static Texture2D darkThemeLogo = null;
+
+        public static Texture2D LightThemeLogo
+        {
+            get
+            {
+                if (lightThemeLogo == null)
+                {
+                    lightThemeLogo = (Texture2D)AssetDatabase.LoadAssetAtPath($"{MixedRealityEditorSettings.MixedRealityToolkit_RelativeFolderPath}/_Core/Resources/Textures/MRTK_Logo_White.png", typeof(Texture2D));
+                }
+
+                return lightThemeLogo;
+            }
+        }
+
+        private static Texture2D lightThemeLogo = null;
+
+
+        /// <summary>
+        /// Render the Mixed Reality Toolkit Logo.
+        /// </summary>
+        public static void RenderMixedRealityToolkitLogo()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUILayout.Label(EditorGUIUtility.isProSkin ? MixedRealityInspectorUtility.LightThemeLogo : MixedRealityInspectorUtility.DarkThemeLogo, GUILayout.MaxHeight(128f));
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            GUILayout.Space(12f);
+        }
+
+        #endregion Logos
+
+        #region Utilities
+
+        /// <summary>
+        /// Checks if the profile is locked and displays a warning.
+        /// </summary>
+        /// <param name="target">The <see cref="BaseMixedRealityProfile"/> to check.</param>
+        /// <param name="disableInspector">Optional value to disable the inspector if the profile is also locked.</param>
+        public static void CheckProfileLock(this BaseMixedRealityProfile target, bool disableInspector = true)
+        {
+            if (MixedRealityPreferences.LockProfiles && !target.IsCustomProfile)
+            {
+                EditorGUILayout.HelpBox("This profile is part of the default set from the Mixed Reality Toolkit SDK. You can make a copy of this profile, and customize it if needed.", MessageType.Warning);
+                GUI.enabled = !disableInspector;
+            }
+        }
+
+        #endregion Utilities
 
         #region Colors
 

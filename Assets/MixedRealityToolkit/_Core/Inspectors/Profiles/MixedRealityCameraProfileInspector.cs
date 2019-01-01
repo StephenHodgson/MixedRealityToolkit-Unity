@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 {
     [CustomEditor(typeof(MixedRealityCameraProfile))]
-    public class MixedRealityCameraProfileInspector : BaseMixedRealityToolkitConfigurationProfileInspector
+    public class MixedRealityCameraProfileInspector : BaseMixedRealityProfileInspector
     {
         private SerializedProperty isCameraPersistent;
         private SerializedProperty opaqueNearClip;
@@ -49,7 +49,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 
         public override void OnInspectorGUI()
         {
-            RenderMixedRealityToolkitLogo();
+            MixedRealityInspectorUtility.RenderMixedRealityToolkitLogo();
             if (!MixedRealityInspectorUtility.CheckMixedRealityConfigured())
             {
                 return;
@@ -64,7 +64,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
             EditorGUILayout.LabelField("Camera Profile", EditorStyles.boldLabel);
             EditorGUILayout.HelpBox("The Camera Profile helps tweak camera settings no matter what platform you're building for.", MessageType.Info);
 
-            CheckProfileLock(target);
+            (target as BaseMixedRealityProfile).CheckProfileLock();
 
             serializedObject.Update();
 

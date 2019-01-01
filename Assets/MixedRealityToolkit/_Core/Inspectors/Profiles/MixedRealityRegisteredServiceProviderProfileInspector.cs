@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 {
     [CustomEditor(typeof(MixedRealityRegisteredServiceProvidersProfile))]
-    public class MixedRealityRegisteredServiceProviderProfileInspector : BaseMixedRealityToolkitConfigurationProfileInspector
+    public class MixedRealityRegisteredServiceProviderProfileInspector : BaseMixedRealityProfileInspector
     {
         private static readonly GUIContent MinusButtonContent = new GUIContent("-", "Unregister");
         private static readonly GUIContent AddButtonContent = new GUIContent("+ Register a new Service Provider");
@@ -33,7 +33,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 
         public override void OnInspectorGUI()
         {
-            RenderMixedRealityToolkitLogo();
+            MixedRealityInspectorUtility.RenderMixedRealityToolkitLogo();
+
             if (!MixedRealityInspectorUtility.CheckMixedRealityConfigured())
             {
                 return;
@@ -48,7 +49,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
             EditorGUILayout.LabelField("Registered Service Providers Profile", EditorStyles.boldLabel);
             EditorGUILayout.HelpBox("This profile defines any additional Services like systems, features, and managers to register with the Mixed Reality Toolkit.", MessageType.Info);
 
-            CheckProfileLock(target);
+            (target as BaseMixedRealityProfile).CheckProfileLock();
 
             serializedObject.Update();
             RenderList(configurations);

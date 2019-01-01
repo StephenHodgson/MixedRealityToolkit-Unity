@@ -4,6 +4,7 @@
 using Microsoft.MixedReality.Toolkit.Core.Definitions;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Extensions.EditorClassExtensions;
+using Microsoft.MixedReality.Toolkit.Core.Inspectors.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Services;
 using UnityEditor;
 using UnityEngine;
@@ -11,7 +12,7 @@ using UnityEngine;
 namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 {
     [CustomEditor(typeof(MixedRealityToolkitConfigurationProfile))]
-    public class MixedRealityToolkitConfigurationProfileInspector : BaseMixedRealityToolkitConfigurationProfileInspector
+    public class MixedRealityToolkitConfigurationProfileInspector : BaseMixedRealityProfileInspector
     {
         private static readonly GUIContent TargetScaleContent = new GUIContent("Target Scale:");
 
@@ -126,8 +127,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 
         public override void OnInspectorGUI()
         {
+            MixedRealityInspectorUtility.RenderMixedRealityToolkitLogo();
             serializedObject.Update();
-            RenderMixedRealityToolkitLogo();
 
             if (!MixedRealityToolkit.IsInitialized)
             {

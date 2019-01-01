@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.﻿
 
 using Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers;
+using Microsoft.MixedReality.Toolkit.Core.Definitions;
 using Microsoft.MixedReality.Toolkit.Core.Extensions;
 using Microsoft.MixedReality.Toolkit.Core.Inspectors.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Services;
@@ -13,7 +14,7 @@ using Object = UnityEngine.Object;
 namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 {
     [CustomEditor(typeof(MixedRealityControllerMappingProfiles))]
-    public class MixedRealityControllerMappingProfilesInspector : BaseMixedRealityToolkitConfigurationProfileInspector
+    public class MixedRealityControllerMappingProfilesInspector : BaseMixedRealityProfileInspector
     {
         private static readonly GUIContent AddMappingDefinitionContent = new GUIContent("+ Add a new Mapping Definition");
         private static readonly GUIContent RemoveMappingDefinitionContent = new GUIContent("-", "Remove Mapping Definition");
@@ -40,7 +41,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 
         public override void OnInspectorGUI()
         {
-            RenderMixedRealityToolkitLogo();
+            MixedRealityInspectorUtility.RenderMixedRealityToolkitLogo();
+
             if (!MixedRealityInspectorUtility.CheckMixedRealityConfigured())
             {
                 return;
@@ -80,7 +82,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                 return;
             }
 
-            CheckProfileLock(target);
+            (target as BaseMixedRealityProfile).CheckProfileLock();
 
             serializedObject.Update();
 

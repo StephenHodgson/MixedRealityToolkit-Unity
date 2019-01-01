@@ -11,7 +11,7 @@ using UnityEngine;
 namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles.SpatialAwareness
 {
     [CustomEditor(typeof(BaseMixedRealitySpatialObserverProfile))]
-    public abstract class BaseMixedRealitySpatialObserverProfileInspector : BaseMixedRealityToolkitConfigurationProfileInspector
+    public abstract class BaseMixedRealitySpatialObserverProfileInspector : BaseMixedRealityProfileInspector
     {
         private SerializedProperty startupBehavior;
         private SerializedProperty observationExtents;
@@ -40,7 +40,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles.SpatialAwarene
         /// <inheritdoc />
         public override void OnInspectorGUI()
         {
-            RenderMixedRealityToolkitLogo();
+            MixedRealityInspectorUtility.RenderMixedRealityToolkitLogo();
 
             if (!MixedRealityInspectorUtility.CheckMixedRealityConfigured())
             {

@@ -3,6 +3,7 @@
 
 using Microsoft.MixedReality.Toolkit.Core.Definitions;
 using Microsoft.MixedReality.Toolkit.Core.Extensions.EditorClassExtensions;
+using Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles;
 using Microsoft.MixedReality.Toolkit.Core.Services;
 using UnityEditor;
 using UnityEngine;
@@ -10,7 +11,7 @@ using UnityEngine;
 namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
 {
     [CustomEditor(typeof(MixedRealityToolkit))]
-    public class MixedRealityToolkitInspector : Editor
+    public class MixedRealityToolkitInspector : BaseMixedRealityToolkitInspector
     {
         private SerializedProperty activeProfile;
         private int currentPickerWindow = -1;
@@ -25,6 +26,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
 
         public override void OnInspectorGUI()
         {
+            RenderMixedRealityToolkitLogo();
+
             serializedObject.Update();
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(activeProfile);

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.﻿
 
+using Microsoft.MixedReality.Toolkit.Core.Definitions;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Devices;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Inspectors.Utilities;
@@ -14,7 +15,7 @@ using UnityEngine;
 namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 {
     [CustomEditor(typeof(MixedRealityGesturesProfile))]
-    public class MixedRealityGesturesProfileInspector : BaseMixedRealityToolkitConfigurationProfileInspector
+    public class MixedRealityGesturesProfileInspector : BaseMixedRealityProfileInspector
     {
         private static readonly GUIContent MinusButtonContent = new GUIContent("-", "Remove defined Gesture");
         private static readonly GUIContent AddButtonContent = new GUIContent("+ Add a New defined Gesture");
@@ -87,7 +88,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 
         public override void OnInspectorGUI()
         {
-            RenderMixedRealityToolkitLogo();
+            MixedRealityInspectorUtility.RenderMixedRealityToolkitLogo();
 
             if (!MixedRealityInspectorUtility.CheckMixedRealityConfigured()) { return; }
 
@@ -118,7 +119,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                 return;
             }
 
-            CheckProfileLock(target);
+            (target as BaseMixedRealityProfile).CheckProfileLock();
 
             serializedObject.Update();
             EditorGUILayout.Space();

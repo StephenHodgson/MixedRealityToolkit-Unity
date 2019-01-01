@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.﻿
 
+using Microsoft.MixedReality.Toolkit.Core.Definitions;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.InputSystem;
 using Microsoft.MixedReality.Toolkit.Core.Inspectors.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Services;
@@ -11,7 +12,7 @@ using UnityEngine;
 namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 {
     [CustomEditor(typeof(MixedRealitySpeechCommandsProfile))]
-    public class MixedRealitySpeechCommandsProfileInspector : BaseMixedRealityToolkitConfigurationProfileInspector
+    public class MixedRealitySpeechCommandsProfileInspector : BaseMixedRealityProfileInspector
     {
         private static readonly GUIContent MinusButtonContent = new GUIContent("-", "Remove Speech Command");
         private static readonly GUIContent AddButtonContent = new GUIContent("+ Add a New Speech Command", "Add Speech Command");
@@ -46,7 +47,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 
         public override void OnInspectorGUI()
         {
-            RenderMixedRealityToolkitLogo();
+            MixedRealityInspectorUtility.RenderMixedRealityToolkitLogo();
+
             if (!MixedRealityInspectorUtility.CheckMixedRealityConfigured())
             {
                 return;
@@ -69,7 +71,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                 Selection.activeObject = MixedRealityToolkit.Instance.ActiveProfile.InputSystemProfile;
             }
 
-            CheckProfileLock(target);
+            (target as BaseMixedRealityProfile).CheckProfileLock();
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Speech Commands", EditorStyles.boldLabel);

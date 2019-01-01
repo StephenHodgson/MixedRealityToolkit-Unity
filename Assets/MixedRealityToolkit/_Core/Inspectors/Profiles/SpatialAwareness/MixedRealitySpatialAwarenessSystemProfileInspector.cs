@@ -11,7 +11,7 @@ using UnityEngine;
 namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles.SpatialAwareness
 {
     [CustomEditor(typeof(MixedRealitySpatialAwarenessSystemProfile))]
-    public class MixedRealitySpatialAwarenessSystemProfileInspector : BaseMixedRealityToolkitConfigurationProfileInspector
+    public class MixedRealitySpatialAwarenessSystemProfileInspector : BaseMixedRealityProfileInspector
     {
         private static readonly GUIContent SpatialObserverAddButtonContent = new GUIContent("+ Add a New Spatial Observer");
         private static readonly GUIContent SpatialObserverMinusButtonContent = new GUIContent("-", "Remove Spatial Observer");
@@ -37,7 +37,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles.SpatialAwarene
         /// <inheritdoc />
         public override void OnInspectorGUI()
         {
-            RenderMixedRealityToolkitLogo();
+            MixedRealityInspectorUtility.RenderMixedRealityToolkitLogo();
+
             if (!MixedRealityInspectorUtility.CheckMixedRealityConfigured())
             {
                 return;

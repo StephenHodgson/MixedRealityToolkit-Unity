@@ -15,7 +15,7 @@ using UnityEngine;
 namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
 {
     [CustomEditor(typeof(MixedRealityInputActionRulesProfile))]
-    public class MixedRealityInputActionRulesInspector : BaseMixedRealityToolkitConfigurationProfileInspector
+    public class MixedRealityInputActionRulesInspector : BaseMixedRealityProfileInspector
     {
         private static readonly GUIContent RuleAddButtonContent = new GUIContent("+ Add a New Rule Definition");
         private static readonly GUIContent RuleMinusButtonContent = new GUIContent("-", "Remove Rule Definition");
@@ -92,7 +92,7 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
 
         public override void OnInspectorGUI()
         {
-            RenderMixedRealityToolkitLogo();
+            MixedRealityInspectorUtility.RenderMixedRealityToolkitLogo();
 
             if (!MixedRealityInspectorUtility.CheckMixedRealityConfigured())
             {
@@ -136,7 +136,7 @@ namespace Microsoft.MixedReality.Toolkit.Inspectors.Profiles
 
             EditorGUILayout.Space();
 
-            CheckProfileLock(target);
+            (target as BaseMixedRealityProfile).CheckProfileLock();
 
             var isGuiLocked = !(MixedRealityPreferences.LockProfiles && !((BaseMixedRealityProfile)target).IsCustomProfile);
             GUI.enabled = isGuiLocked;

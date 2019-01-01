@@ -3,6 +3,7 @@
 
 using Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers;
 using Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.UnityInput;
+using Microsoft.MixedReality.Toolkit.Core.Definitions;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
 using Microsoft.MixedReality.Toolkit.Core.Extensions;
 using Microsoft.MixedReality.Toolkit.Core.Inspectors.Utilities;
@@ -14,7 +15,7 @@ using UnityEngine;
 namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 {
     [CustomEditor(typeof(MixedRealityControllerVisualizationProfile))]
-    public class MixedRealityControllerVisualizationProfileInspector : BaseMixedRealityToolkitConfigurationProfileInspector
+    public class MixedRealityControllerVisualizationProfileInspector : BaseMixedRealityProfileInspector
     {
         private static readonly GUIContent ControllerAddButtonContent = new GUIContent("+ Add a New Controller Definition");
         private static readonly GUIContent ControllerMinusButtonContent = new GUIContent("-", "Remove Controller Definition");
@@ -61,7 +62,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
 
         public override void OnInspectorGUI()
         {
-            RenderMixedRealityToolkitLogo();
+            MixedRealityInspectorUtility.RenderMixedRealityToolkitLogo();
+
             if (!MixedRealityInspectorUtility.CheckMixedRealityConfigured())
             {
                 return;
@@ -90,7 +92,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.Profiles
                                     "Global settings are the default fallback, and any specific controller definitions take precedence.", MessageType.Info);
             serializedObject.Update();
 
-            CheckProfileLock(target);
+            (target as BaseMixedRealityProfile).CheckProfileLock();
 
             EditorGUIUtility.labelWidth = 168f;
             EditorGUILayout.PropertyField(renderMotionControllers);
