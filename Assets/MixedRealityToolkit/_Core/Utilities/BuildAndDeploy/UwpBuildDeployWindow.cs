@@ -258,6 +258,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 }
 
                 EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.Space();
+
+                if (GUILayout.Button("Open Unity Build Window"))
+                {
+                    GetWindow(Type.GetType("UnityEditor.BuildPlayerWindow,UnityEditor"));
+                }
+
                 GUILayout.EndVertical();
                 return;
             }
