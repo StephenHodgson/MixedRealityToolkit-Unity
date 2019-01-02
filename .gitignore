@@ -13,6 +13,7 @@ WindowsStoreApp/
 UnityGenerated/
 UnityPackageManager/
 .out/
+.gradle/
 project.json
 project.lock.json
 *.package
