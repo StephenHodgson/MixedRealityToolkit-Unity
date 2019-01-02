@@ -170,9 +170,10 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
                 }
             }
         }
-    }
 
-    #endregion IMixedRealitySpeechDataProvider Implementation
+        #endregion IMixedRealitySpeechDataProvider Implementation
 
 #endif // UNITY_STANDALONE_WIN || UNITY_WSA || UNITY_EDITOR_WIN
+
+    }
 }

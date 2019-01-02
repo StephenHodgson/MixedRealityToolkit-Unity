@@ -5,12 +5,11 @@
         "Microsoft.MixedReality.Toolkit.Core.Utilities.Async"
     ],
     "optionalUnityReferences": [],
-    "includePlatforms": [
-        "Editor",
-        "WSA",
-        "WindowsStandalone32",
-        "WindowsStandalone64"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": false
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
 }
