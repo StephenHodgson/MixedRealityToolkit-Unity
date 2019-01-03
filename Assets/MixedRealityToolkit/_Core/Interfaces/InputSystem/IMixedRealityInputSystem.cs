@@ -350,6 +350,23 @@ namespace Microsoft.MixedReality.Toolkit.Core.Interfaces.InputSystem
         #region Input Position Changed
 
         /// <summary>
+        /// Raise the 1st degree of freedom input event.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="inputAction"></param>
+        /// <param name="position"></param>
+        void RaisePositionInputChanged(IMixedRealityInputSource source, MixedRealityInputAction inputAction, float position);
+
+        /// <summary>
+        /// Raise the 1st degree of freedom input event.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="handedness"></param>
+        /// <param name="inputAction"></param>
+        /// <param name="position"></param>
+        void RaisePositionInputChanged(IMixedRealityInputSource source, Handedness handedness, MixedRealityInputAction inputAction, float position);
+
+        /// <summary>
         /// Raise the 2 degrees of freedom input event.
         /// </summary>
         /// <param name="source"></param>
