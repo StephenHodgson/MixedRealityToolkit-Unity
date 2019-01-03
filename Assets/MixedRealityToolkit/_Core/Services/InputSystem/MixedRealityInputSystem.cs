@@ -884,7 +884,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
             inputAction = ProcessRules(inputAction, true);
 
             // Create input event
-            inputEventData.Initialize(source, inputAction);
+            inputEventData.Initialize(source, handedness, inputAction);
 
             // Pass handler through HandleEvent to perform modal/fallback logic
             HandleEvent(inputEventData, OnInputDownEventHandler);
@@ -908,7 +908,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
             inputAction = ProcessRules(inputAction, true);
 
             // Create input event
-            floatInputEventData.Initialize(source, inputAction);
+            floatInputEventData.Initialize(source, handedness, inputAction);
 
             // Pass handler through HandleEvent to perform modal/fallback logic
             HandleEvent(floatInputEventData, SingleAxisInputEventHandler);
@@ -959,7 +959,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
             inputAction = ProcessRules(inputAction, false);
 
             // Create input event
-            inputEventData.Initialize(source, inputAction);
+            inputEventData.Initialize(source, handedness, inputAction);
 
             // Pass handler through HandleEvent to perform modal/fallback logic
             HandleEvent(inputEventData, OnInputUpEventHandler);
@@ -1131,7 +1131,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
             Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
 
             action = ProcessRules(action, true);
-            inputEventData.Initialize(controller.InputSource, action);
+            inputEventData.Initialize(controller.InputSource, controller.ControllerHandedness, action);
             HandleEvent(inputEventData, OnGestureStarted);
         }
 
@@ -1147,7 +1147,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         {
             Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
             action = ProcessRules(action, true);
-            inputEventData.Initialize(controller.InputSource, action);
+            inputEventData.Initialize(controller.InputSource, controller.ControllerHandedness, action);
             HandleEvent(inputEventData, OnGestureUpdated);
         }
 
@@ -1227,7 +1227,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         {
             Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
             action = ProcessRules(action, false);
-            inputEventData.Initialize(controller.InputSource, action);
+            inputEventData.Initialize(controller.InputSource, controller.ControllerHandedness, action);
             HandleEvent(inputEventData, OnGestureCompleted);
         }
 
@@ -1307,7 +1307,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         {
             Debug.Assert(DetectedInputSources.Contains(controller.InputSource));
             action = ProcessRules(action, false);
-            inputEventData.Initialize(controller.InputSource, action);
+            inputEventData.Initialize(controller.InputSource, controller.ControllerHandedness, action);
             HandleEvent(inputEventData, OnGestureCanceled);
         }
 
