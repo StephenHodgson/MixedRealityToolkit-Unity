@@ -3,6 +3,7 @@
 
 using Microsoft.MixedReality.Toolkit.Core.Interfaces.DataProviders.Controllers;
 using Microsoft.MixedReality.Toolkit.SDK.Input.Handlers;
+using System;
 using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
@@ -14,6 +15,19 @@ namespace Microsoft.MixedReality.Toolkit.SDK.UX.Controllers
     public class DefaultMixedRealityControllerVisualizer : ControllerPoseSynchronizer, IMixedRealityControllerVisualizer
     {
         /// <inheritdoc />
-        public GameObject GameObjectProxy => gameObject;
+        public GameObject GameObjectProxy
+        {
+            get
+            {
+                try
+                {
+                    return gameObject;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+        }
     }
 }
