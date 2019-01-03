@@ -1152,11 +1152,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         }
 
         private static readonly ExecuteEvents.EventFunction<IMixedRealityGestureHandler<Vector2>> OnGestureVector2PositionUpdated =
-                delegate (IMixedRealityGestureHandler<Vector2> handler, BaseEventData eventData)
-                {
-                    var casted = ExecuteEvents.ValidateEventData<InputEventData<Vector2>>(eventData);
-                    handler.OnGestureUpdated(casted);
-                };
+            delegate (IMixedRealityGestureHandler<Vector2> handler, BaseEventData eventData)
+            {
+                var casted = ExecuteEvents.ValidateEventData<InputEventData<Vector2>>(eventData);
+                handler.OnGestureUpdated(casted);
+            };
 
         /// <inheritdoc />
         public void RaiseGestureUpdated(IMixedRealityController controller, MixedRealityInputAction action, Vector2 inputData)
@@ -1232,11 +1232,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         }
 
         private static readonly ExecuteEvents.EventFunction<IMixedRealityGestureHandler<Vector2>> OnGestureVector2PositionCompleted =
-                delegate (IMixedRealityGestureHandler<Vector2> handler, BaseEventData eventData)
-                {
-                    var casted = ExecuteEvents.ValidateEventData<InputEventData<Vector2>>(eventData);
-                    handler.OnGestureCompleted(casted);
-                };
+            delegate (IMixedRealityGestureHandler<Vector2> handler, BaseEventData eventData)
+            {
+                var casted = ExecuteEvents.ValidateEventData<InputEventData<Vector2>>(eventData);
+                handler.OnGestureCompleted(casted);
+            };
 
         /// <inheritdoc />
         public void RaiseGestureCompleted(IMixedRealityController controller, MixedRealityInputAction action, Vector2 inputData)
@@ -1296,11 +1296,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services.InputSystem
         }
 
         private static readonly ExecuteEvents.EventFunction<IMixedRealityGestureHandler> OnGestureCanceled =
-                delegate (IMixedRealityGestureHandler handler, BaseEventData eventData)
-                {
-                    var casted = ExecuteEvents.ValidateEventData<InputEventData>(eventData);
-                    handler.OnGestureCanceled(casted);
-                };
+            delegate (IMixedRealityGestureHandler handler, BaseEventData eventData)
+            {
+                var casted = ExecuteEvents.ValidateEventData<InputEventData>(eventData);
+                handler.OnGestureCanceled(casted);
+            };
 
         /// <inheritdoc />
         public void RaiseGestureCanceled(IMixedRealityController controller, MixedRealityInputAction action)
