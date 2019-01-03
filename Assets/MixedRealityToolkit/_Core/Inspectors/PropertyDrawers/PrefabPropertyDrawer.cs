@@ -24,9 +24,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.PropertyDrawers
                 if (!EditorGUI.EndChangeCheck()) { return; }
                 if (property.objectReferenceValue == null) { return; }
 
-                var prefabType = PrefabUtility.GetPrefabInstanceStatus(property.objectReferenceValue);
+                PrefabAssetType prefabAssetType = PrefabUtility.GetPrefabAssetType(property.objectReferenceValue);
 
-                if (prefabType == PrefabInstanceStatus.NotAPrefab)
+                if (prefabAssetType != PrefabAssetType.Regular && prefabAssetType != PrefabAssetType.Variant)
                 {
                     property.objectReferenceValue = null;
                     Debug.LogWarning("Assigned GameObject must be a prefab");
