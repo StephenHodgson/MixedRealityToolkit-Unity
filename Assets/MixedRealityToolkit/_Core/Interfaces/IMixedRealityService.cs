@@ -50,5 +50,17 @@ namespace Microsoft.MixedReality.Toolkit.Core.Interfaces
         /// Optional Destroy function to perform cleanup of the service before the Mixed Reality Toolkit is destroyed.
         /// </summary>
         void Destroy();
+
+        /// <summary>
+        /// Optional function that is called when the application gains or looses focus.
+        /// </summary>
+        /// <param name="isFocused"></param>
+        void OnApplicationFocus(bool isFocused);
+
+        /// <summary>
+        /// Optional function that is called when the application is paused or un-paused.
+        /// </summary>
+        /// <param name="isPaused"></param>
+        void OnApplicationPause(bool isPaused);
     }
 }

@@ -730,6 +730,44 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
             Dispose();
         }
 
+        private void OnApplicationFocus(bool focus)
+        {
+            if (Application.isPlaying)
+            {
+                // If the Mixed Reality Toolkit is not configured, stop.
+                if (activeProfile == null) { return; }
+
+                foreach (var system in activeSystems)
+                {
+                    system.Value.OnApplicationFocus(focus);
+                }
+
+                foreach (var service in registeredMixedRealityServices)
+                {
+                    service.Item2.OnApplicationFocus(focus);
+                }
+            }
+        }
+
+        private void OnApplicationPause(bool pause)
+        {
+            if (Application.isPlaying)
+            {
+                // If the Mixed Reality Toolkit is not configured, stop.
+                if (activeProfile == null) { return; }
+
+                foreach (var system in activeSystems)
+                {
+                    system.Value.OnApplicationPause(pause);
+                }
+
+                foreach (var service in registeredMixedRealityServices)
+                {
+                    service.Item2.OnApplicationPause(pause);
+                }
+            }
+        }
+
         #endregion MonoBehaviour Implementation
 
         #region Service Container Management

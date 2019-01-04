@@ -36,6 +36,12 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
         /// <inheritdoc />
         public virtual void Destroy() { }
 
+        /// <inheritdoc />
+        public virtual void OnApplicationFocus(bool isFocused) { }
+        
+        /// <inheritdoc />
+        public void OnApplicationPause(bool isPaused) { }
+
         #endregion IMixedRealityService Implementation
 
         #region IDisposable Implementation
