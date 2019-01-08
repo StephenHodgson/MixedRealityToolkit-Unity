@@ -1205,16 +1205,16 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
             // If the Mixed Reality Toolkit is not configured, stop.
             if (activeProfile == null) { return; }
 
+            // Disable all registered runtime services in reverse priority order
+            for (var i = registeredMixedRealityServices.Count - 1; i >= 0; i--)
+            {
+                registeredMixedRealityServices[i].Item2.Disable();
+            }
+
             // Disable all systems
             foreach (var system in activeSystems)
             {
                 system.Value.Disable();
-            }
-
-            // Disable all registered runtime services
-            foreach (var service in registeredMixedRealityServices)
-            {
-                service.Item2.Disable();
             }
         }
 
@@ -1223,17 +1223,29 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
             // If the Mixed Reality Toolkit is not configured, stop.
             if (activeProfile == null) { return; }
 
-            // Destroy all systems
-            foreach (var system in activeSystems) system.Value.Destroy();
+            // Destroy all registered runtime services in reverse priority order
+            for (var i = registeredMixedRealityServices.Count - 1; i >= 0; i--)
+            {
+                registeredMixedRealityServices[i].Item2.Destroy();
+            }
 
-            // Destroy all registered runtime services
-            foreach (var service in registeredMixedRealityServices) service.Item2.Destroy();
+            // Destroy all systems
+            foreach (var system in activeSystems)
+            {
+                system.Value.Destroy();
+            }
+
+            // Dispose all registered runtime services in reverse priority order
+            for (var i = registeredMixedRealityServices.Count - 1; i >= 0; i--)
+            {
+                registeredMixedRealityServices[i].Item2.Dispose();
+            }
 
             // Dispose all systems
-            foreach (var system in activeSystems) system.Value.Dispose();
-
-            // Dispose all registered runtime services
-            foreach (var service in registeredMixedRealityServices) service.Item2.Dispose();
+            foreach (var system in activeSystems)
+            {
+                system.Value.Dispose();
+            }
 
             activeSystems.Clear();
             registeredMixedRealityServices.Clear();
@@ -1449,7 +1461,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
 
             var interfaces = serviceInstance.GetType().GetInterfaces();
 
-            for (int i = 0; i < interfaces.Length; i++)
+            for (int i = 0; i < interfaces?.Length; i++)
             {
                 if (interfaces[i].Name == interfaceType.Name && isValid)
                 {
