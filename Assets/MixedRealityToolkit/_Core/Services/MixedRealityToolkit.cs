@@ -678,6 +678,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
 
         private void Awake()
         {
+            if (Application.isBatchMode || !Application.isEditor)
+            {
+                Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
+            }
+
             if (!Application.isPlaying) { return; }
 
             if (IsInitialized && instance != this)
