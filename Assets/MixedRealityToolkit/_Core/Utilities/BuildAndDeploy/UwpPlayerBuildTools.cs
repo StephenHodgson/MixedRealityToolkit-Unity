@@ -216,6 +216,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         /// </summary>
         public static void BuildUwpPlayer_CommandLine()
         {
+            Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
             UwpAppxBuildTools.BuildUnityPlayer(BuildDeployPreferences.BuildDirectory, false, true);
         }
 
