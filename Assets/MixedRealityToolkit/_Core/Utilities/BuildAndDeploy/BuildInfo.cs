@@ -55,7 +55,16 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
         public bool IsCommandLine { get; set; }
 
-        public bool BuildAppx => HasAnySymbols("-buildAppx");
+        private bool buildAppx = false;
+        public bool BuildAppx
+        {
+            get => HasAnySymbols("-buildAppx") || buildAppx;
+            internal set => buildAppx = value;
+        }
+
+        public bool RebuildAppx { get; set; }
+
+        public bool AutoIncrement { get; set; }
 
         public string BuildSymbols { get; private set; }
 

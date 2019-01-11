@@ -178,7 +178,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
             EditorUtility.DisplayProgressBar("Build Pipeline", "Gathering Build Data...", 0.25f);
 
-            BuildReport buildReport = default(BuildReport);
+            BuildReport buildReport = default;
             try
             {
                 buildReport = BuildPipeline.BuildPlayer(
@@ -216,24 +216,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         /// </summary>
         public static void BuildUwpPlayer_CommandLine()
         {
-            var buildInfo = new BuildInfo
-            {
-                // Use scenes from the editor build settings.
-                Scenes = EditorBuildSettings.scenes.Where(scene => scene.enabled).Select(scene => scene.path),
-
-                // Configure a post build action to throw appropriate error code.
-                PostBuildAction = (innerBuildInfo, buildReport) =>
-                {
-                    if (buildReport.summary.result != BuildResult.Succeeded)
-                    {
-                        EditorApplication.Exit(1);
-                    }
-                }
-            };
-
-            RaiseOverrideBuildDefaults(ref buildInfo);
-            ParseBuildCommandLine(ref buildInfo);
-            BuildUwpPlayer(buildInfo);
+            UwpAppxBuildTools.BuildUnityPlayer(BuildDeployPreferences.BuildDirectory, false, true);
         }
 
         private static void ParseBuildCommandLine(ref BuildInfo buildInfo)
@@ -442,16 +425,13 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             buildInfo.PreBuildAction?.Invoke(buildInfo);
         }
 
-#if UNITY_2018_1_OR_NEWER
         private static async void OnPostProcessBuild(BuildInfo buildInfo, BuildReport buildReport)
         {
+            var success = false;
+
             if (buildReport.summary.result == BuildResult.Succeeded)
-#else
-        private static async void OnPostProcessBuild(BuildInfo buildInfo, string buildReport)
-        {
-            if (string.IsNullOrEmpty(buildReport))
-#endif
             {
+                success = true;
                 string outputProjectDirectoryPath = Path.Combine(GetProjectPath(), buildInfo.OutputDirectory);
                 if (buildInfo.CopyDirectories != null)
                 {
@@ -462,15 +442,15 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                     }
                 }
 
-                if (buildInfo.IsCommandLine && buildInfo.BuildAppx)
+                if (buildInfo.BuildAppx)
                 {
-                    await UwpAppxBuildTools.BuildAppxAsync(
+                    success &= await UwpAppxBuildTools.BuildAppxAsync(
                             PlayerSettings.productName,
-                            true,
+                            buildInfo.RebuildAppx,
                             buildInfo.Configuration,
                             buildInfo.BuildPlatform,
                             outputProjectDirectoryPath,
-                            true);
+                            buildInfo.AutoIncrement);
                 }
             }
 
@@ -479,6 +459,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
             // Call the post-build action, if any
             buildInfo.PostBuildAction?.Invoke(buildInfo, buildReport);
+
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(success ? 0 : 1);
+            }
         }
     }
 }

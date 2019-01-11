@@ -18,8 +18,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 {
     public class UwpAppxBuildTools
     {
-        private const string VsInstallerPath = @"C:\Program Files (x86)\Microsoft Visual Studio\Installer";
-
         /// <summary>
         /// Query the build process to see if we're already building.
         /// </summary>
@@ -42,14 +40,39 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         /// <summary>
         /// Do a build configured for UWP Applications to the specified path, returns the error from <see cref="UwpPlayerBuildTools.BuildUwpPlayer"/>
         /// </summary>
+        /// <param name="buildDirectory"></param>
+        /// <param name="showDialog"></param>
+        /// <param name="buildAppx"></param>
         /// <returns>True, if build was successful.</returns>
-        public static bool BuildUnityPlayer(string buildDirectory, bool showDialog = true)
+        public static bool BuildUnityPlayer(string buildDirectory, bool showDialog = true, bool buildAppx = false)
         {
             bool buildSuccess = false;
 
             if (CheckBuildScenes() == false)
             {
                 return false;
+            }
+
+            async void PostBuildAction(BuildInfo innerBuildInfo, BuildReport buildReport)
+            {
+                if (buildReport.summary.result != BuildResult.Succeeded)
+                {
+                    EditorUtility.DisplayDialog($"{PlayerSettings.productName} WindowsStoreApp Build {buildReport.summary.result}!", "See console for details", "OK");
+                }
+                else
+                {
+                    if (showDialog)
+                    {
+                        if (!EditorUtility.DisplayDialog(PlayerSettings.productName, "Build Complete", "OK", "Build AppX"))
+                        {
+                            EditorAssemblyReloadManager.LockReloadAssemblies = true;
+                            await BuildAppxAsync(PlayerSettings.productName, BuildDeployPreferences.ForceRebuild, BuildDeployPreferences.BuildConfig, BuildDeployPreferences.BuildPlatform, BuildDeployPreferences.BuildDirectory, BuildDeployPreferences.IncrementBuildVersion);
+                            EditorAssemblyReloadManager.LockReloadAssemblies = false;
+                        }
+                    }
+
+                    buildSuccess = true;
+                }
             }
 
             var buildInfo = new BuildInfo
@@ -61,37 +84,16 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 WSASdk = WSASDK.UWP,
                 WSAUWPBuildType = EditorUserBuildSettings.wsaUWPBuildType,
                 WSAUwpSdk = EditorUserBuildSettings.wsaUWPSDK,
+                BuildAppx = buildAppx,
 
                 // Configure a post build action that will compile the generated solution
-                PostBuildAction = async (innerBuildInfo, buildReport) =>
-                {
-                    if (buildReport.summary.result != BuildResult.Succeeded)
-                    {
-                        EditorUtility.DisplayDialog($"{PlayerSettings.productName} WindowsStoreApp Build {buildReport.summary.result}!", "See console for details", "OK");
-                    }
-                    else
-                    {
-                        if (showDialog)
-                        {
-
-                            if (!EditorUtility.DisplayDialog(PlayerSettings.productName, "Build Complete", "OK", "Build AppX"))
-                            {
-                                EditorAssemblyReloadManager.LockReloadAssemblies = true;
-                                await BuildAppxAsync(
-                                     PlayerSettings.productName,
-                                     BuildDeployPreferences.ForceRebuild,
-                                     BuildDeployPreferences.BuildConfig,
-                                     BuildDeployPreferences.BuildPlatform,
-                                     BuildDeployPreferences.BuildDirectory,
-                                     BuildDeployPreferences.IncrementBuildVersion);
-                                EditorAssemblyReloadManager.LockReloadAssemblies = false;
-                            }
-                        }
-
-                        buildSuccess = true;
-                    }
-                }
+                PostBuildAction = PostBuildAction
             };
+
+            if (Application.isBatchMode)
+            {
+                buildInfo.AutoIncrement = true;
+            }
 
             UwpPlayerBuildTools.RaiseOverrideBuildDefaults(ref buildInfo);
             UwpPlayerBuildTools.BuildUwpPlayer(buildInfo);
@@ -132,7 +134,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
             if (!File.Exists(msBuildPath))
             {
-                Debug.LogError("MSBuild.exe is missing or invalid!");
+                Debug.LogError($"MSBuild.exe is missing or invalid!\n{msBuildPath}");
                 return IsBuilding = false;
             }
 
@@ -179,17 +181,23 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 $"\"{solutionProjectPath}\" /t:{(forceRebuildAppx ? "Rebuild" : "Build")} /p:Configuration={buildConfig} /p:Platform={buildPlatform} /verbosity:m",
                 true);
 
-            if (processResult.ExitCode == 0)
+            switch (processResult.ExitCode)
             {
-                Debug.Log("Appx Build Successful!");
-            }
-            else if (processResult.ExitCode == -1073741510)
-            {
-                Debug.LogWarning("The build was terminated either by user's keyboard input CTRL+C or CTRL+Break or closing command prompt window.");
-            }
-            else if (processResult.ExitCode != 0)
-            {
-                Debug.LogError($"{PlayerSettings.productName} appx build Failed! (ErrorCode: {processResult.ExitCode})");
+                case 0:
+                    Debug.Log("Appx Build Successful!");
+                    break;
+                case -1073741510:
+                    Debug.LogWarning("The build was terminated either by user's keyboard input CTRL+C or CTRL+Break or closing command prompt window.");
+                    break;
+                default:
+                {
+                    if (processResult.ExitCode != 0)
+                    {
+                        Debug.LogError($"{PlayerSettings.productName} appx build Failed! (ErrorCode: {processResult.ExitCode})");
+                    }
+
+                    break;
+                }
             }
 
             AssetDatabase.SaveAssets();
@@ -208,8 +216,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
-                    Arguments = $@"/C vswhere -version 15.0 -products * -requires Microsoft.Component.MSBuild -property installationPath",
-                    WorkingDirectory = VsInstallerPath
+                    Arguments = $@"/C vswhere -all -products * -requires Microsoft.Component.MSBuild -property installationPath",
+                    WorkingDirectory = @"C:\Program Files (x86)\Microsoft Visual Studio\Installer"
                 });
 
             foreach (var path in result.Output)
@@ -241,7 +249,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
             await new Process().StartProcessAsync(nugetPath, $"restore \"{storePath}/project.json\"");
 
-            return File.Exists($"{storePath}\\project.lock.json"); ;
+            return File.Exists($"{storePath}\\project.lock.json");
         }
 
         private static bool SetPackageVersion(bool increment)
