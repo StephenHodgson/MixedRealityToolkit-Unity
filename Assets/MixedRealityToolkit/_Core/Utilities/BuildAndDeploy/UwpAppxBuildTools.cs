@@ -47,6 +47,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 return false;
             }
 
+            if (Application.isBatchMode)
+            {
+                // We don't need stack traces on all our logs. Makes things a lot easier to read.
+                Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
+            }
+
+            Debug.Log("Starting Unity Appx Build...");
+
             IsBuilding = true;
             string slnFilename = Path.Combine(buildDirectory, $"{PlayerSettings.productName}.sln");
 
@@ -65,18 +73,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 return IsBuilding = false;
             }
 
-            // Get the path to the NuGet tool
-            string unity = Path.GetDirectoryName(EditorApplication.applicationPath);
-            System.Diagnostics.Debug.Assert(unity != null, "Unable to determine the unity editor path.");
-            string storePath = Path.GetFullPath(Path.Combine(Path.Combine(Application.dataPath, ".."), buildDirectory));
-            string solutionProjectPath = Path.GetFullPath(Path.Combine(storePath, $@"{productName}.sln"));
-
-            // Bug in Unity editor that doesn't copy project.json and project.lock.json files correctly if solutionProjectPath is not in a folder named UWP.
-            if (!File.Exists($"{storePath}\\project.json"))
-            {
-                File.Copy($@"{unity}\Data\PlaybackEngines\MetroSupport\Tools\project.json", $"{storePath}\\project.json");
-            }
-
             // Ensure that the generated .appx version increments by modifying Package.appxmanifest
             if (!SetPackageVersion(incrementVersion))
             {
@@ -84,16 +80,24 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 return IsBuilding = false;
             }
 
+            string storagePath = Path.GetFullPath(Path.Combine(Path.Combine(Application.dataPath, ".."), buildDirectory));
+            string solutionProjectPath = Path.GetFullPath(Path.Combine(storagePath, $@"{productName}.sln"));
+
             // Now do the actual appx build
             var processResult = await new Process().StartProcessAsync(
                 msBuildPath,
                 $"\"{solutionProjectPath}\" /t:{(forceRebuildAppx ? "Rebuild" : "Build")} /p:Configuration={buildConfig} /p:Platform={buildPlatform} /verbosity:m",
-                true);
+                !Application.isBatchMode);
 
             switch (processResult.ExitCode)
             {
                 case 0:
                     Debug.Log("Appx Build Successful!");
+
+                    if (Application.isBatchMode)
+                    {
+                        Debug.Log(string.Join("\n", processResult.Output));
+                    }
                     break;
                 case -1073741510:
                     Debug.LogWarning("The build was terminated either by user's keyboard input CTRL+C or CTRL+Break or closing command prompt window.");
@@ -103,6 +107,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                         if (processResult.ExitCode != 0)
                         {
                             Debug.LogError($"{PlayerSettings.productName} appx build Failed! (ErrorCode: {processResult.ExitCode})");
+
+                            if (Application.isBatchMode)
+                            {
+                                Debug.LogError(string.Join("\n", processResult.Errors));
+                            }
                         }
 
                         break;

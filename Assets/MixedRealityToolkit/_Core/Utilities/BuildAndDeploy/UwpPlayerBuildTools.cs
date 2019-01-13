@@ -17,14 +17,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
     /// </summary>
     public static class UwpPlayerBuildTools
     {
-        /// <summary>
-        /// Used to trigger a build from the command line for continuous integration.
-        /// </summary>
-        internal static async Task<bool> CommandLine_BuildUwpPlayer()
-        {
-            return await BuildPlayer(new UwpBuildInfo(true));
-        }
-
         private static void ParseBuildCommandLine(ref UwpBuildInfo buildInfo)
         {
             IBuildInfo iBuildInfo = buildInfo;
@@ -114,13 +106,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
             #endregion Gather Build Data
 
-            EditorAssemblyReloadManager.LockReloadAssemblies = true;
-            
             BuildReport buildReport = UnityPlayerBuildTools.BuildUnityPlayer(buildInfo);
 
-            bool success = buildReport.summary.result == BuildResult.Succeeded;
+            bool success = buildReport != null && buildReport.summary.result == BuildResult.Succeeded;
 
-            if (buildInfo.BuildAppx)
+            if (success && buildInfo.BuildAppx)
             {
                 success &= await UwpAppxBuildTools.BuildAppxAsync(
                     PlayerSettings.productName,
@@ -130,9 +120,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                     buildInfo.OutputDirectory,
                     buildInfo.AutoIncrement);
             }
-
-            EditorAssemblyReloadManager.LockReloadAssemblies = false;
-
+            
             return success;
         }
     }

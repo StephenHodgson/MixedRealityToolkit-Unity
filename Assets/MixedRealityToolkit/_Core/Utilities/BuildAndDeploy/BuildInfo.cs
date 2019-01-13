@@ -1,8 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
@@ -16,6 +14,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             IsCommandLine = isCommandLine;
             BuildSymbols = string.Empty;
             BuildTarget = EditorUserBuildSettings.activeBuildTarget;
+            Scenes = EditorBuildSettings.scenes.Where(scene => scene.enabled).Select(scene => scene.path);
         }
 
         /// <inheritdoc />
@@ -23,10 +22,24 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         
         /// <inheritdoc />
         public bool IsCommandLine { get; }
-        
+
+        private string outputDirectory;
+
         /// <inheritdoc />
-        public string OutputDirectory { get; set; }
-        
+        public string OutputDirectory
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(outputDirectory))
+                {
+                    outputDirectory = BuildDeployPreferences.BuildDirectory;
+                }
+
+                return outputDirectory;
+            }
+            set => outputDirectory = value;
+        }
+
         /// <inheritdoc />
         public IEnumerable<string> Scenes { get; set; }
         
@@ -41,9 +54,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         
         /// <inheritdoc />
         public ColorSpace? ColorSpace { get; set; }
-        
+
         /// <inheritdoc />
-        public bool AutoIncrement { get; set; }
+        public bool AutoIncrement { get; set; } = false;
         
         /// <inheritdoc />
         public string BuildSymbols { get; set; }

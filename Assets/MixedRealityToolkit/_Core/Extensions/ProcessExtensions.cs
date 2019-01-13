@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
+using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Extensions
 {
@@ -67,10 +69,13 @@ namespace Microsoft.MixedReality.Toolkit.Core.Extensions
 
             process.ErrorDataReceived += (sender, args) =>
             {
-                if (!string.IsNullOrEmpty(args.Data))
+                if (args.Data != null)
                 {
                     errorList.Add(args.Data);
-                    if (showDebug) { UnityEngine.Debug.LogError(args.Data); }
+
+                    if (!showDebug) { return; }
+
+                    UnityEngine.Debug.LogError(args.Data);
                 }
                 else
                 {
@@ -80,10 +85,13 @@ namespace Microsoft.MixedReality.Toolkit.Core.Extensions
 
             process.OutputDataReceived += (sender, args) =>
             {
-                if (!string.IsNullOrEmpty(args.Data))
+                if (args.Data != null)
                 {
                     outputList.Add(args.Data);
-                    if (showDebug) { UnityEngine.Debug.Log(args.Data); }
+
+                    if (!showDebug) { return; }
+
+                    UnityEngine.Debug.Log(args.Data);
                 }
                 else
                 {
