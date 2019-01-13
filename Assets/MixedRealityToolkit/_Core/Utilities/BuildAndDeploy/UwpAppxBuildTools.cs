@@ -10,7 +10,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using UnityEditor;
-using UnityEditor.Build.Reporting;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -23,86 +22,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         /// </summary>
         public static bool IsBuilding { get; private set; } = false;
 
-        private static bool CheckBuildScenes()
-        {
-            if (EditorBuildSettings.scenes.Length == 0)
-            {
-                return EditorUtility.DisplayDialog("Attention!",
-                    "No scenes are present in the build settings.\n" +
-                    "The current scene will be the one built.\n\n" +
-                    "Do you want to cancel and add one?",
-                    "Continue Anyway", "Cancel Build");
-            }
-
-            return true;
-        }
-
         /// <summary>
-        /// Do a build configured for UWP Applications to the specified path, returns the error from <see cref="UwpPlayerBuildTools.BuildUwpPlayer"/>
-        /// </summary>
-        /// <param name="buildDirectory"></param>
-        /// <param name="showDialog"></param>
-        /// <param name="buildAppx"></param>
-        /// <returns>True, if build was successful.</returns>
-        public static bool BuildUnityPlayer(string buildDirectory, bool showDialog = true, bool buildAppx = false)
-        {
-            bool buildSuccess = false;
-
-            if (CheckBuildScenes() == false)
-            {
-                return false;
-            }
-
-            async void PostBuildAction(BuildInfo innerBuildInfo, BuildReport buildReport)
-            {
-                if (buildReport.summary.result != BuildResult.Succeeded)
-                {
-                    EditorUtility.DisplayDialog($"{PlayerSettings.productName} WindowsStoreApp Build {buildReport.summary.result}!", "See console for details", "OK");
-                }
-                else
-                {
-                    if (showDialog)
-                    {
-                        if (!EditorUtility.DisplayDialog(PlayerSettings.productName, "Build Complete", "OK", "Build AppX"))
-                        {
-                            EditorAssemblyReloadManager.LockReloadAssemblies = true;
-                            await BuildAppxAsync(PlayerSettings.productName, BuildDeployPreferences.ForceRebuild, BuildDeployPreferences.BuildConfig, BuildDeployPreferences.BuildPlatform, BuildDeployPreferences.BuildDirectory, BuildDeployPreferences.IncrementBuildVersion);
-                            EditorAssemblyReloadManager.LockReloadAssemblies = false;
-                        }
-                    }
-
-                    buildSuccess = true;
-                }
-            }
-
-            var buildInfo = new BuildInfo
-            {
-                // These properties should all match what the Standalone.proj file specifies
-                OutputDirectory = buildDirectory,
-                Scenes = EditorBuildSettings.scenes.Where(scene => scene.enabled).Select(scene => scene.path),
-                BuildTarget = BuildTarget.WSAPlayer,
-                WSASdk = WSASDK.UWP,
-                WSAUWPBuildType = EditorUserBuildSettings.wsaUWPBuildType,
-                WSAUwpSdk = EditorUserBuildSettings.wsaUWPSDK,
-                BuildAppx = buildAppx,
-
-                // Configure a post build action that will compile the generated solution
-                PostBuildAction = PostBuildAction
-            };
-
-            if (Application.isBatchMode)
-            {
-                buildInfo.AutoIncrement = true;
-            }
-
-            UwpPlayerBuildTools.RaiseOverrideBuildDefaults(ref buildInfo);
-            UwpPlayerBuildTools.BuildUwpPlayer(buildInfo);
-
-            return buildSuccess;
-        }
-
-        /// <summary>
-        /// Build the UWP appx bundle for this project.  Requires that <see cref="BuildUnityPlayer"/> has already be run or a user has
+        /// Build the UWP appx bundle for this project.  Requires that <see cref="UwpPlayerBuildTools.BuildPlayer(string,bool,bool)"/> has already be run or a user has
         /// previously built the Unity Player with the WSA Player as the Build Target.
         /// </summary>
         /// <param name="productName">The applications product name. Typically <see cref="PlayerSettings.productName"/></param>
@@ -111,9 +32,15 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         /// <param name="buildPlatform">x86 or x64 build platforms are valid.</param>
         /// <param name="buildDirectory">The directory where the built Unity Player Solution is located.</param>
         /// <param name="incrementVersion">Should we increment the appx version number?</param>
-        /// <returns></returns>
+        /// <returns>True, if the appx build was successful.</returns>
         public static async Task<bool> BuildAppxAsync(string productName, bool forceRebuildAppx, string buildConfig, string buildPlatform, string buildDirectory, bool incrementVersion)
         {
+            if (!EditorAssemblyReloadManager.LockReloadAssemblies)
+            {
+                Debug.LogError("Lock Reload assemblies before attempting to build appx!");
+                return false;
+            }
+
             if (IsBuilding)
             {
                 Debug.LogWarning("Build already in progress!");
@@ -150,24 +77,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 File.Copy($@"{unity}\Data\PlaybackEngines\MetroSupport\Tools\project.json", $"{storePath}\\project.json");
             }
 
-            string assemblyCSharp = $"{storePath}/GeneratedProjects/UWP/Assembly-CSharp";
-            string assemblyCSharpFirstPass = $"{storePath}/GeneratedProjects/UWP/Assembly-CSharp-firstpass";
-            bool restoreFirstPass = Directory.Exists(assemblyCSharpFirstPass);
-            string nugetPath = Path.Combine(unity, @"Data\PlaybackEngines\MetroSupport\Tools\NuGet.exe");
-
-            // Before building, need to run a nuget restore to generate a json.lock file. Failing to do this breaks the build in VS RTM
-            if (PlayerSettings.GetScriptingBackend(BuildTargetGroup.WSA) == ScriptingImplementation.WinRTDotNET)
-            {
-                if (!await RestoreNugetPackagesAsync(nugetPath, storePath) ||
-                    !await RestoreNugetPackagesAsync(nugetPath, $"{storePath}\\{productName}") ||
-                    EditorUserBuildSettings.wsaGenerateReferenceProjects && !await RestoreNugetPackagesAsync(nugetPath, assemblyCSharp) ||
-                    EditorUserBuildSettings.wsaGenerateReferenceProjects && restoreFirstPass && !await RestoreNugetPackagesAsync(nugetPath, assemblyCSharpFirstPass))
-                {
-                    Debug.LogError("Failed to restore nuget packages!");
-                    return IsBuilding = false;
-                }
-            }
-
             // Ensure that the generated .appx version increments by modifying Package.appxmanifest
             if (!SetPackageVersion(incrementVersion))
             {
@@ -190,14 +99,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                     Debug.LogWarning("The build was terminated either by user's keyboard input CTRL+C or CTRL+Break or closing command prompt window.");
                     break;
                 default:
-                {
-                    if (processResult.ExitCode != 0)
                     {
-                        Debug.LogError($"{PlayerSettings.productName} appx build Failed! (ErrorCode: {processResult.ExitCode})");
-                    }
+                        if (processResult.ExitCode != 0)
+                        {
+                            Debug.LogError($"{PlayerSettings.productName} appx build Failed! (ErrorCode: {processResult.ExitCode})");
+                        }
 
-                    break;
-                }
+                        break;
+                    }
             }
 
             AssetDatabase.SaveAssets();
@@ -240,16 +149,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             }
 
             return string.Empty;
-        }
-
-        public static async Task<bool> RestoreNugetPackagesAsync(string nugetPath, string storePath)
-        {
-            Debug.Assert(File.Exists(nugetPath));
-            Debug.Assert(Directory.Exists(storePath));
-
-            await new Process().StartProcessAsync(nugetPath, $"restore \"{storePath}/project.json\"");
-
-            return File.Exists($"{storePath}\\project.lock.json");
         }
 
         private static bool SetPackageVersion(bool increment)

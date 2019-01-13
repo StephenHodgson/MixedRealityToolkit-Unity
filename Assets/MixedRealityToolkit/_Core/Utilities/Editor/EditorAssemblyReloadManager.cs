@@ -35,6 +35,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Editor
                     EditorWindow.focusedWindow.ShowNotification(new GUIContent("Assembly reloading resumed."));
                 }
             }
+            get => locked;
         }
     }
 }

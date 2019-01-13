@@ -13,7 +13,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
         #region Lock Profile Preferences
 
         private static readonly GUIContent LockContent = new GUIContent("Lock SDK profiles", "Locks the SDK profiles from being edited.\n\nThis setting only applies to the currently running project.");
-        private const string LockKey = "_LockProfiles";
+        private const string LOCK_KEY = "LockProfiles";
         private static bool lockPrefLoaded;
         private static bool lockProfiles;
 
@@ -26,13 +26,13 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
             {
                 if (!lockPrefLoaded)
                 {
-                    lockProfiles = EditorPrefsUtility.GetEditorPref(LockKey, true);
+                    lockProfiles = EditorPreferences.Get(LOCK_KEY, true);
                     lockPrefLoaded = true;
                 }
 
                 return lockProfiles;
             }
-            set => EditorPrefsUtility.SetEditorPref(LockKey, lockProfiles = value);
+            set => EditorPreferences.Set(LOCK_KEY, lockProfiles = value);
         }
 
         #endregion Lock Profile Preferences
@@ -40,7 +40,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
         #region Ignore startup settings prompt
 
         private static readonly GUIContent IgnoreContent = new GUIContent("Ignore settings prompt on startup", "Prevents settings dialog popup from showing on startup.\n\nThis setting applies to all projects using MRTK.");
-        private const string IgnoreKey = "_MixedRealityToolkit_Editor_IgnoreSettingsPrompts";
+        private const string IGNORE_KEY = "MixedRealityToolkit_Editor_IgnoreSettingsPrompts";
         private static bool ignorePrefLoaded;
         private static bool ignoreSettingsPrompt;
 
@@ -53,13 +53,13 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
             {
                 if (!ignorePrefLoaded)
                 {
-                    ignoreSettingsPrompt = EditorPrefs.GetBool(IgnoreKey, false);
+                    ignoreSettingsPrompt = EditorPrefs.GetBool(IGNORE_KEY, false);
                     ignorePrefLoaded = true;
                 }
 
                 return ignoreSettingsPrompt;
             }
-            set => EditorPrefs.SetBool(IgnoreKey, ignoreSettingsPrompt = value);
+            set => EditorPrefs.SetBool(IGNORE_KEY, ignoreSettingsPrompt = value);
         }
 
         #endregion Ignore startup settings prompt
@@ -67,7 +67,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
         #region Show Canvas Utility Prompt
 
         private static readonly GUIContent CanvasUtilityContent = new GUIContent("Canvas world space utility dialogs", "Enable or disable the dialog popups for the world space canvas settings.\n\nThis setting only applies to the currently running project.");
-        private const string CanvasKey = "_EnableCanvasUtilityDialog";
+        private const string CANVAS_KEY = "EnableCanvasUtilityDialog";
         private static bool isCanvasUtilityPrefLoaded;
         private static bool showCanvasUtilityPrompt;
 
@@ -80,13 +80,13 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
             {
                 if (!isCanvasUtilityPrefLoaded)
                 {
-                    showCanvasUtilityPrompt = EditorPrefsUtility.GetEditorPref(CanvasKey, true);
+                    showCanvasUtilityPrompt = EditorPreferences.Get(CANVAS_KEY, true);
                     isCanvasUtilityPrefLoaded = true;
                 }
 
                 return showCanvasUtilityPrompt;
             }
-            set => EditorPrefsUtility.SetEditorPref(CanvasKey, showCanvasUtilityPrompt = value);
+            set => EditorPreferences.Set(CANVAS_KEY, showCanvasUtilityPrompt = value);
         }
 
         #endregion Show Canvas Utility Prompt
@@ -94,7 +94,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
         #region Start Scene Preference
 
         private static readonly GUIContent StartSceneContent = new GUIContent("Start Scene", "When pressing play in the editor, a prompt will ask you if you want to switch to this start scene.\n\nThis setting only applies to the currently running project.");
-        private const string StartSceneKey = "_StartScene";
+        private const string START_SCENE_KEY = "StartScene";
         private static SceneAsset sceneAsset;
         private static bool isStartScenePrefLoaded;
 
@@ -104,7 +104,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
             {
                 if (!isStartScenePrefLoaded)
                 {
-                    var scenePath = EditorPrefsUtility.GetEditorPref(StartSceneKey, string.Empty);
+                    var scenePath = EditorPreferences.Get(START_SCENE_KEY, string.Empty);
                     sceneAsset = GetSceneObject(scenePath);
                     isStartScenePrefLoaded = true;
                 }
@@ -115,7 +115,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
             {
                 sceneAsset = value != null ? GetSceneObject(value.name) : null;
                 var scenePath = value != null ? AssetDatabase.GetAssetOrScenePath(value) : string.Empty;
-                EditorPrefsUtility.SetEditorPref(StartSceneKey, scenePath);
+                EditorPreferences.Set(START_SCENE_KEY, scenePath);
             }
         }
 
