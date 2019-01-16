@@ -551,14 +551,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             var prevFieldWidth = EditorGUIUtility.fieldWidth;
 
             EditorGUIUtility.fieldWidth = 120;
-            var appIconAssetObject = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(UwpBuildDeployPreferences._3DAppIconPath);
+            var appIconAssetObject = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(UwpBuildDeployPreferences.MixedRealityAppIconPath);
 
             EditorGUI.BeginChangeCheck();
             appIconAssetObject = EditorGUILayout.ObjectField(appIconLabel, appIconAssetObject, typeof(UnityEngine.Object), false);
 
             if (EditorGUI.EndChangeCheck())
             {
-                UwpBuildDeployPreferences._3DAppIconPath = AssetDatabase.GetAssetPath(appIconAssetObject);
+                UwpBuildDeployPreferences.MixedRealityAppIconPath = AssetDatabase.GetAssetPath(appIconAssetObject);
             }
 
             EditorGUIUtility.fieldWidth = prevFieldWidth;
@@ -1043,7 +1043,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 BuildPlatform = EditorUserBuildSettings.wsaArchitecture,
                 OutputDirectory = BuildDeployPreferences.BuildDirectory,
                 AutoIncrement = BuildDeployPreferences.IncrementBuildVersion,
-                AppIconPath = UwpBuildDeployPreferences._3DAppIconPath
+                AppIconPath = UwpBuildDeployPreferences.MixedRealityAppIconPath
             };
 
             EditorAssemblyReloadManager.LockReloadAssemblies = true;

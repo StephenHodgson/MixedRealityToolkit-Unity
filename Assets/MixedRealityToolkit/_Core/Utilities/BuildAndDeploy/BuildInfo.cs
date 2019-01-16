@@ -19,7 +19,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
         /// <inheritdoc />
         public virtual BuildTarget BuildTarget { get; }
-        
+
         /// <inheritdoc />
         public bool IsCommandLine { get; }
 
@@ -42,25 +42,25 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
         /// <inheritdoc />
         public IEnumerable<string> Scenes { get; set; }
-        
+
         /// <inheritdoc />
         public Action<IBuildInfo> PreBuildAction { get; set; }
-        
+
         /// <inheritdoc />
         public Action<IBuildInfo, BuildReport> PostBuildAction { get; set; }
-        
+
         /// <inheritdoc />
         public BuildOptions BuildOptions { get; set; }
-        
+
         /// <inheritdoc />
         public ColorSpace? ColorSpace { get; set; }
 
         /// <inheritdoc />
         public bool AutoIncrement { get; set; } = false;
-        
+
         /// <inheritdoc />
         public string BuildSymbols { get; set; }
-        
+
         /// <inheritdoc />
         public string BuildPlatform { get; set; }
 
@@ -75,8 +75,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 }
 
                 return this.HasAnySymbols(UnityPlayerBuildTools.BuildSymbolRelease) ?
-                        UnityPlayerBuildTools.BuildSymbolRelease :
-                        UnityPlayerBuildTools.BuildSymbolMaster;
+                    UnityPlayerBuildTools.BuildSymbolRelease :
+                    UnityPlayerBuildTools.BuildSymbolMaster;
             }
             set
             {
@@ -84,9 +84,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 {
                     this.RemoveSymbols(new[]
                     {
-                            UnityPlayerBuildTools.BuildSymbolDebug,
-                            UnityPlayerBuildTools.BuildSymbolRelease,
-                            UnityPlayerBuildTools.BuildSymbolMaster
+                        UnityPlayerBuildTools.BuildSymbolDebug,
+                        UnityPlayerBuildTools.BuildSymbolRelease,
+                        UnityPlayerBuildTools.BuildSymbolMaster
                     });
                 }
 

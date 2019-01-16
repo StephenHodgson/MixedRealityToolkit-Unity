@@ -1,4 +1,5 @@
-﻿using Microsoft.MixedReality.Toolkit.Core.Utilities.Editor;
+﻿using System.IO;
+using Microsoft.MixedReality.Toolkit.Core.Utilities.Editor;
 using Microsoft.MixedReality.Toolkit.Core.Utilities.WindowsDevicePortal.DataStructures;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         private const string EDITOR_PREF_FULL_REINSTALL = "BuildDeployWindow_FullReinstall";
         private const string EDITOR_PREF_USE_SSL = "BuildDeployWindow_UseSSL";
         private const string EDITOR_PREF_PROCESS_ALL = "BuildDeployWindow_ProcessAll";
+        private const string EDITOR_PREF_APP_ICON_SETTINGS_PATH = "ProjectSettings/Xrtk_MixedRealityIconPath.json";
 
         /// <summary>
         /// The current Build Configuration. (Debug, Release, or Master)
@@ -22,7 +24,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             get => EditorPreferences.Get(EDITOR_PREF_BUILD_CONFIG, "Debug");
             set => EditorPreferences.Set(EDITOR_PREF_BUILD_CONFIG, value);
         }
-        private const string EDITOR_PREF_3D_APP_ICON = "BuildDeployWindow_3D_AppIcon";
 
         /// <summary>
         /// Current setting to force rebuilding the appx.
@@ -42,20 +43,43 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             set => EditorPreferences.Set(EDITOR_PREF_FULL_REINSTALL, value);
         }
 
+        private static string appIconPath;
+
         /// <summary>
         /// The path to the 3d app icon .glb asset.
         /// </summary>
-        public static string _3DAppIconPath
+        public static string MixedRealityAppIconPath
         {
-            get => EditorPreferences.Get(EDITOR_PREF_3D_APP_ICON, "");
+            get
+            {
+                if (!string.IsNullOrEmpty(appIconPath))
+                {
+                    return appIconPath;
+                }
+
+                var projectSettingsPath = Path.GetFullPath(EDITOR_PREF_APP_ICON_SETTINGS_PATH);
+
+                if (!File.Exists(projectSettingsPath))
+                {
+                    var appIconAsset = new MixedRealityAppIcon { MixedRealityAppIconPath = string.Empty };
+                    JsonUtility.ToJson(appIconAsset);
+                    return appIconAsset.MixedRealityAppIconPath;
+                }
+
+                var data = File.ReadAllText(projectSettingsPath);
+                return JsonUtility.FromJson<MixedRealityAppIcon>(data).MixedRealityAppIconPath;
+            }
             set
             {
+                var projectSettingsPath = Path.GetFullPath(EDITOR_PREF_APP_ICON_SETTINGS_PATH);
+
                 if (!string.IsNullOrWhiteSpace(value))
                 {
                     Debug.Assert(value.EndsWith(".glb"), "3d App Icon must be a .glb asset");
                 }
 
-                EditorPreferences.Set(EDITOR_PREF_3D_APP_ICON, value);
+                appIconPath = value;
+                File.WriteAllText(projectSettingsPath, JsonUtility.ToJson(new MixedRealityAppIcon { MixedRealityAppIconPath = value }));
             }
         }
 

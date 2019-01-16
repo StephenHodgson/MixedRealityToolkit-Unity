@@ -196,7 +196,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             UpdateDependenciesElement(dependencies, rootNode.GetDefaultNamespace());
 
             // Setup the 3d app icon.
-            if (!string.IsNullOrWhiteSpace(UwpBuildDeployPreferences._3DAppIconPath))
+            if (!string.IsNullOrWhiteSpace(UwpBuildDeployPreferences.MixedRealityAppIconPath))
             {
                 // Add the uap5 namespace if it doesn't exist.
                 if (rootNode.GetNamespaceOfPrefix(uap5) == null)

@@ -57,7 +57,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 OutputDirectory = buildDirectory,
                 Scenes = EditorBuildSettings.scenes.Where(scene => scene.enabled).Select(scene => scene.path),
                 BuildAppx = buildAppx,
-                AppIconPath = UwpBuildDeployPreferences._3DAppIconPath,
+                AppIconPath = UwpBuildDeployPreferences.MixedRealityAppIconPath,
 
                 // Configure a post build action that will compile the generated solution
                 PostBuildAction = PostBuildAction
