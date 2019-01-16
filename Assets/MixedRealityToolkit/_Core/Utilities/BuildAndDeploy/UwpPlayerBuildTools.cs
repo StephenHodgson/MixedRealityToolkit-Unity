@@ -57,6 +57,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 OutputDirectory = buildDirectory,
                 Scenes = EditorBuildSettings.scenes.Where(scene => scene.enabled).Select(scene => scene.path),
                 BuildAppx = buildAppx,
+                AppIconPath = UwpBuildDeployPreferences._3DAppIconPath,
 
                 // Configure a post build action that will compile the generated solution
                 PostBuildAction = PostBuildAction
@@ -76,13 +77,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                         var _buildInfo = innerBuildInfo as UwpBuildInfo;
                         Debug.Assert(_buildInfo != null);
                         EditorAssemblyReloadManager.LockReloadAssemblies = true;
-                        await UwpAppxBuildTools.BuildAppxAsync(
-                                PlayerSettings.productName,
-                                _buildInfo.RebuildAppx,
-                                _buildInfo.Configuration,
-                                _buildInfo.BuildPlatform,
-                                _buildInfo.OutputDirectory,
-                                _buildInfo.AutoIncrement);
+                        await UwpAppxBuildTools.BuildAppxAsync(_buildInfo);
                         EditorAssemblyReloadManager.LockReloadAssemblies = false;
                     }
                 }
@@ -112,15 +107,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
             if (success && buildInfo.BuildAppx)
             {
-                success &= await UwpAppxBuildTools.BuildAppxAsync(
-                    PlayerSettings.productName,
-                    buildInfo.RebuildAppx,
-                    buildInfo.Configuration,
-                    buildInfo.BuildPlatform,
-                    buildInfo.OutputDirectory,
-                    buildInfo.AutoIncrement);
+                success &= await UwpAppxBuildTools.BuildAppxAsync(buildInfo);
             }
-            
+
             return success;
         }
     }

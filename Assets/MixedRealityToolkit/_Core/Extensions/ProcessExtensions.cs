@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
-using UnityEngine;
-using Debug = System.Diagnostics.Debug;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Extensions
 {

@@ -24,5 +24,10 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         /// Force rebuilding the appx bundle?
         /// </summary>
         public bool RebuildAppx { get; set; } = false;
+
+        /// <summary>
+        /// The 3d App Icon resource path.
+        /// </summary>
+        public string AppIconPath { get; set; } = "";
     }
 }

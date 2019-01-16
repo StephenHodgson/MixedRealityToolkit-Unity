@@ -6,8 +6,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 {
     public static class UwpBuildDeployPreferences
     {
+        public const string MIN_SDK_VERSION = "10.0.17134.0";
         private const string EDITOR_PREF_BUILD_CONFIG = "BuildDeployWindow_BuildConfig";
-        private const string EDITOR_PREF_BUILD_PLATFORM = "BuildDeployWindow_BuildPlatform";
         private const string EDITOR_PREF_FORCE_REBUILD = "BuildDeployWindow_ForceRebuild";
         private const string EDITOR_PREF_CONNECT_INFOS = "BuildDeployWindow_DeviceConnections";
         private const string EDITOR_PREF_FULL_REINSTALL = "BuildDeployWindow_FullReinstall";
@@ -22,15 +22,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             get => EditorPreferences.Get(EDITOR_PREF_BUILD_CONFIG, "Debug");
             set => EditorPreferences.Set(EDITOR_PREF_BUILD_CONFIG, value);
         }
-
-        /// <summary>
-        /// The current Build Platform. (x86 or x64)
-        /// </summary>
-        public static string BuildPlatform
-        {
-            get => EditorPreferences.Get(EDITOR_PREF_BUILD_PLATFORM, "x86");
-            set => EditorPreferences.Set(EDITOR_PREF_BUILD_PLATFORM, value);
-        }
+        private const string EDITOR_PREF_3D_APP_ICON = "BuildDeployWindow_3D_AppIcon";
 
         /// <summary>
         /// Current setting to force rebuilding the appx.
@@ -48,6 +40,23 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         {
             get => EditorPreferences.Get(EDITOR_PREF_FULL_REINSTALL, true);
             set => EditorPreferences.Set(EDITOR_PREF_FULL_REINSTALL, value);
+        }
+
+        /// <summary>
+        /// The path to the 3d app icon .glb asset.
+        /// </summary>
+        public static string _3DAppIconPath
+        {
+            get => EditorPreferences.Get(EDITOR_PREF_3D_APP_ICON, "");
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    Debug.Assert(value.EndsWith(".glb"), "3d App Icon must be a .glb asset");
+                }
+
+                EditorPreferences.Set(EDITOR_PREF_3D_APP_ICON, value);
+            }
         }
 
         /// <summary>

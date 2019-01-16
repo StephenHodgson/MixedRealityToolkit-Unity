@@ -17,6 +17,7 @@ using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using FileInfo = System.IO.FileInfo;
+using Object = System.Object;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 {
@@ -35,10 +36,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             DeployOptions
         }
 
-        private enum BuildPlatformEnum
+        private enum Architecture
         {
-            x86 = 1,
-            x64 = 2
+            x86 = 0,
+            x64 = 1,
+            ARM = 2,
         }
 
         #endregion Internal Types
@@ -52,8 +54,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         private const string EMPTY_IP_ADDRESS = "0.0.0.0";
 
         private const float UPDATE_BUILDS_PERIOD = 1.0f;
-
-        private const string SDK_VERSION = "10.0.17134.0";
 
         private readonly string[] tabNames = { "Unity Build Options", "Appx Build Options", "Deploy Options" };
 
@@ -96,6 +96,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         private readonly GUIContent doAllLabel = new GUIContent(" Do actions on all devices", "Should the build options perform actions on all the connected devices?");
 
         private readonly GUIContent uninstallLabel = new GUIContent("Uninstall First", "Uninstall application before installing");
+
+        private readonly GUIContent appIconLabel = new GUIContent("3d App Icon");
 
         #endregion Labels
 
@@ -408,7 +410,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             GUILayout.BeginVertical();
 
             // SDK and MS Build Version(and save setting, if it's changed)
-            string currentSDKVersion = EditorUserBuildSettings.wsaUWPSDK;
+            string currentSDKVersion = EditorUserBuildSettings.wsaMinUWPSDK;
 
             int currentSDKVersionIndex = -1;
 
@@ -420,30 +422,37 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 }
                 else
                 {
-                    if (windowsSdkPaths[i].Equals(SDK_VERSION))
+                    if (windowsSdkPaths[i].Equals(UwpBuildDeployPreferences.MIN_SDK_VERSION))
                     {
                         currentSDKVersionIndex = i;
                     }
                 }
             }
 
-            EditorGUILayout.HelpBox("Required SDK Version: " + SDK_VERSION, MessageType.Info);
+            EditorGUILayout.HelpBox($"Minimum Required SDK Version: {currentSDKVersion}", MessageType.Info);
 
             // Throw exception if user has no Windows 10 SDK installed
             if (currentSDKVersionIndex < 0)
             {
                 if (IsValidSdkInstalled)
                 {
-                    Debug.LogError($"Unable to find the required Windows 10 SDK Target!\nPlease be sure to install the {SDK_VERSION} SDK from Visual Studio Installer.");
+                    Debug.LogError($"Unable to find the required Windows 10 SDK Target!\nPlease be sure to install the {UwpBuildDeployPreferences.MIN_SDK_VERSION} SDK from Visual Studio Installer.");
                 }
 
-                EditorGUILayout.HelpBox($"Unable to find the required Windows 10 SDK Target!\nPlease be sure to install the {SDK_VERSION} SDK from Visual Studio Installer.", MessageType.Error);
+                EditorGUILayout.HelpBox($"Unable to find the required Windows 10 SDK Target!\nPlease be sure to install the {UwpBuildDeployPreferences.MIN_SDK_VERSION} SDK from Visual Studio Installer.", MessageType.Error);
                 GUILayout.EndVertical();
                 IsValidSdkInstalled = false;
                 return;
             }
 
             IsValidSdkInstalled = true;
+
+            string newSDKVersion = windowsSdkPaths[currentSDKVersionIndex];
+
+            if (!newSDKVersion.Equals(currentSDKVersion))
+            {
+                EditorUserBuildSettings.wsaMinUWPSDK = newSDKVersion;
+            }
 
             var curScriptingBackend = PlayerSettings.GetScriptingBackend(BuildTargetGroup.WSA);
 
@@ -471,13 +480,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 {
                     PlayerSettings.SetScriptingBackend(BuildTargetGroup.WSA, newScriptingBackend);
                 }
-            }
-
-            string newSDKVersion = windowsSdkPaths[currentSDKVersionIndex];
-
-            if (!newSDKVersion.Equals(currentSDKVersion))
-            {
-                EditorUserBuildSettings.wsaUWPSDK = newSDKVersion;
             }
 
             // Build config (and save setting, if it's changed)
@@ -508,37 +510,60 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             }
 
             // Build Platform (and save setting, if it's changed)
-            string curBuildPlatformString = UwpBuildDeployPreferences.BuildPlatform;
-            var buildPlatformOption = BuildPlatformEnum.x86;
+            string currentArchitectureString = EditorUserBuildSettings.wsaArchitecture;
+            var buildArchitecture = Architecture.x86;
 
-            if (curBuildPlatformString.ToLower().Equals("x86"))
+            if (currentArchitectureString.ToLower().Equals("x86"))
             {
-                buildPlatformOption = BuildPlatformEnum.x86;
+                buildArchitecture = Architecture.x86;
             }
-            else if (curBuildPlatformString.ToLower().Equals("x64"))
+            else if (currentArchitectureString.ToLower().Equals("x64"))
             {
-                buildPlatformOption = BuildPlatformEnum.x64;
+                buildArchitecture = Architecture.x64;
+            }
+            else if (currentArchitectureString.ToLower().Equals("arm"))
+            {
+                buildArchitecture = Architecture.ARM;
             }
 
-            buildPlatformOption = (BuildPlatformEnum)EditorGUILayout.EnumPopup("Build Platform", buildPlatformOption, GUILayout.Width(HALF_WIDTH));
+            buildArchitecture = (Architecture)EditorGUILayout.EnumPopup("Build Platform", buildArchitecture, GUILayout.Width(HALF_WIDTH));
 
-            string newBuildPlatformString;
+            string newBuildArchitectureString;
 
-            switch (buildPlatformOption)
+            switch (buildArchitecture)
             {
-                case BuildPlatformEnum.x86:
-                case BuildPlatformEnum.x64:
-                    newBuildPlatformString = buildPlatformOption.ToString();
+                case Architecture.x86:
+                case Architecture.x64:
+                case Architecture.ARM:
+                    newBuildArchitectureString = buildArchitecture.ToString();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (newBuildPlatformString != curBuildPlatformString)
+            if (newBuildArchitectureString != currentArchitectureString)
             {
-                UwpBuildDeployPreferences.BuildPlatform = newBuildPlatformString;
+                EditorUserBuildSettings.wsaArchitecture = newBuildArchitectureString;
             }
 
+            GUILayout.BeginHorizontal();
+
+            var prevFieldWidth = EditorGUIUtility.fieldWidth;
+
+            EditorGUIUtility.fieldWidth = 120;
+            var appIconAssetObject = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(UwpBuildDeployPreferences._3DAppIconPath);
+
+            EditorGUI.BeginChangeCheck();
+            appIconAssetObject = EditorGUILayout.ObjectField(appIconLabel, appIconAssetObject, typeof(UnityEngine.Object), false);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                UwpBuildDeployPreferences._3DAppIconPath = AssetDatabase.GetAssetPath(appIconAssetObject);
+            }
+
+            EditorGUIUtility.fieldWidth = prevFieldWidth;
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
 
             var previousLabelWidth = EditorGUIUtility.labelWidth;
@@ -1010,14 +1035,19 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         {
             Debug.Assert(!isBuilding);
             isBuilding = true;
+
+            var buildInfo = new UwpBuildInfo
+            {
+                RebuildAppx = UwpBuildDeployPreferences.ForceRebuild,
+                Configuration = UwpBuildDeployPreferences.BuildConfig,
+                BuildPlatform = EditorUserBuildSettings.wsaArchitecture,
+                OutputDirectory = BuildDeployPreferences.BuildDirectory,
+                AutoIncrement = BuildDeployPreferences.IncrementBuildVersion,
+                AppIconPath = UwpBuildDeployPreferences._3DAppIconPath
+            };
+
             EditorAssemblyReloadManager.LockReloadAssemblies = true;
-            await UwpAppxBuildTools.BuildAppxAsync(
-                PlayerSettings.productName,
-                UwpBuildDeployPreferences.ForceRebuild,
-                UwpBuildDeployPreferences.BuildConfig,
-                UwpBuildDeployPreferences.BuildPlatform,
-                BuildDeployPreferences.BuildDirectory,
-                BuildDeployPreferences.IncrementBuildVersion);
+            await UwpAppxBuildTools.BuildAppxAsync(buildInfo);
             EditorAssemblyReloadManager.LockReloadAssemblies = false;
             isBuilding = false;
         }
@@ -1029,28 +1059,19 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             EditorAssemblyReloadManager.LockReloadAssemblies = true;
 
             // First build SLN
-            if (await UwpPlayerBuildTools.BuildPlayer(BuildDeployPreferences.BuildDirectory, false))
+            if (await UwpPlayerBuildTools.BuildPlayer(BuildDeployPreferences.BuildDirectory, false, true))
             {
-                if (await UwpAppxBuildTools.BuildAppxAsync(
-                    PlayerSettings.productName,
-                    UwpBuildDeployPreferences.ForceRebuild,
-                    UwpBuildDeployPreferences.BuildConfig,
-                    UwpBuildDeployPreferences.BuildPlatform,
-                    BuildDeployPreferences.BuildDirectory,
-                    BuildDeployPreferences.IncrementBuildVersion))
+                if (install)
                 {
-                    if (install)
-                    {
-                        string fullBuildLocation = CalcMostRecentBuild();
+                    string fullBuildLocation = CalcMostRecentBuild();
 
-                        if (UwpBuildDeployPreferences.TargetAllConnections)
-                        {
-                            await InstallAppOnDevicesListAsync(fullBuildLocation, portalConnections);
-                        }
-                        else
-                        {
-                            await InstallOnTargetDeviceAsync(fullBuildLocation, portalConnections.Connections[currentConnectionInfoIndex]);
-                        }
+                    if (UwpBuildDeployPreferences.TargetAllConnections)
+                    {
+                        await InstallAppOnDevicesListAsync(fullBuildLocation, portalConnections);
+                    }
+                    else
+                    {
+                        await InstallOnTargetDeviceAsync(fullBuildLocation, portalConnections.Connections[currentConnectionInfoIndex]);
                     }
                 }
             }

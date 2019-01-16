@@ -17,6 +17,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 {
     public class UwpAppxBuildTools
     {
+        private static readonly XNamespace UapNameSpace = "http://schemas.microsoft.com/appx/manifest/uap/windows10";
+        private static readonly XNamespace Uap5NameSpace = "http://schemas.microsoft.com/appx/manifest/uap/windows10/5";
+
         /// <summary>
         /// Query the build process to see if we're already building.
         /// </summary>
@@ -26,14 +29,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         /// Build the UWP appx bundle for this project.  Requires that <see cref="UwpPlayerBuildTools.BuildPlayer(string,bool,bool)"/> has already be run or a user has
         /// previously built the Unity Player with the WSA Player as the Build Target.
         /// </summary>
-        /// <param name="productName">The applications product name. Typically <see cref="PlayerSettings.productName"/></param>
-        /// <param name="forceRebuildAppx">Should we force rebuild the appx bundle?</param>
-        /// <param name="buildConfig">Debug, Release, or Master configurations are valid.</param>
-        /// <param name="buildPlatform">x86 or x64 build platforms are valid.</param>
-        /// <param name="buildDirectory">The directory where the built Unity Player Solution is located.</param>
-        /// <param name="incrementVersion">Should we increment the appx version number?</param>
+        /// <param name="buildInfo"></param>
         /// <returns>True, if the appx build was successful.</returns>
-        public static async Task<bool> BuildAppxAsync(string productName, bool forceRebuildAppx, string buildConfig, string buildPlatform, string buildDirectory, bool incrementVersion)
+        public static async Task<bool> BuildAppxAsync(UwpBuildInfo buildInfo)
         {
             if (!EditorAssemblyReloadManager.LockReloadAssemblies)
             {
@@ -56,7 +54,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             Debug.Log("Starting Unity Appx Build...");
 
             IsBuilding = true;
-            string slnFilename = Path.Combine(buildDirectory, $"{PlayerSettings.productName}.sln");
+            string slnFilename = Path.Combine(buildInfo.OutputDirectory, $"{PlayerSettings.productName}.sln");
 
             if (!File.Exists(slnFilename))
             {
@@ -74,19 +72,19 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             }
 
             // Ensure that the generated .appx version increments by modifying Package.appxmanifest
-            if (!SetPackageVersion(incrementVersion))
+            if (!UpdateAppxManifest(buildInfo))
             {
                 Debug.LogError("Failed to increment package version!");
                 return IsBuilding = false;
             }
 
-            string storagePath = Path.GetFullPath(Path.Combine(Path.Combine(Application.dataPath, ".."), buildDirectory));
-            string solutionProjectPath = Path.GetFullPath(Path.Combine(storagePath, $@"{productName}.sln"));
+            string storagePath = Path.GetFullPath(Path.Combine(Path.Combine(Application.dataPath, ".."), buildInfo.OutputDirectory));
+            string solutionProjectPath = Path.GetFullPath(Path.Combine(storagePath, $@"{PlayerSettings.productName}.sln"));
 
             // Now do the actual appx build
             var processResult = await new Process().StartProcessAsync(
                 msBuildPath,
-                $"\"{solutionProjectPath}\" /t:{(forceRebuildAppx ? "Rebuild" : "Build")} /p:Configuration={buildConfig} /p:Platform={buildPlatform} /verbosity:m",
+                $"\"{solutionProjectPath}\" /t:{(buildInfo.RebuildAppx ? "Rebuild" : "Build")} /p:Configuration={buildInfo.Configuration} /p:Platform={buildInfo.BuildPlatform} /verbosity:m",
                 !Application.isBatchMode);
 
             switch (processResult.ExitCode)
@@ -160,7 +158,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             return string.Empty;
         }
 
-        private static bool SetPackageVersion(bool increment)
+        private static bool UpdateAppxManifest(UwpBuildInfo buildInfo)
         {
             // Find the manifest, assume the one we want is the first one
             string[] manifests = Directory.GetFiles(BuildDeployPreferences.AbsoluteBuildDirectory, "Package.appxmanifest", SearchOption.AllDirectories);
@@ -171,14 +169,75 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 return false;
             }
 
-            string manifest = manifests[0];
-            var rootNode = XElement.Load(manifest);
+            if (manifests.Length > 1)
+            {
+                Debug.LogWarning("Found more than one appxmanifest in the target build folder!");
+            }
+
+            const string uap5 = "uap5";
+
+            var rootNode = XElement.Load(manifests[0]);
             var identityNode = rootNode.Element(rootNode.GetDefaultNamespace() + "Identity");
 
             if (identityNode == null)
             {
                 Debug.LogError($"Package.appxmanifest for build (in path - {BuildDeployPreferences.AbsoluteBuildDirectory}) is missing an <Identity /> node");
                 return false;
+            }
+
+            var dependencies = rootNode.Element(rootNode.GetDefaultNamespace() + "Dependencies");
+
+            if (dependencies == null)
+            {
+                Debug.LogError($"Package.appxmanifest for build (in path - {BuildDeployPreferences.AbsoluteBuildDirectory}) is missing <Dependencies /> node.");
+                return false;
+            }
+
+            UpdateDependenciesElement(dependencies, rootNode.GetDefaultNamespace());
+
+            // Setup the 3d app icon.
+            if (!string.IsNullOrWhiteSpace(UwpBuildDeployPreferences._3DAppIconPath))
+            {
+                // Add the uap5 namespace if it doesn't exist.
+                if (rootNode.GetNamespaceOfPrefix(uap5) == null)
+                {
+                    rootNode.Add(new XAttribute(XNamespace.Xmlns + uap5, Uap5NameSpace));
+                }
+
+                var ignorable = rootNode.Attribute(XName.Get("IgnorableNamespaces"));
+
+                if (ignorable != null)
+                {
+                    if (!ignorable.Value.Contains(uap5))
+                    {
+                        ignorable.Value = $"{ignorable.Value} {uap5}";
+                    }
+                }
+
+                // find mixed reality model
+                var modelContainer = rootNode.Descendants(Uap5NameSpace + "MixedRealityModel").ToArray();
+
+                if (modelContainer.Any())
+                {
+                    var element = modelContainer.First();
+                    var path = element.Attribute(XName.Get("Path"));
+
+                    if (path != null)
+                    {
+                        path.Value = buildInfo.AppIconPath;
+                    }
+                    else
+                    {
+                        element.Add(new XAttribute("Path", buildInfo.AppIconPath));
+                    }
+                }
+                else
+                {
+                    var modelElement = new XElement(Uap5NameSpace + "MixedRealityModel");
+                    var defaultTile = rootNode.Descendants(UapNameSpace + "DefaultTile").First();
+                    defaultTile.Add(modelElement);
+                    modelElement.Add(new XAttribute("Path", buildInfo.AppIconPath));
+                }
             }
 
             // We use XName.Get instead of string -> XName implicit conversion because
@@ -188,7 +247,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
             if (versionAttr == null)
             {
-                Debug.LogError($"Package.appxmanifest for build (in path - {BuildDeployPreferences.AbsoluteBuildDirectory}) is missing a version attribute in the <Identity /> node.");
+                Debug.LogError($"Package.appxmanifest for build (in path - {BuildDeployPreferences.AbsoluteBuildDirectory}) is missing a Version attribute in the <Identity /> node.");
                 return false;
             }
 
@@ -197,12 +256,62 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             // Package versions are always of the form Major.Minor.Build.Revision.
             // Note: Revision number reserved for Windows Store, and a value other than 0 will fail WACK.
             var version = PlayerSettings.WSA.packageVersion;
-            var newVersion = new Version(version.Major, version.Minor, increment ? version.Build + 1 : version.Build, version.Revision);
+            var newVersion = new Version(version.Major, version.Minor, buildInfo.AutoIncrement ? version.Build + 1 : version.Build, version.Revision);
 
             PlayerSettings.WSA.packageVersion = newVersion;
             versionAttr.Value = newVersion.ToString();
-            rootNode.Save(manifest);
+            rootNode.Save(manifests[0]);
             return true;
+        }
+
+        private static void UpdateDependenciesElement(XElement dependencies, XNamespace defaultNamespace)
+        {
+            var values = (PlayerSettings.WSATargetFamily[])Enum.GetValues(typeof(PlayerSettings.WSATargetFamily));
+
+            if (string.IsNullOrWhiteSpace(EditorUserBuildSettings.wsaUWPSDK))
+            {
+                var windowsSdkPaths = Directory.GetDirectories(@"C:\Program Files (x86)\Windows Kits\10\Lib");
+
+                for (int i = 0; i < windowsSdkPaths.Length; i++)
+                {
+                    windowsSdkPaths[i] = windowsSdkPaths[i].Substring(windowsSdkPaths[i].LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+                }
+
+                EditorUserBuildSettings.wsaUWPSDK = windowsSdkPaths[windowsSdkPaths.Length - 1];
+            }
+
+            string maxVersionTested = EditorUserBuildSettings.wsaUWPSDK;
+
+            if (string.IsNullOrWhiteSpace(EditorUserBuildSettings.wsaMinUWPSDK))
+            {
+                EditorUserBuildSettings.wsaMinUWPSDK = UwpBuildDeployPreferences.MIN_SDK_VERSION;
+            }
+
+            string minVersion = EditorUserBuildSettings.wsaMinUWPSDK;
+
+            // Clear any we had before.
+            dependencies.RemoveAll();
+
+            foreach (PlayerSettings.WSATargetFamily family in values)
+            {
+                if (PlayerSettings.WSA.GetTargetDeviceFamily(family))
+                {
+                    dependencies.Add(
+                        new XElement(defaultNamespace + "TargetDeviceFamily",
+                        new XAttribute("Name", $"Windows.{family}"),
+                        new XAttribute("MinVersion", minVersion),
+                        new XAttribute("MaxVersionTested", maxVersionTested)));
+                }
+            }
+
+            if (!dependencies.HasElements)
+            {
+                dependencies.Add(
+                    new XElement(defaultNamespace + "TargetDeviceFamily",
+                    new XAttribute("Name", "Windows.Universal"),
+                    new XAttribute("MinVersion", minVersion),
+                    new XAttribute("MaxVersionTested", maxVersionTested)));
+            }
         }
     }
 }
