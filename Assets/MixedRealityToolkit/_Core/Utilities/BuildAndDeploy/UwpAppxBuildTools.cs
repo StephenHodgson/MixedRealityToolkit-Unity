@@ -236,7 +236,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                     var modelElement = new XElement(Uap5NameSpace + "MixedRealityModel");
                     var defaultTile = rootNode.Descendants(UapNameSpace + "DefaultTile").First();
                     defaultTile.Add(modelElement);
-                    modelElement.Add(new XAttribute("Path", buildInfo.AppIconPath));
+                    modelElement.Add(new XAttribute("Path", Path.GetFullPath(buildInfo.AppIconPath)));
                 }
             }
 
