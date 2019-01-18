@@ -30,6 +30,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Async.Internal
     /// This Async Coroutine Runner is just a helper object to
     /// ensure that coroutines run properly with async/await.
     /// </summary>
+    [ExecuteAlways]
     internal sealed class AsyncCoroutineRunner : MonoBehaviour
     {
         private static AsyncCoroutineRunner instance;

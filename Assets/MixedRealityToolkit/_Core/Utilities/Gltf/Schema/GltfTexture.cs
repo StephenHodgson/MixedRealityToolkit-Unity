@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Schema
 {
@@ -20,5 +21,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Schema
         /// The index of the image used by this texture.
         /// </summary>
         public int source = -1;
+
+        public Texture2D Texture { get; internal set; }
     }
 }

@@ -43,14 +43,13 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Async.Internal
                 return;
             }
 
-            var context = SynchronizationContext.Current;
-
             if (executionMethod == null)
             {
-                executionMethod = context.GetType().GetMethod("Exec", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                executionMethod = SynchronizationContext.Current.GetType().GetMethod("Exec", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             }
 
-            executionMethod?.Invoke(context, null);
+            UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
+            executionMethod?.Invoke(SynchronizationContext.Current, null);
         }
 
         [UnityEditor.InitializeOnLoadMethod]
@@ -58,11 +57,12 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Async.Internal
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
         {
+            UnitySynchronizationContext = SynchronizationContext.Current;
+            UnityThreadId = Thread.CurrentThread.ManagedThreadId;
+
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.update += ExecuteContinuations;
 #endif
-            UnitySynchronizationContext = SynchronizationContext.Current;
-            UnityThreadId = Thread.CurrentThread.ManagedThreadId;
         }
 
         /// <summary>

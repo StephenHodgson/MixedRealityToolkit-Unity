@@ -171,6 +171,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors
                 StartSceneAsset = startScene;
             }
 
+            EditorGUI.BeginChangeCheck();
+            var scriptLock = EditorGUILayout.Toggle("Is Script Reloading locked?", EditorAssemblyReloadManager.LockReloadAssemblies);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                EditorAssemblyReloadManager.LockReloadAssemblies = scriptLock;
+            }
+
             EditorGUIUtility.labelWidth = prevLabelWidth;
         }
 

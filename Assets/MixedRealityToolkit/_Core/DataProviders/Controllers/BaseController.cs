@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [assembly: InternalsVisibleTo("Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsMixedReality")]
+[assembly: InternalsVisibleTo("Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsMixedReality.Player")]
 
 namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
 {

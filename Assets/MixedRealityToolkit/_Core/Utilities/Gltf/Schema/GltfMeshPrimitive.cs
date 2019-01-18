@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Schema
 {
@@ -52,5 +53,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Schema
         /// and each value is the index of the accessor containing attribute's data.
         /// </summary>
         public GltfMeshPrimitiveAttributes Attributes { get; internal set; }
+
+        public Mesh SubMesh { get; internal set; }
     }
 }

@@ -9,7 +9,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Schema
     /// Metadata about the glTF asset.
     /// </summary>
     [Serializable]
-    public class GltfAsset : GltfProperty
+    public class GltfAssetInfo : GltfProperty
     {
         /// <summary>
         /// A copyright message suitable for display to credit the content creator.

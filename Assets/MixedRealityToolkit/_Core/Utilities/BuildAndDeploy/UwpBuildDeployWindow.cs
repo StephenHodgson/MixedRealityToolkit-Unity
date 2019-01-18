@@ -3,6 +3,7 @@
 
 using Microsoft.MixedReality.Toolkit.Core.Utilities.Editor;
 using Microsoft.MixedReality.Toolkit.Core.Utilities.Editor.Usb;
+using Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf;
 using Microsoft.MixedReality.Toolkit.Core.Utilities.WebRequestRest;
 using Microsoft.MixedReality.Toolkit.Core.Utilities.WindowsDevicePortal;
 using Microsoft.MixedReality.Toolkit.Core.Utilities.WindowsDevicePortal.DataStructures;
@@ -17,7 +18,6 @@ using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using FileInfo = System.IO.FileInfo;
-using Object = System.Object;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 {
@@ -551,10 +551,10 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             var prevFieldWidth = EditorGUIUtility.fieldWidth;
 
             EditorGUIUtility.fieldWidth = 120;
-            var appIconAssetObject = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(UwpBuildDeployPreferences.MixedRealityAppIconPath);
+            var appIconAssetObject = AssetDatabase.LoadAssetAtPath<GltfAsset>(UwpBuildDeployPreferences.MixedRealityAppIconPath);
 
             EditorGUI.BeginChangeCheck();
-            appIconAssetObject = EditorGUILayout.ObjectField(appIconLabel, appIconAssetObject, typeof(UnityEngine.Object), false);
+            appIconAssetObject = EditorGUILayout.ObjectField(appIconLabel, appIconAssetObject, typeof(GltfAsset), false) as GltfAsset;
 
             if (EditorGUI.EndChangeCheck())
             {

@@ -1,9 +1,11 @@
 {
-    "name": "Microsoft.MixedReality.Toolkit.Core.Utilities.Build",
+    "name": "Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization.Editor",
     "references": [
         "Microsoft.MixedReality.Toolkit",
+        "Microsoft.MixedReality.Toolkit.SDK.Inspectors",
+        "Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf",
         "Microsoft.MixedReality.Toolkit.Core.Utilities.Editor",
-        "Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf"
+        "Microsoft.MixedReality.Toolkit.Core.Utilities.Async"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [

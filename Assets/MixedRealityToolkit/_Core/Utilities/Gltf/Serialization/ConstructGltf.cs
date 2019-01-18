@@ -5,6 +5,7 @@ using Microsoft.MixedReality.Toolkit.Core.Utilities.Async;
 using Microsoft.MixedReality.Toolkit.Core.Utilities.Async.AwaitYieldInstructions;
 using Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Schema;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -40,9 +41,11 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 return null;
             }
 
-            await Update;
-            gltfObject.GameObjectReference = new GameObject($"glTF Scene {gltfObject.Name}");
-            await BackgroundThread;
+            if (Application.isPlaying) await Update;
+            var rootObject = new GameObject($"glTF Scene {gltfObject.Name}");
+            rootObject.SetActive(false);
+
+            if (Application.isPlaying) await BackgroundThread;
 
             for (int i = 0; i < gltfObject.bufferViews?.Length; i++)
             {
@@ -64,14 +67,15 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 Debug.LogError($"No scenes found for {gltfObject.Name}");
             }
 
-            await Update;
+            if (Application.isPlaying) await Update;
 
             for (int i = 0; i < gltfObject.scenes?.Length; i++)
             {
-                await gltfObject.ConstructSceneAsync(gltfObject.scenes[i]);
+                await gltfObject.ConstructSceneAsync(gltfObject.scenes[i], rootObject);
             }
 
-            return gltfObject.GameObjectReference;
+            rootObject.SetActive(true);
+            return gltfObject.GameObjectReference = rootObject;
         }
 
         private static void ConstructBufferView(this GltfObject gltfObject, GltfBufferView bufferView)
@@ -89,22 +93,48 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
 
         private static async Task ConstructTextureAsync(this GltfObject gltfObject, GltfTexture gltfTexture)
         {
+            if (Application.isPlaying) await BackgroundThread;
+
             if (gltfTexture.source >= 0)
             {
                 GltfImage gltfImage = gltfObject.images[gltfTexture.source];
 
-                // TODO Check if texture is in unity project, and use the asset reference instead.
-                await BackgroundThread;
+                byte[] imageData = null;
+                Texture2D texture = null;
 
-                byte[] imageData;
 
                 if (!string.IsNullOrEmpty(gltfObject.Uri) && !string.IsNullOrEmpty(gltfImage.uri))
                 {
+                    // TODO update to download and use http paths.
                     var parentDirectory = Directory.GetParent(gltfObject.Uri).FullName;
-                    using (FileStream stream = File.Open($"{parentDirectory}\\{gltfImage.uri}", FileMode.Open))
+                    var path = $"{parentDirectory}\\{gltfImage.uri}";
+
+#if UNITY_EDITOR
+                    if (Application.isPlaying) await Update;
+                    var projectPath = path.Replace("\\", "/");
+                    projectPath = projectPath.Replace(Application.dataPath, "Assets");
+                    texture = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>(projectPath);
+
+                    if (Application.isPlaying) await BackgroundThread;
+#endif
+
+                    if (texture == null)
                     {
-                        imageData = new byte[stream.Length];
-                        await stream.ReadAsync(imageData, 0, (int)stream.Length);
+                        Debug.LogWarning($"Attempting to load asset at {path}");
+
+                        using (FileStream stream = File.Open(path, FileMode.Open))
+                        {
+                            imageData = new byte[stream.Length];
+
+                            if (Application.isPlaying)
+                            {
+                                await stream.ReadAsync(imageData, 0, (int)stream.Length);
+                            }
+                            else
+                            {
+                                stream.Read(imageData, 0, (int)stream.Length);
+                            }
+                        }
                     }
                 }
                 else
@@ -114,19 +144,28 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                     Array.Copy(imageBufferView.Buffer.BufferData, imageBufferView.byteOffset, imageData, 0, imageData.Length);
                 }
 
-                await Update;
+                if (texture == null)
+                {
+                    if (Application.isPlaying) await Update;
+                    // TODO Load texture async
+                    texture = new Texture2D(2, 2);
+                    gltfImage.Texture = texture;
+                    gltfImage.Texture.LoadImage(imageData);
+                }
+                else
+                {
+                    gltfImage.Texture = texture;
+                }
 
-                gltfImage.Texture = new Texture2D(2, 2);
-                // TODO Load texture async
-                gltfImage.Texture.LoadImage(imageData);
+                gltfTexture.Texture = texture;
 
-                await BackgroundThread;
+                if (Application.isPlaying) await BackgroundThread;
             }
         }
 
         private static async Task ConstructMaterialAsync(this GltfObject gltfObject, GltfMaterial gltfMaterial, int materialId)
         {
-            await Update;
+            if (Application.isPlaying) await Update;
             Shader shader = Shader.Find("Standard");
 
             if (shader == null)
@@ -175,16 +214,22 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 }
             }
 
-            if (material.HasProperty("_MetallicGlossMap"))
+            if (gltfMaterial.emissiveTexture.index >= 0 && material.HasProperty("_EmissionMap"))
             {
-                // TODO if using extension handle it appropriately.
+                material.EnableKeyword("_EmissionMap");
+                material.EnableKeyword("_EMISSION");
+                material.SetTexture("_EmissionMap", gltfObject.images[gltfMaterial.emissiveTexture.index].Texture);
+                material.SetColor("_EmissionColor", gltfMaterial.emissiveFactor.GetColorValue());
+            }
 
-                if (gltfMaterial.pbrMetallicRoughness.metallicRoughnessTexture.index >= 0)
+            if (gltfMaterial.pbrMetallicRoughness.metallicRoughnessTexture.index >= 0 && material.HasProperty("_MetallicGlossMap"))
+            {
+                var texture = gltfObject.images[gltfMaterial.pbrMetallicRoughness.metallicRoughnessTexture.index].Texture;
+
+                if (texture.isReadable)
                 {
-                    var texture = gltfObject.images[gltfMaterial.pbrMetallicRoughness.metallicRoughnessTexture.index].Texture;
-
                     var pixels = texture.GetPixels();
-                    await BackgroundThread;
+                    if (Application.isPlaying) await BackgroundThread;
 
                     var pixelCache = new Color[pixels.Length];
 
@@ -197,7 +242,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                         pixelCache[c].a = pixels[c].b;
                     }
 
-                    await Update;
+                    if (Application.isPlaying) await Update;
                     texture.SetPixels(pixelCache);
                     texture.Apply();
 
@@ -207,6 +252,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 material.SetFloat("_Glossiness", Mathf.Abs((float)gltfMaterial.pbrMetallicRoughness.roughnessFactor - 1f));
                 material.SetFloat("_Metallic", (float)gltfMaterial.pbrMetallicRoughness.metallicFactor);
                 material.EnableKeyword("_MetallicGlossMap");
+                material.EnableKeyword("_METALLICGLOSSMAP");
             }
 
             if (gltfMaterial.normalTexture.index >= 0 && material.HasProperty("_BumpMap"))
@@ -215,36 +261,31 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 material.EnableKeyword("_BumpMap");
             }
 
-            if (gltfMaterial.emissiveTexture.index >= 0 && material.HasProperty("_EmissionMap"))
-            {
-                material.SetTexture("_EmissionMap", gltfObject.images[gltfMaterial.emissiveTexture.index].Texture);
-                material.SetColor("_EmissionColor", gltfMaterial.emissiveFactor.GetColorValue());
-                material.EnableKeyword("_EmissionMap");
-                material.EnableKeyword("_EMISSION");
-            }
-
+            material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
             gltfMaterial.Material = material;
 
-            await BackgroundThread;
+            if (Application.isPlaying) await BackgroundThread;
         }
 
-        private static async Task ConstructSceneAsync(this GltfObject gltfObject, GltfScene gltfScene)
+        private static async Task ConstructSceneAsync(this GltfObject gltfObject, GltfScene gltfScene, GameObject root)
         {
             for (int i = 0; i < gltfScene.nodes.Length; i++)
             {
-                await ConstructNodeAsync(gltfObject, gltfObject.nodes[gltfScene.nodes[i]], gltfScene.nodes[i], gltfObject.GameObjectReference.transform);
+                // TODO Uncomment this out after implementing root object transform normalization.
+                await ConstructNodeAsync(gltfObject, gltfObject.nodes[gltfScene.nodes[i]], gltfScene.nodes[i], root.transform/*, gltfObject.scenes.Length == 1*/);
             }
         }
 
-        private static async Task ConstructNodeAsync(GltfObject gltfObject, GltfNode node, int nodeId, Transform parent)
+        private static async Task ConstructNodeAsync(GltfObject gltfObject, GltfNode node, int nodeId, Transform parent, bool isRoot = false)
         {
-            await Update;
-            var nodeGameObject = new GameObject(string.IsNullOrEmpty(node.name) ? $"glTF Node {nodeId}" : node.name);
+            if (Application.isPlaying) await Update;
+
+            var nodeGameObject = !isRoot ? new GameObject(string.IsNullOrEmpty(node.name) ? $"glTF Node {nodeId}" : node.name) : parent.gameObject;
 
             // If we're creating a really large node, we need it to not be visible in partial stages. So we hide it while we create it
             nodeGameObject.SetActive(false);
 
-            await BackgroundThread;
+            if (Application.isPlaying) await BackgroundThread;
 
             node.Matrix = node.GetTrsProperties(out Vector3 position, out Quaternion rotation, out Vector3 scale);
 
@@ -266,8 +307,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 }
             }
 
-            await Update;
+            if (Application.isPlaying) await Update;
 
+            // TODO if isRoot do transform normalization (i.e. position == 0,0,0 && rotation == identify && scale == 1,1,1)
             nodeGameObject.transform.localPosition = position;
             nodeGameObject.transform.localRotation = rotation;
             nodeGameObject.transform.localScale = scale;
@@ -291,21 +333,45 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
 
         private static async Task ConstructMeshAsync(GltfObject gltfObject, GameObject parent, int meshId)
         {
-            var gltfMesh = gltfObject.meshes[meshId];
+            GltfMesh gltfMesh = gltfObject.meshes[meshId];
+
+            var renderer = parent.gameObject.AddComponent<MeshRenderer>();
+            var filter = parent.gameObject.AddComponent<MeshFilter>();
+
+            if (gltfMesh.primitives.Length == 1)
+            {
+                gltfMesh.Mesh = await ConstructMeshPrimitiveAsync(gltfObject, gltfMesh.primitives[0]);
+                gltfMesh.Mesh.name = gltfMesh.name;
+                filter.sharedMesh = gltfMesh.Mesh;
+                renderer.sharedMaterial = gltfObject.materials[gltfMesh.primitives[0].material].Material;
+                return;
+            }
+
+            var materials = new List<Material>();
+            var meshCombines = new CombineInstance[gltfMesh.primitives.Length];
 
             for (int i = 0; i < gltfMesh.primitives.Length; i++)
             {
-                var meshPrimitive = await ConstructMeshPrimitiveAsync(gltfObject, gltfMesh.primitives[i]);
-                var renderer = parent.gameObject.AddComponent<MeshRenderer>();
-                var filter = parent.gameObject.AddComponent<MeshFilter>();
-                filter.sharedMesh = meshPrimitive;
-                renderer.sharedMaterial = gltfObject.materials[gltfMesh.primitives[i].material].Material;
+                meshCombines[i].mesh = await ConstructMeshPrimitiveAsync(gltfObject, gltfMesh.primitives[i]);
+
+                var meshMaterial = gltfObject.materials[gltfMesh.primitives[i].material].Material;
+
+                if (!materials.Contains(meshMaterial))
+                {
+                    materials.Add(meshMaterial);
+                }
             }
+
+            filter.sharedMesh = new Mesh();
+            filter.sharedMesh.CombineMeshes(meshCombines);
+            gltfMesh.Mesh = filter.sharedMesh;
+            gltfMesh.Mesh.name = gltfMesh.name;
+            renderer.sharedMaterials = materials.ToArray();
         }
 
         private static async Task<Mesh> ConstructMeshPrimitiveAsync(GltfObject gltfObject, GltfMeshPrimitive meshPrimitive)
         {
-            await BackgroundThread;
+            if (Application.isPlaying) await BackgroundThread;
 
             GltfAccessor positionAccessor = null;
             GltfAccessor normalsAccessor = null;
@@ -398,7 +464,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 joint0Accessor.BufferView.Buffer = gltfObject.buffers[joint0Accessor.BufferView.buffer];
             }
 
-            await Update;
+            if (Application.isPlaying) await Update;
 
             var mesh = new Mesh
             {
@@ -456,7 +522,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
             }
 
             mesh.RecalculateBounds();
-
+            meshPrimitive.SubMesh = mesh;
             return mesh;
         }
 

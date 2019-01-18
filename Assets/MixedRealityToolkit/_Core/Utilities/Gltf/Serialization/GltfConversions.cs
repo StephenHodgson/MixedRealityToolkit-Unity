@@ -150,7 +150,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 return null;
             }
 
-            await BackgroundThread;
+            if (Application.isPlaying) await BackgroundThread;
             var array = new int[accessor.count];
 
             GetTypeDetails(accessor.componentType, out int componentSize, out float maxValue);
@@ -185,7 +185,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 }
             }
 
-            await Update;
+            if (Application.isPlaying) { await Update; }
             return array;
         }
 
@@ -196,7 +196,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 return null;
             }
 
-            await BackgroundThread;
+            if (Application.isPlaying) await BackgroundThread;
             var array = new Vector2[accessor.count];
 
             GetTypeDetails(accessor.componentType, out int componentSize, out float maxValue);
@@ -230,7 +230,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 }
             }
 
-            await Update;
+            if (Application.isPlaying) { await Update; }
             return array;
         }
 
@@ -241,7 +241,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 return null;
             }
 
-            await BackgroundThread;
+            if (Application.isPlaying) await BackgroundThread;
             var array = new Vector3[accessor.count];
 
             GetTypeDetails(accessor.componentType, out int componentSize, out float maxValue);
@@ -279,7 +279,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 }
             }
 
-            await Update;
+            if (Application.isPlaying) { await Update; }
             return array;
         }
 
@@ -290,7 +290,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 return null;
             }
 
-            await BackgroundThread;
+            if (Application.isPlaying) await BackgroundThread;
             var array = new Vector4[accessor.count];
 
             GetTypeDetails(accessor.componentType, out int componentSize, out float maxValue);
@@ -331,7 +331,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 }
             }
 
-            await Update;
+            if (Application.isPlaying) { await Update; }
             return array;
         }
 
@@ -342,7 +342,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 return null;
             }
 
-            await BackgroundThread;
+            if (Application.isPlaying) await BackgroundThread;
             var array = new Color[accessor.count];
 
             GetTypeDetails(accessor.componentType, out int componentSize, out float maxValue);
@@ -375,7 +375,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 }
             }
 
-            await Update;
+            if (Application.isPlaying) { await Update; }
             return array;
         }
 

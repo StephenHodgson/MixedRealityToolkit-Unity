@@ -86,57 +86,62 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Async
         public static SimpleCoroutineAwaiter<Object> GetAwaiter(this ResourceRequest instruction)
         {
             var awaiter = new SimpleCoroutineAwaiter<Object>();
-            RunOnUnityScheduler(() => AsyncCoroutineRunner.Instance.StartCoroutine(
-                InstructionWrappers.ResourceRequest(awaiter, instruction)));
+            var enumerator = InstructionWrappers.ResourceRequest(awaiter, instruction);
+            RunOnUnityScheduler(() => RunCoroutine(enumerator));
             return awaiter;
         }
 
         public static SimpleCoroutineAwaiter<AssetBundle> GetAwaiter(this AssetBundleCreateRequest instruction)
         {
             var awaiter = new SimpleCoroutineAwaiter<AssetBundle>();
-            RunOnUnityScheduler(() => AsyncCoroutineRunner.Instance.StartCoroutine(
-                InstructionWrappers.AssetBundleCreateRequest(awaiter, instruction)));
+            var enumerator = InstructionWrappers.AssetBundleCreateRequest(awaiter, instruction);
+            RunOnUnityScheduler(() => RunCoroutine(enumerator));
             return awaiter;
         }
 
         public static SimpleCoroutineAwaiter<Object> GetAwaiter(this AssetBundleRequest instruction)
         {
             var awaiter = new SimpleCoroutineAwaiter<Object>();
-            RunOnUnityScheduler(() => AsyncCoroutineRunner.Instance.StartCoroutine(
-                InstructionWrappers.AssetBundleRequest(awaiter, instruction)));
+            var enumerator = InstructionWrappers.AssetBundleRequest(awaiter, instruction);
+            RunOnUnityScheduler(() => RunCoroutine(enumerator));
             return awaiter;
         }
 
         public static SimpleCoroutineAwaiter<T> GetAwaiter<T>(this IEnumerator<T> coroutine)
         {
             var awaiter = new SimpleCoroutineAwaiter<T>();
-            RunOnUnityScheduler(() => AsyncCoroutineRunner.Instance.StartCoroutine(
-                new CoroutineWrapper<T>(coroutine, awaiter).Run()));
+            var enumerator = new CoroutineWrapper<T>(coroutine, awaiter).Run();
+            RunOnUnityScheduler(() => RunCoroutine(enumerator));
             return awaiter;
         }
 
         public static SimpleCoroutineAwaiter<object> GetAwaiter(this IEnumerator coroutine)
         {
             var awaiter = new SimpleCoroutineAwaiter<object>();
-            RunOnUnityScheduler(() => AsyncCoroutineRunner.Instance.StartCoroutine(
-                new CoroutineWrapper<object>(coroutine, awaiter).Run()));
+            var enumerator = new CoroutineWrapper<object>(coroutine, awaiter).Run();
+            RunOnUnityScheduler(() => RunCoroutine(enumerator));
             return awaiter;
         }
 
         private static SimpleCoroutineAwaiter GetAwaiterReturnVoid(object instruction)
         {
             var awaiter = new SimpleCoroutineAwaiter();
-            RunOnUnityScheduler(() => AsyncCoroutineRunner.Instance.StartCoroutine(
-                InstructionWrappers.ReturnVoid(awaiter, instruction)));
+            var enumerator = InstructionWrappers.ReturnVoid(awaiter, instruction);
+            RunOnUnityScheduler(() => RunCoroutine(enumerator));
             return awaiter;
         }
 
         private static SimpleCoroutineAwaiter<T> GetAwaiterReturnSelf<T>(T instruction)
         {
             var awaiter = new SimpleCoroutineAwaiter<T>();
-            RunOnUnityScheduler(() => AsyncCoroutineRunner.Instance.StartCoroutine(
-                InstructionWrappers.ReturnSelf(awaiter, instruction)));
+            var enumerator = InstructionWrappers.ReturnSelf(awaiter, instruction);
+            RunOnUnityScheduler(() => RunCoroutine(enumerator));
             return awaiter;
+        }
+
+        private static void RunCoroutine(IEnumerator enumerator)
+        {
+            AsyncCoroutineRunner.Instance.StartCoroutine(enumerator);
         }
 
         private static void RunOnUnityScheduler(Action action)
@@ -275,7 +280,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Async
                         // that the IEnumerators are associated with, so we can at least try
                         // adding that to the exception output
                         var objectTrace = GenerateObjectTrace(processStack);
-                        awaiter.Complete(default(T), objectTrace.Any() ? new Exception(GenerateObjectTraceMessage(objectTrace), e) : e);
+                        awaiter.Complete(default, objectTrace.Any() ? new Exception(GenerateObjectTraceMessage(objectTrace), e) : e);
 
                         yield break;
                     }
@@ -294,8 +299,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Async
                     // We could just yield return nested IEnumerator's here but we choose to do
                     // our own handling here so that we can catch exceptions in nested coroutines
                     // instead of just top level coroutine
-                    var item = topWorker.Current as IEnumerator;
-                    if (item != null)
+                    if (topWorker.Current is IEnumerator item)
                     {
                         processStack.Push(item);
                     }

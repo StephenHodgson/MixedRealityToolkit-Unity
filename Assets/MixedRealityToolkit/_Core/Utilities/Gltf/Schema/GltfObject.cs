@@ -36,7 +36,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Schema
         /// <summary>
         /// Metadata about the glTF asset.
         /// </summary>
-        public GltfAsset asset;
+        public GltfAssetInfo asset;
 
         /// <summary>
         /// An array of buffers. A buffer points to binary geometry, animation, or skins.

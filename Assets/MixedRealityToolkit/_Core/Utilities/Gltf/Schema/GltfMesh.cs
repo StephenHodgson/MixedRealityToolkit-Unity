@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Schema
 {
@@ -24,5 +25,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Schema
         /// <minItems>0</minItems>
         /// </summary>
         public double[] weights;
+
+        public Mesh Mesh { get; internal set; }
     }
 }

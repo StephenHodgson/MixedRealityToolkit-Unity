@@ -26,6 +26,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
         /// </summary>
         /// <param name="uri">the path to the file to load</param>
         /// <returns>New <see cref="GltfObject"/> imported from uri.</returns>
+        /// <remarks>
+        /// If the <see cref="Application.isPlaying"/> is false, then this method will run synchronously.
+        /// </remarks>
         public static async Task<GltfObject> ImportGltfObjectFromPathAsync(string uri)
         {
             if (string.IsNullOrWhiteSpace(uri))
@@ -36,7 +39,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
 
             GltfObject gltfObject;
             bool isGlb = false;
-            await BackgroundThread;
+
+            if (Application.isPlaying) { await BackgroundThread; }
 
             if (uri.Contains(".gltf"))
             {
@@ -58,7 +62,15 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 using (FileStream stream = File.Open(uri, FileMode.Open))
                 {
                     glbData = new byte[stream.Length];
-                    await stream.ReadAsync(glbData, 0, (int)stream.Length);
+
+                    if (Application.isPlaying)
+                    {
+                        await stream.ReadAsync(glbData, 0, (int)stream.Length);
+                    }
+                    else
+                    {
+                        stream.Read(glbData, 0, (int)stream.Length);
+                    }
                 }
 
                 gltfObject = GetGltfObjectFromGlb(glbData);
@@ -87,7 +99,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 Debug.LogError("Failed to construct Gltf Object.");
             }
 
-            await Update;
+            if (Application.isPlaying) await Update;
+
             return gltfObject;
         }
 
