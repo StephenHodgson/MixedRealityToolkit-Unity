@@ -14,13 +14,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization.Edito
             var importedObject = await GltfUtility.ImportGltfObjectFromPathAsync(context.assetPath);
 
             gltfAsset.GltfObject = importedObject;
-            gltfAsset.name = gltfAsset.GltfObject.Name;
+            gltfAsset.name = $"{gltfAsset.GltfObject.Name}{Path.GetExtension(context.assetPath)}";
             gltfAsset.Model = importedObject.GameObjectReference;
             context.AddObjectToAsset("main", gltfAsset.Model);
             context.SetMainObject(importedObject.GameObjectReference);
             context.AddObjectToAsset("glTF data", gltfAsset);
 
             bool reImport = false;
+
             for (var i = 0; i < gltfAsset.GltfObject.textures.Length; i++)
             {
                 GltfTexture gltfTexture = gltfAsset.GltfObject.textures[i];
@@ -58,10 +59,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization.Edito
                 return;
             }
 
-            foreach (GltfMesh gltfMesh in gltfAsset.GltfObject.meshes)
+            for (var i = 0; i < gltfAsset.GltfObject.meshes.Length; i++)
             {
-                gltfMesh.Mesh.name = gltfMesh.name;
-                context.AddObjectToAsset($"{gltfMesh.name}", gltfMesh.Mesh);
+                GltfMesh gltfMesh = gltfAsset.GltfObject.meshes[i];
+
+                string meshName = string.IsNullOrWhiteSpace(gltfMesh.name) ? $"Mesh_{i}" : gltfMesh.name;
+
+                gltfMesh.Mesh.name = meshName;
+                context.AddObjectToAsset($"{meshName}", gltfMesh.Mesh);
             }
 
             foreach (GltfMaterial gltfMaterial in gltfAsset.GltfObject.materials)

@@ -17,6 +17,16 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
     {
         private static readonly WaitForUpdate Update = new WaitForUpdate();
         private static readonly WaitForBackgroundThread BackgroundThread = new WaitForBackgroundThread();
+        private static readonly int SrcBlend = Shader.PropertyToID("_SrcBlend");
+        private static readonly int DstBlend = Shader.PropertyToID("_DstBlend");
+        private static readonly int ZWrite = Shader.PropertyToID("_ZWrite");
+        private static readonly int Mode = Shader.PropertyToID("_Mode");
+        private static readonly int EmissionMap = Shader.PropertyToID("_EmissionMap");
+        private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
+        private static readonly int MetallicGlossMap = Shader.PropertyToID("_MetallicGlossMap");
+        private static readonly int Glossiness = Shader.PropertyToID("_Glossiness");
+        private static readonly int Metallic = Shader.PropertyToID("_Metallic");
+        private static readonly int BumpMap = Shader.PropertyToID("_BumpMap");
 
         /// <summary>
         /// Constructs the glTF Object.
@@ -190,10 +200,10 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
             {
                 if (gltfMaterial.alphaMode == "MASK")
                 {
-                    material.SetInt("_SrcBlend", (int)BlendMode.One);
-                    material.SetInt("_DstBlend", (int)BlendMode.Zero);
-                    material.SetInt("_ZWrite", 1);
-                    material.SetInt("_Mode", 3);
+                    material.SetInt(SrcBlend, (int)BlendMode.One);
+                    material.SetInt(DstBlend, (int)BlendMode.Zero);
+                    material.SetInt(ZWrite, 1);
+                    material.SetInt(Mode, 3);
                     material.SetOverrideTag("RenderType", "Cutout");
                     material.EnableKeyword("_ALPHATEST_ON");
                     material.DisableKeyword("_ALPHABLEND_ON");
@@ -202,10 +212,10 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                 }
                 else if (gltfMaterial.alphaMode == "BLEND")
                 {
-                    material.SetInt("_SrcBlend", (int)BlendMode.One);
-                    material.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
-                    material.SetInt("_ZWrite", 0);
-                    material.SetInt("_Mode", 3);
+                    material.SetInt(SrcBlend, (int)BlendMode.One);
+                    material.SetInt(DstBlend, (int)BlendMode.OneMinusSrcAlpha);
+                    material.SetInt(ZWrite, 0);
+                    material.SetInt(Mode, 3);
                     material.SetOverrideTag("RenderType", "Transparency");
                     material.DisableKeyword("_ALPHATEST_ON");
                     material.DisableKeyword("_ALPHABLEND_ON");
@@ -218,8 +228,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
             {
                 material.EnableKeyword("_EmissionMap");
                 material.EnableKeyword("_EMISSION");
-                material.SetTexture("_EmissionMap", gltfObject.images[gltfMaterial.emissiveTexture.index].Texture);
-                material.SetColor("_EmissionColor", gltfMaterial.emissiveFactor.GetColorValue());
+                material.SetTexture(EmissionMap, gltfObject.images[gltfMaterial.emissiveTexture.index].Texture);
+                material.SetColor(EmissionColor, gltfMaterial.emissiveFactor.GetColorValue());
             }
 
             if (gltfMaterial.pbrMetallicRoughness.metallicRoughnessTexture.index >= 0 && material.HasProperty("_MetallicGlossMap"))
@@ -246,18 +256,18 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
                     texture.SetPixels(pixelCache);
                     texture.Apply();
 
-                    material.SetTexture("_MetallicGlossMap", gltfObject.images[gltfMaterial.pbrMetallicRoughness.metallicRoughnessTexture.index].Texture);
+                    material.SetTexture(MetallicGlossMap, gltfObject.images[gltfMaterial.pbrMetallicRoughness.metallicRoughnessTexture.index].Texture);
                 }
 
-                material.SetFloat("_Glossiness", Mathf.Abs((float)gltfMaterial.pbrMetallicRoughness.roughnessFactor - 1f));
-                material.SetFloat("_Metallic", (float)gltfMaterial.pbrMetallicRoughness.metallicFactor);
+                material.SetFloat(Glossiness, Mathf.Abs((float)gltfMaterial.pbrMetallicRoughness.roughnessFactor - 1f));
+                material.SetFloat(Metallic, (float)gltfMaterial.pbrMetallicRoughness.metallicFactor);
                 material.EnableKeyword("_MetallicGlossMap");
                 material.EnableKeyword("_METALLICGLOSSMAP");
             }
 
             if (gltfMaterial.normalTexture.index >= 0 && material.HasProperty("_BumpMap"))
             {
-                material.SetTexture("_BumpMap", gltfObject.images[gltfMaterial.normalTexture.index].Texture);
+                material.SetTexture(BumpMap, gltfObject.images[gltfMaterial.normalTexture.index].Texture);
                 material.EnableKeyword("_BumpMap");
             }
 

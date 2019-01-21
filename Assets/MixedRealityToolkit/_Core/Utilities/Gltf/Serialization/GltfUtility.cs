@@ -88,7 +88,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Gltf.Serialization
             }
 
             gltfObject.Uri = uri;
-            int nameStart = uri.LastIndexOf("\\", StringComparison.Ordinal) + 1;
+            int nameStart = uri.Replace("\\", "/").LastIndexOf("/", StringComparison.Ordinal) + 1;
             int nameLength = uri.Length - nameStart;
             gltfObject.Name = uri.Substring(nameStart, nameLength).Replace(isGlb ? ".glb" : ".gltf", string.Empty);
 
