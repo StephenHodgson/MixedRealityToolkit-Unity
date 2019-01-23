@@ -10,5 +10,15 @@ namespace Microsoft.MixedReality.Toolkit.Core.Attributes
     /// Attribute used to ensure that a GameObject inspector slot only accepts prefabs.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public sealed class PrefabAttribute : PropertyAttribute { }
+    public sealed class PrefabAttribute : PropertyAttribute
+    {
+        public PrefabAttribute() { }
+
+        public PrefabAttribute(Type type)
+        {
+            Constraint = type;
+        }
+
+        public Type Constraint { get; }
+    }
 }
