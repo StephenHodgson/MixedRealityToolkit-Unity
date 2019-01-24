@@ -28,15 +28,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         /// <inheritdoc />
         public string OutputDirectory
         {
-            get
-            {
-                if (string.IsNullOrEmpty(outputDirectory))
-                {
-                    outputDirectory = BuildDeployPreferences.BuildDirectory;
-                }
-
-                return outputDirectory;
-            }
+            get => string.IsNullOrEmpty(outputDirectory) ? outputDirectory = BuildDeployPreferences.BuildDirectory : outputDirectory;
             set => outputDirectory = value;
         }
 

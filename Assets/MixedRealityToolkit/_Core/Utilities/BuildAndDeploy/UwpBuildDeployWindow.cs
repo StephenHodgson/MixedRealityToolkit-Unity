@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using UnityEditor;
@@ -181,6 +182,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         private int lastSessionConnectionInfoIndex;
         private static int currentConnectionInfoIndex = 0;
         private static DevicePortalConnections portalConnections = null;
+        private static CancellationTokenSource appxCancellationTokenSource = null;
 
         #endregion Fields
 
@@ -633,24 +635,34 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             // Restore previous label width
             EditorGUIUtility.labelWidth = previousLabelWidth;
 
-            // Build APPX
-            GUI.enabled = ShouldBuildAppxBeEnabled;
-
-            if (GUILayout.Button("Build APPX", GUILayout.Width(HALF_WIDTH)))
+            if (appxCancellationTokenSource == null)
             {
-                // Check if solution exists
-                string slnFilename = Path.Combine(BuildDeployPreferences.BuildDirectory, $"{PlayerSettings.productName}.sln");
+                // Build APPX
+                GUI.enabled = ShouldBuildAppxBeEnabled;
 
-                if (File.Exists(slnFilename))
+                if (GUILayout.Button("Build APPX", GUILayout.Width(HALF_WIDTH)))
                 {
-                    EditorApplication.delayCall += BuildAppx;
-                }
-                else if (EditorUtility.DisplayDialog("Solution Not Found", "We couldn't find the solution. Would you like to Build it?", "Yes, Build", "No"))
-                {
-                    EditorApplication.delayCall += () => BuildAll(install: false);
-                }
+                    // Check if solution exists
+                    string slnFilename = Path.Combine(BuildDeployPreferences.BuildDirectory, $"{PlayerSettings.productName}.sln");
 
-                GUI.enabled = true;
+                    if (File.Exists(slnFilename))
+                    {
+                        EditorApplication.delayCall += BuildAppx;
+                    }
+                    else if (EditorUtility.DisplayDialog("Solution Not Found", "We couldn't find the solution. Would you like to Build it?", "Yes, Build", "No"))
+                    {
+                        EditorApplication.delayCall += () => BuildAll(install: false);
+                    }
+
+                    GUI.enabled = true;
+                }
+            }
+            else
+            {
+                if (GUILayout.Button("Cancel Build", GUILayout.Width(HALF_WIDTH)))
+                {
+                    appxCancellationTokenSource.Cancel();
+                }
             }
 
             GUILayout.EndHorizontal();
@@ -1027,7 +1039,12 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         {
             Debug.Assert(!isBuilding);
             isBuilding = true;
-            await UwpPlayerBuildTools.BuildPlayer(BuildDeployPreferences.BuildDirectory);
+
+            appxCancellationTokenSource = new CancellationTokenSource();
+            await UwpPlayerBuildTools.BuildPlayer(BuildDeployPreferences.BuildDirectory, cancellationToken: appxCancellationTokenSource.Token);
+            appxCancellationTokenSource.Dispose();
+            appxCancellationTokenSource = null;
+
             isBuilding = false;
         }
 
@@ -1036,6 +1053,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             Debug.Assert(!isBuilding);
             isBuilding = true;
 
+            appxCancellationTokenSource = new CancellationTokenSource();
+
             var buildInfo = new UwpBuildInfo
             {
                 RebuildAppx = UwpBuildDeployPreferences.ForceRebuild,
@@ -1043,12 +1062,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 BuildPlatform = EditorUserBuildSettings.wsaArchitecture,
                 OutputDirectory = BuildDeployPreferences.BuildDirectory,
                 AutoIncrement = BuildDeployPreferences.IncrementBuildVersion,
-                AppIconPath = UwpBuildDeployPreferences.MixedRealityAppIconPath
             };
 
             EditorAssemblyReloadManager.LockReloadAssemblies = true;
-            await UwpAppxBuildTools.BuildAppxAsync(buildInfo);
+            await UwpAppxBuildTools.BuildAppxAsync(buildInfo, appxCancellationTokenSource.Token);
             EditorAssemblyReloadManager.LockReloadAssemblies = false;
+            appxCancellationTokenSource.Dispose();
+            appxCancellationTokenSource = null;
+
             isBuilding = false;
         }
 
@@ -1058,8 +1079,10 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             isBuilding = true;
             EditorAssemblyReloadManager.LockReloadAssemblies = true;
 
+            appxCancellationTokenSource = new CancellationTokenSource();
+
             // First build SLN
-            if (await UwpPlayerBuildTools.BuildPlayer(BuildDeployPreferences.BuildDirectory, false, true))
+            if (await UwpPlayerBuildTools.BuildPlayer(BuildDeployPreferences.BuildDirectory, false, appxCancellationTokenSource.Token))
             {
                 if (install)
                 {
@@ -1076,6 +1099,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 }
             }
 
+            appxCancellationTokenSource.Dispose();
+            appxCancellationTokenSource = null;
             EditorAssemblyReloadManager.LockReloadAssemblies = false;
             isBuilding = false;
         }

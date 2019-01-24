@@ -7,6 +7,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using UnityEditor;
@@ -26,12 +27,13 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         public static bool IsBuilding { get; private set; } = false;
 
         /// <summary>
-        /// Build the UWP appx bundle for this project.  Requires that <see cref="UwpPlayerBuildTools.BuildPlayer(string,bool,bool)"/> has already be run or a user has
+        /// Build the UWP appx bundle for this project.  Requires that <see cref="UwpPlayerBuildTools.BuildPlayer(string,bool,CancellationToken)"/> has already be run or a user has
         /// previously built the Unity Player with the WSA Player as the Build Target.
         /// </summary>
         /// <param name="buildInfo"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns>True, if the appx build was successful.</returns>
-        public static async Task<bool> BuildAppxAsync(UwpBuildInfo buildInfo)
+        public static async Task<bool> BuildAppxAsync(UwpBuildInfo buildInfo, CancellationToken cancellationToken = default)
         {
             if (!EditorAssemblyReloadManager.LockReloadAssemblies)
             {
@@ -72,9 +74,16 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             }
 
             // Ensure that the generated .appx version increments by modifying Package.appxmanifest
-            if (!UpdateAppxManifest(buildInfo))
+            try
             {
-                Debug.LogError("Failed to increment package version!");
+                if (!UpdateAppxManifest(buildInfo))
+                {
+                    throw new Exception();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Failed to update appxmanifest!\n{e.Message}");
                 return IsBuilding = false;
             }
 
@@ -85,7 +94,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             var processResult = await new Process().StartProcessAsync(
                 msBuildPath,
                 $"\"{solutionProjectPath}\" /t:{(buildInfo.RebuildAppx ? "Rebuild" : "Build")} /p:Configuration={buildInfo.Configuration} /p:Platform={buildInfo.BuildPlatform} /verbosity:m",
-                !Application.isBatchMode);
+                !Application.isBatchMode,
+                cancellationToken);
 
             switch (processResult.ExitCode)
             {
@@ -158,7 +168,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             return string.Empty;
         }
 
-        private static bool UpdateAppxManifest(UwpBuildInfo buildInfo)
+        private static bool UpdateAppxManifest(IBuildInfo buildInfo)
         {
             // Find the manifest, assume the one we want is the first one
             string[] manifests = Directory.GetFiles(BuildDeployPreferences.AbsoluteBuildDirectory, "Package.appxmanifest", SearchOption.AllDirectories);
@@ -214,29 +224,55 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                     }
                 }
 
-                // find mixed reality model
-                var modelContainer = rootNode.Descendants(Uap5NameSpace + "MixedRealityModel").ToArray();
-
-                if (modelContainer.Any())
+                if (!string.IsNullOrEmpty(UwpBuildDeployPreferences.MixedRealityAppIconPath))
                 {
-                    var element = modelContainer.First();
-                    var path = element.Attribute(XName.Get("Path"));
+                    string modelPath;
 
-                    if (path != null)
+                    // find mixed reality model container
+                    var modelContainer = rootNode.Descendants(Uap5NameSpace + "MixedRealityModel").ToArray();
+
+                    try
                     {
-                        path.Value = buildInfo.AppIconPath;
+                        var modelFullPath = Path.GetFullPath(UwpBuildDeployPreferences.MixedRealityAppIconPath);
+                        var absoluteBuildDirectory = Path.GetFullPath(BuildDeployPreferences.BuildDirectory);
+
+                        modelPath = $"{absoluteBuildDirectory}/{PlayerSettings.productName}/Assets/{Path.GetFileName(modelFullPath)}";
+
+                        if (File.Exists(modelPath))
+                        {
+                            File.Delete(modelPath);
+                        }
+
+                        File.Copy(modelFullPath, modelPath);
+                        modelPath = modelPath.Replace($"{absoluteBuildDirectory}/{PlayerSettings.productName}/", string.Empty).Replace("/", "\\");
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError(e.Message);
+                        return false;
+                    }
+
+                    if (modelContainer.Any())
+                    {
+                        var element = modelContainer.First();
+                        var path = element.Attribute(XName.Get("Path"));
+
+                        if (path != null)
+                        {
+                            path.Value = modelPath;
+                        }
+                        else
+                        {
+                            element.Add(new XAttribute("Path", modelPath));
+                        }
                     }
                     else
                     {
-                        element.Add(new XAttribute("Path", buildInfo.AppIconPath));
+                        var modelElement = new XElement(Uap5NameSpace + "MixedRealityModel");
+                        var defaultTile = rootNode.Descendants(UapNameSpace + "DefaultTile").First();
+                        defaultTile.Add(modelElement);
+                        modelElement.Add(new XAttribute("Path", modelPath));
                     }
-                }
-                else
-                {
-                    var modelElement = new XElement(Uap5NameSpace + "MixedRealityModel");
-                    var defaultTile = rootNode.Descendants(UapNameSpace + "DefaultTile").First();
-                    defaultTile.Add(modelElement);
-                    modelElement.Add(new XAttribute("Path", Path.GetFullPath(buildInfo.AppIconPath)));
                 }
             }
 

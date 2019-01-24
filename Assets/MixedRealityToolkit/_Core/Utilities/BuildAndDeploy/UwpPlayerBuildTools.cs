@@ -5,6 +5,7 @@ using Microsoft.MixedReality.Toolkit.Core.Utilities.Editor;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
@@ -39,13 +40,13 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         }
 
         /// <summary>
-        /// Do a build configured for UWP Applications to the specified path, returns the error from <see cref="BuildPlayer(UwpBuildInfo)"/>
+        /// Do a build configured for UWP Applications to the specified path, returns the error from <see cref="BuildPlayer(UwpBuildInfo, CancellationToken)"/>
         /// </summary>
         /// <param name="buildDirectory"></param>
-        /// <param name="showDialog"></param>
-        /// <param name="buildAppx"></param>
+        /// <param name="showDialog">Should the user be prompted to build the appx as well?</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>True, if build was successful.</returns>
-        public static async Task<bool> BuildPlayer(string buildDirectory, bool showDialog = true, bool buildAppx = false)
+        public static async Task<bool> BuildPlayer(string buildDirectory, bool showDialog = true, CancellationToken cancellationToken = default)
         {
             if (UnityPlayerBuildTools.CheckBuildScenes() == false)
             {
@@ -56,8 +57,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             {
                 OutputDirectory = buildDirectory,
                 Scenes = EditorBuildSettings.scenes.Where(scene => scene.enabled).Select(scene => scene.path),
-                BuildAppx = buildAppx,
-                AppIconPath = UwpBuildDeployPreferences.MixedRealityAppIconPath,
+                BuildAppx = !showDialog,
 
                 // Configure a post build action that will compile the generated solution
                 PostBuildAction = PostBuildAction
@@ -77,20 +77,21 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                         var _buildInfo = innerBuildInfo as UwpBuildInfo;
                         Debug.Assert(_buildInfo != null);
                         EditorAssemblyReloadManager.LockReloadAssemblies = true;
-                        await UwpAppxBuildTools.BuildAppxAsync(_buildInfo);
+                        await UwpAppxBuildTools.BuildAppxAsync(_buildInfo, cancellationToken);
                         EditorAssemblyReloadManager.LockReloadAssemblies = false;
                     }
                 }
             }
 
-            return await BuildPlayer(buildInfo);
+            return await BuildPlayer(buildInfo, cancellationToken);
         }
 
         /// <summary>
         /// Build the Uwp Player.
         /// </summary>
         /// <param name="buildInfo"></param>
-        public static async Task<bool> BuildPlayer(UwpBuildInfo buildInfo)
+        /// <param name="cancellationToken"></param>
+        public static async Task<bool> BuildPlayer(UwpBuildInfo buildInfo, CancellationToken cancellationToken = default)
         {
             #region Gather Build Data
 
@@ -107,7 +108,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
             if (success && buildInfo.BuildAppx)
             {
-                success &= await UwpAppxBuildTools.BuildAppxAsync(buildInfo);
+                success &= await UwpAppxBuildTools.BuildAppxAsync(buildInfo, cancellationToken);
             }
 
             return success;

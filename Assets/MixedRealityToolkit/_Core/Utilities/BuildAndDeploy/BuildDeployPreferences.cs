@@ -27,7 +27,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         public static string BuildDirectory
         {
             get => $"{EditorPreferences.Get(EDITOR_PREF_BUILD_DIR, "Builds")}/{EditorUserBuildSettings.activeBuildTarget}";
-            set => EditorPreferences.Set(EDITOR_PREF_BUILD_DIR, value);
+            set => EditorPreferences.Set(EDITOR_PREF_BUILD_DIR, value.Replace($"/{EditorUserBuildSettings.activeBuildTarget}", string.Empty));
         }
 
         /// <summary>
