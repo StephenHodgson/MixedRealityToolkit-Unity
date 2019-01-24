@@ -12,11 +12,10 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.PropertyDrawers
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var prefabAttribute = (PrefabAttribute)attribute;
+            var prefabAttribute = attribute as PrefabAttribute;
 
-            if (prefabAttribute != null &&
-                property.propertyType == SerializedPropertyType.ObjectReference &&
-                (property.objectReferenceValue is GameObject || property.objectReferenceValue == null))
+            if (property.propertyType == SerializedPropertyType.ObjectReference &&
+               (property.objectReferenceValue is GameObject || property.objectReferenceValue == null))
             {
                 EditorGUI.BeginChangeCheck();
                 EditorGUI.PropertyField(position, property);
@@ -30,6 +29,17 @@ namespace Microsoft.MixedReality.Toolkit.Core.Inspectors.PropertyDrawers
                 {
                     property.objectReferenceValue = null;
                     Debug.LogWarning("Assigned GameObject must be a prefab");
+                }
+
+                if (prefabAttribute.Constraint != null)
+                {
+                    var constraint = (property.objectReferenceValue as GameObject).GetComponent(prefabAttribute.Constraint);
+
+                    if (constraint == null)
+                    {
+                        property.objectReferenceValue = null;
+                        Debug.LogWarning($"Assigned GameObject must have {prefabAttribute.Constraint.Name} component");
+                    }
                 }
             }
             else

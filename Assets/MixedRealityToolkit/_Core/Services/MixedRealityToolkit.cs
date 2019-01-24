@@ -870,7 +870,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
             }
             catch (Exception e)
             {
-                Debug.LogError($"Failed to register the {concreteType.Name} service: {e.GetType()} - {e.Message}");
+                Debug.LogError($"Failed to register the {concreteType.Name} service: {e.GetType()} - {e.Message}\n{e.StackTrace}");
                 return false;
             }
 
