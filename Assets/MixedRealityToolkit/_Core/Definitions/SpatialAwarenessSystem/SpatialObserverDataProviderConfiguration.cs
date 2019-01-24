@@ -11,7 +11,7 @@ using UnityEngine;
 namespace Microsoft.MixedReality.Toolkit.Core.Definitions.SpatialAwarenessSystem
 {
     /// <summary>
-    /// The configuration setting for a <see cref="IMixedRealityMeshObserver"/>
+    /// The configuration setting for a <see cref="IMixedRealitySpatialObserverDataProvider"/>
     /// </summary>
     [Serializable]
     public struct SpatialObserverDataProviderConfiguration
