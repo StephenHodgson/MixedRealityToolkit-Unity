@@ -18,7 +18,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         public float Width
         {
-            get { return width; }
+            get => width;
             set
             {
                 if (value < 0)
@@ -39,7 +39,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         public float Height
         {
-            get { return height; }
+            get => height;
             set
             {
                 if (value < 0)
@@ -60,10 +60,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         public float ZOffset
         {
-            get
-            {
-                return zOffset;
-            }
+            get => zOffset;
             set
             {
                 if (!zOffset.Equals(value))

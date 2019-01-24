@@ -17,7 +17,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         public Vector3 Direction
         {
-            get { return direction; }
+            get => direction;
             set
             {
                 direction.x = Mathf.Clamp(value.x, -1f, 1f);
@@ -31,8 +31,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         public float Velocity
         {
-            get { return velocity; }
-            set { velocity = value; }
+            get => velocity;
+            set => velocity = value;
         }
 
         [SerializeField]
@@ -40,8 +40,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         public float DistanceMultiplier
         {
-            get { return distanceMultiplier; }
-            set { distanceMultiplier = value; }
+            get => distanceMultiplier;
+            set => distanceMultiplier = value;
         }
 
         [SerializeField]
@@ -49,8 +49,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         public bool UseCustomGravity
         {
-            get { return useCustomGravity; }
-            set { useCustomGravity = value; }
+            get => useCustomGravity;
+            set => useCustomGravity = value;
         }
 
         [SerializeField]
@@ -58,8 +58,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         public Vector3 Gravity
         {
-            get { return gravity; }
-            set { gravity = value; }
+            get => gravity;
+            set => gravity = value;
         }
 
         #region Line Data Provider Implementation

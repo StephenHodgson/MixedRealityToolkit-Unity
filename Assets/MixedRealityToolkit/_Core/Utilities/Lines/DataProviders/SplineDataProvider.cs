@@ -27,7 +27,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         public bool AlignAllControlPoints
         {
-            get { return alignAllControlPoints; }
+            get => alignAllControlPoints;
             set
             {
                 if (alignAllControlPoints != value)

@@ -21,8 +21,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
         /// </summary>
         public MixedRealityPose EndPoint
         {
-            get { return endPoint; }
-            set { endPoint = value; }
+            get => endPoint;
+            set => endPoint = value;
         }
 
         [SerializeField]
@@ -31,7 +31,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         public Vector3 UpDirection
         {
-            get { return upDirection; }
+            get => upDirection;
             set
             {
                 upDirection.x = Mathf.Clamp(value.x, -1f, 1f);
@@ -46,8 +46,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         public float Height
         {
-            get { return height; }
-            set { height = Mathf.Clamp(value, 0.01f, 10f); }
+            get => height;
+            set => height = Mathf.Clamp(value, 0.01f, 10f);
         }
 
         #region MonoBehaviour Implementation

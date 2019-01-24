@@ -29,8 +29,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
         /// </summary>
         public float LineStartClamp
         {
-            get { return lineStartClamp; }
-            set { lineStartClamp = Mathf.Clamp01(value); }
+            get => lineStartClamp;
+            set => lineStartClamp = Mathf.Clamp01(value);
         }
 
         [Range(0f, 1f)]
@@ -43,8 +43,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
         /// </summary>
         public float LineEndClamp
         {
-            get { return lineEndClamp; }
-            set { lineEndClamp = Mathf.Clamp01(value); }
+            get => lineEndClamp;
+            set => lineEndClamp = Mathf.Clamp01(value);
         }
 
         [SerializeField]
@@ -56,8 +56,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
         /// </summary>
         public Transform LineTransform
         {
-            get { return customLineTransform != null ? customLineTransform : transform; }
-            set { customLineTransform = value; }
+            get => customLineTransform != null ? customLineTransform : transform;
+            set => customLineTransform = value;
         }
 
         [SerializeField]
@@ -70,8 +70,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
         /// <remarks>Some classes override this setting.</remarks>
         public virtual bool Loops
         {
-            get { return loops; }
-            set { loops = value; }
+            get => loops;
+            set => loops = value;
         }
 
         [SerializeField]
@@ -83,8 +83,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
         /// </summary>
         public LineRotationMode RotationMode
         {
-            get { return rotationMode; }
-            set { rotationMode = value; }
+            get => rotationMode;
+            set => rotationMode = value;
         }
 
         [SerializeField]
@@ -96,8 +96,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
         /// </summary>
         public bool FlipUpVector
         {
-            get { return flipUpVector; }
-            set { flipUpVector = value; }
+            get => flipUpVector;
+            set => flipUpVector = value;
         }
 
         [SerializeField]
@@ -109,8 +109,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
         /// </summary>
         public Vector3 OriginOffset
         {
-            get { return originOffset; }
-            set { originOffset = value; }
+            get => originOffset;
+            set => originOffset = value;
         }
 
         [Range(0f, 1f)]
@@ -123,8 +123,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
         /// </summary>
         public float ManualUpVectorBlend
         {
-            get { return manualUpVectorBlend; }
-            set { manualUpVectorBlend = Mathf.Clamp01(value); }
+            get => manualUpVectorBlend;
+            set => manualUpVectorBlend = Mathf.Clamp01(value);
         }
 
         [SerializeField]
@@ -136,8 +136,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
         /// </summary>
         public Vector3[] ManualUpVectors
         {
-            get { return manualUpVectors; }
-            set { manualUpVectors = value; }
+            get => manualUpVectors;
+            set => manualUpVectors = value;
         }
 
         [SerializeField]
@@ -153,8 +153,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
         /// </remarks>
         public float VelocitySearchRange
         {
-            get { return velocitySearchRange; }
-            set { velocitySearchRange = Mathf.Clamp(value, 0.001f, 0.1f); }
+            get => velocitySearchRange;
+            set => velocitySearchRange = Mathf.Clamp(value, 0.001f, 0.1f);
         }
 
         [SerializeField]
@@ -191,8 +191,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
         /// </summary>
         public DistortionMode DistortionMode
         {
-            get { return distortionMode; }
-            set { distortionMode = value; }
+            get => distortionMode;
+            set => distortionMode = value;
         }
 
         [SerializeField]
@@ -200,8 +200,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         public AnimationCurve DistortionStrength
         {
-            get { return distortionStrength; }
-            set { distortionStrength = value; }
+            get => distortionStrength;
+            set => distortionStrength = value;
         }
 
         [Range(0f, 1f)]
@@ -210,20 +210,20 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         public float UniformDistortionStrength
         {
-            get { return uniformDistortionStrength; }
-            set { uniformDistortionStrength = Mathf.Clamp01(value); }
+            get => uniformDistortionStrength;
+            set => uniformDistortionStrength = Mathf.Clamp01(value);
         }
 
         public Vector3 FirstPoint
         {
-            get { return GetPoint(0); }
-            set { SetPoint(0, value); }
+            get => GetPoint(0);
+            set => SetPoint(0, value);
         }
 
         public Vector3 LastPoint
         {
-            get { return GetPoint(PointCount - 1); }
-            set { SetPoint(PointCount - 1, value); }
+            get => GetPoint(PointCount - 1);
+            set => SetPoint(PointCount - 1, value);
         }
 
         #region BaseMixedRealityLineDataProvider Abstract Declarations
@@ -465,7 +465,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
         }
 
         /// <summary>
-        /// Iterates along line until it finds the point closest to <see cref="worldPosition"/>
+        /// Iterates along line until it finds the point closest to worldPosition
         /// </summary>
         /// <param name="worldPosition"></param>
         /// <param name="resolution"></param>
@@ -478,7 +478,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
         }
 
         /// <summary>
-        /// Iterates along line until it finds the length closest to <see cref="worldPosition"/>.
+        /// Iterates along line until it finds the length closest to worldPosition.
         /// </summary>
         /// <param name="worldPosition"></param>
         /// <param name="resolution"></param>
@@ -493,41 +493,46 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         private float GetNormalizedLengthFromWorldPosInternal(Vector3 worldPosition, float currentLength, ref int iteration, int resolution, int maxIterations, float start, float end)
         {
-            // If we've maxed out our iterations, don't go any further
             iteration++;
 
+            // If we've maxed out our iterations, don't go any further
             if (iteration > maxIterations)
             {
                 return currentLength;
             }
 
-            float searchLength;
-            if (start > 0)
-            {
-                searchLength = (end - start) / resolution;
-            }
-            else
-            {
-                searchLength = end / resolution;
-            }
-
+            float searchLengthStep = (end - start) / resolution;
             float closestDistanceSoFar = Mathf.Infinity;
+            float currentSearchLength = start;
 
             for (int i = 0; i < resolution; i++)
             {
-                Vector3 currentPoint = GetUnClampedPoint(start + (searchLength * i));
-                float distance = Vector3.Distance(currentPoint, worldPosition);
+                Vector3 currentPoint = GetUnClampedPoint(currentSearchLength);
 
-                if (distance < closestDistanceSoFar)
+                float distSquared = (currentPoint - worldPosition).sqrMagnitude;
+                if (distSquared < closestDistanceSoFar)
                 {
-                    currentLength = start + (searchLength * i);
-                    closestDistanceSoFar = distance;
+                    currentLength = currentSearchLength;
+                    closestDistanceSoFar = distSquared;
                 }
+                currentSearchLength += searchLengthStep;
             }
 
             // Our start and end lengths will now be 1 resolution to the left and right
-            float newStart = Mathf.Clamp01(currentLength - searchLength);
-            float newEnd = Mathf.Clamp01(currentLength + searchLength);
+            float newStart = currentLength - searchLengthStep;
+            float newEnd = currentLength + searchLengthStep;
+
+            if (newStart < 0)
+            {
+                newEnd -= newStart;
+                newStart = 0;
+            }
+
+            if (newEnd > 1)
+            {
+                newEnd = 1;
+            }
+
             return GetNormalizedLengthFromWorldPosInternal(worldPosition, currentLength, ref iteration, resolution, maxIterations, newStart, newEnd);
         }
 

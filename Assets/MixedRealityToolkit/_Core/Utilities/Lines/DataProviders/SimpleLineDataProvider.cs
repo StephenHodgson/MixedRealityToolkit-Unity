@@ -29,8 +29,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
         /// </summary>
         public MixedRealityPose EndPoint
         {
-            get { return endPoint; }
-            set { endPoint = value; }
+            get => endPoint;
+            set => endPoint = value;
         }
 
         #region MonoBehaviour Implementation

@@ -17,8 +17,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         public int Resolution
         {
-            get { return resolution; }
-            set { resolution = Mathf.Clamp(value, 0, 2048); }
+            get => resolution;
+            set => resolution = Mathf.Clamp(value, 0, 2048);
         }
 
         [SerializeField]
@@ -26,7 +26,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         public Vector2 Radius
         {
-            get { return radius; }
+            get => radius;
             set
             {
                 if (value.x < 0)
@@ -47,16 +47,6 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Lines.DataProviders
 
         /// <inheritdoc />
         public override int PointCount => resolution;
-
-        /// <inheritdoc />
-        public override bool Loops
-        {
-            get
-            {
-                base.Loops = true;
-                return true;
-            }
-        }
 
         /// <inheritdoc />
         protected override Vector3 GetPointInternal(float normalizedDistance)
