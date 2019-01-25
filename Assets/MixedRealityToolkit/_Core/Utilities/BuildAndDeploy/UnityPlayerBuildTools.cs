@@ -199,7 +199,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                     case "-debug":
                     case "-master":
                     case "-release":
-                        buildInfo.Configuration = arguments[i].Substring(1);
+                        buildInfo.Configuration = arguments[i].Substring(1).ToLower();
                         break;
                 }
             }

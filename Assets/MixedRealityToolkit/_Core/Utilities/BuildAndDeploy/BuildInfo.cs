@@ -61,14 +61,16 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         {
             get
             {
-                if (!this.HasConfigurationSymbol() || this.HasAnySymbols(UnityPlayerBuildTools.BuildSymbolDebug))
+                if (!this.HasConfigurationSymbol())
                 {
-                    return UnityPlayerBuildTools.BuildSymbolDebug;
+                    return UnityPlayerBuildTools.BuildSymbolMaster;
                 }
 
-                return this.HasAnySymbols(UnityPlayerBuildTools.BuildSymbolRelease) ?
-                    UnityPlayerBuildTools.BuildSymbolRelease :
-                    UnityPlayerBuildTools.BuildSymbolMaster;
+                return this.HasAnySymbols(UnityPlayerBuildTools.BuildSymbolDebug)
+                    ? UnityPlayerBuildTools.BuildSymbolDebug
+                    : this.HasAnySymbols(UnityPlayerBuildTools.BuildSymbolRelease)
+                        ? UnityPlayerBuildTools.BuildSymbolRelease
+                        : UnityPlayerBuildTools.BuildSymbolMaster;
             }
             set
             {

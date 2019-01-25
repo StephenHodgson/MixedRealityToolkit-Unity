@@ -21,8 +21,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
         /// </summary>
         public static string BuildConfig
         {
-            get => EditorPreferences.Get(EDITOR_PREF_BUILD_CONFIG, "Debug");
-            set => EditorPreferences.Set(EDITOR_PREF_BUILD_CONFIG, value);
+            get => EditorPreferences.Get(EDITOR_PREF_BUILD_CONFIG, "master");
+            set => EditorPreferences.Set(EDITOR_PREF_BUILD_CONFIG, value.ToLower());
         }
 
         /// <summary>

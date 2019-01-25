@@ -64,7 +64,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
         private readonly string[] deviceNames = { "Any Device", "PC", "Mobile", "HoloLens" };
 
-        private static readonly List<string> builds = new List<string>(0);
+        private static readonly List<string> Builds = new List<string>(0);
 
         private static readonly List<string> AppPackageDirectories = new List<string>(0);
 
@@ -113,9 +113,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                                                        !BuildPipeline.isBuildingPlayer &&
                                                        !string.IsNullOrEmpty(BuildDeployPreferences.BuildDirectory);
 
-        private static bool ShouldBuildAppxBeEnabled => ShouldBuildSLNBeEnabled &&
-                                                        !string.IsNullOrEmpty(BuildDeployPreferences.BuildDirectory) &&
-                                                        !string.IsNullOrEmpty(UwpBuildDeployPreferences.BuildConfig);
+        private static bool ShouldBuildAppxBeEnabled => ShouldBuildSLNBeEnabled && !string.IsNullOrEmpty(BuildDeployPreferences.BuildDirectory);
 
         private static bool DevicePortalConnectionEnabled => (portalConnections.Connections.Count > 1 || IsHoloLensConnectedUsb) &&
                                                              !string.IsNullOrEmpty(BuildDeployPreferences.BuildDirectory);
@@ -504,7 +502,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             EditorUserBuildSettings.GetWSADotNetNative(buildConfigOption);
             buildConfigOption = (WSABuildType)EditorGUILayout.EnumPopup("Build Configuration", buildConfigOption, GUILayout.Width(HALF_WIDTH));
 
-            string buildConfigString = buildConfigOption.ToString();
+            string buildConfigString = buildConfigOption.ToString().ToLower();
 
             if (buildConfigString != curBuildConfigString)
             {
@@ -608,7 +606,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             // Open AppX packages location
             string appxDirectory = curScriptingBackend == ScriptingImplementation.IL2CPP ? $"/AppPackages/{PlayerSettings.productName}" : $"/{PlayerSettings.productName}/AppPackages";
             string appxBuildPath = Path.GetFullPath($"{BuildDeployPreferences.BuildDirectory}{appxDirectory}");
-            GUI.enabled = builds.Count > 0 && !string.IsNullOrEmpty(appxBuildPath);
+            GUI.enabled = Builds.Count > 0 && !string.IsNullOrEmpty(appxBuildPath);
 
             if (GUILayout.Button("Open APPX Packages Location", GUILayout.Width(HALF_WIDTH)))
             {
@@ -818,7 +816,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             GUILayout.EndHorizontal();
 
             // Build list
-            if (builds.Count == 0)
+            if (Builds.Count == 0)
             {
                 GUILayout.Label("*** No builds found in build directory", EditorStyles.boldLabel);
             }
@@ -828,7 +826,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                 GUILayout.BeginVertical(GUILayout.ExpandHeight(true));
                 scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
 
-                foreach (var fullBuildLocation in builds)
+                foreach (var fullBuildLocation in Builds)
                 {
                     int lastBackslashIndex = fullBuildLocation.LastIndexOf("\\", StringComparison.Ordinal);
 
@@ -1107,7 +1105,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
         private static void UpdateBuilds()
         {
-            builds.Clear();
+            Builds.Clear();
 
             var curScriptingBackend = PlayerSettings.GetScriptingBackend(BuildTargetGroup.WSA);
             string appxDirectory = curScriptingBackend == ScriptingImplementation.IL2CPP ? $"AppPackages\\{PlayerSettings.productName}" : $"{PlayerSettings.productName}\\AppPackages";
@@ -1128,7 +1126,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
                     from string directory in AppPackageDirectories
                     orderby Directory.GetLastWriteTime(directory) descending
                     select Path.GetFullPath(directory);
-                builds.AddRange(selectedDirectories);
+                Builds.AddRange(selectedDirectories);
             }
             catch (DirectoryNotFoundException)
             {
@@ -1146,7 +1144,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
             DateTime mostRecent = DateTime.MinValue;
             string mostRecentBuild = string.Empty;
 
-            foreach (var fullBuildLocation in builds)
+            foreach (var fullBuildLocation in Builds)
             {
                 DateTime directoryDate = Directory.GetLastWriteTime(fullBuildLocation);
 
