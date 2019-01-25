@@ -1,6 +1,6 @@
-﻿using System.IO;
-using Microsoft.MixedReality.Toolkit.Core.Utilities.Editor;
+﻿using Microsoft.MixedReality.Toolkit.Core.Utilities.Editor;
 using Microsoft.MixedReality.Toolkit.Core.Utilities.WindowsDevicePortal.DataStructures;
+using System.IO;
 using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build

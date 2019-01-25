@@ -2,12 +2,15 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 #if UNITY_EDITOR || !UNITY_WSA
+using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
+using Microsoft.MixedReality.Toolkit.Core.Utilities.Async;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
+using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Extensions
 {
@@ -120,24 +123,32 @@ namespace Microsoft.MixedReality.Toolkit.Core.Extensions
 
                 processResult.TrySetResult(new ProcessResult(process.ExitCode, new[] { "Failed to start process!" }, null));
             }
-
-
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
-            CancellationWatcher(process);
+            else
+            {
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+                CancellationWatcher(process);
+            }
 
             async void CancellationWatcher(Process _process)
             {
                 await Task.Run(() =>
-                 {
-                     while (!_process.HasExited)
-                     {
-                         if (cancellationToken.IsCancellationRequested)
-                         {
-                             _process.Kill();
-                         }
-                     }
-                 });
+                {
+                    try
+                    {
+                        while (!_process.HasExited)
+                        {
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                _process.Kill();
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                });
             }
 
             return await processResult.Task;
