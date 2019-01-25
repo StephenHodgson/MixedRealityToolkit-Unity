@@ -332,6 +332,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Services
             if (ActiveProfile == null)
             {
                 Debug.LogError("No Mixed Reality Configuration Profile found, cannot initialize the Mixed Reality Toolkit");
+                isInitializing = false;
                 return;
             }
 
