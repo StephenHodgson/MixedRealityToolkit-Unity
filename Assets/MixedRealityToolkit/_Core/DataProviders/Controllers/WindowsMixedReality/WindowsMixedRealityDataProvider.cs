@@ -411,38 +411,43 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers.WindowsM
             byte[] glbModelData = null;
 
 #if WINDOWS_UWP
-            IRandomAccessStreamWithContentType stream = null;
-
-            if (WindowsApiChecker.UniversalApiContractV5_IsAvailable)
+            if (UnityEngine.XR.WSA.HolographicSettings.IsDisplayOpaque)
             {
-                await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
-                {
-                    var sources = SpatialInteractionManager.GetForCurrentView().GetDetectedSourcesAtTimestamp(PerceptionTimestampHelper.FromHistoricalTargetTime(DateTimeOffset.Now));
+                IRandomAccessStreamWithContentType stream = null;
 
-                    for (var i = 0; i < sources?.Count; i++)
+                if (WindowsApiChecker.UniversalApiContractV5_IsAvailable)
+                {
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                     {
-                        if (sources[i].Source.Id.Equals(interactionSource.id))
+                        var sources = SpatialInteractionManager.GetForCurrentView().GetDetectedSourcesAtTimestamp(PerceptionTimestampHelper.FromHistoricalTargetTime(DateTimeOffset.Now));
+
+                        for (var i = 0; i < sources?.Count; i++)
                         {
-                            stream = await sources[i].Source.Controller.TryGetRenderableModelAsync();
-                            break;
+                            if (sources[i].Source.Id.Equals(interactionSource.id))
+                            {
+                                stream = sources[i].Source.Controller.TryGetRenderableModelAsync().GetResults();
+                                break;
+                            }
                         }
-                    }
-                });
-            }
-
-            if (stream != null)
-            {
-                glbModelData = new byte[stream.Size];
-
-                using (var reader = new DataReader(stream))
-                {
-                    await reader.LoadAsync((uint)stream.Size);
-                    reader.ReadBytes(glbModelData);
+                    });
                 }
-            }
-            else
-            {
-                Debug.LogError("Failed to load model data!");
+
+                if (stream != null)
+                {
+                    glbModelData = new byte[stream.Size];
+
+                    using (var reader = new DataReader(stream))
+                    {
+                        await reader.LoadAsync((uint)stream.Size);
+                        reader.ReadBytes(glbModelData);
+                    }
+
+                    stream.Dispose();
+                }
+                else
+                {
+                    Debug.LogError("Failed to load model data!");
+                }
             }
 #else
             Debug.Log("Skipping gltf load...");

@@ -226,18 +226,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
                 if (Visualizer != null)
                 {
                     Visualizer.Controller = this;
-
-                    if (visualizationProfile.TryGetControllerPose(controllerType, ControllerHandedness, out MixedRealityInputAction poseAction))
-                    {
-                        Visualizer.UseSourcePoseData = false;
-                        Visualizer.PoseAction = poseAction;
-                    }
-                    else if (useAlternatePoseAction && visualizationProfile.TryGetControllerPoseOverride(controllerType, ControllerHandedness, out MixedRealityInputAction altPoseAction))
-                    {
-                        Visualizer.UseSourcePoseData = false;
-                        Visualizer.PoseAction = altPoseAction;
-                    }
-
+                    SetupController(Visualizer);
                     return; // Nothing left to do;
                 }
 
@@ -269,17 +258,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
                 if (Visualizer != null)
                 {
                     Visualizer.Controller = this;
-
-                    if (visualizationProfile.TryGetControllerPose(controllerType, ControllerHandedness, out MixedRealityInputAction poseAction))
-                    {
-                        Visualizer.UseSourcePoseData = false;
-                        Visualizer.PoseAction = poseAction;
-                    }
-                    else if (useAlternatePoseAction && visualizationProfile.TryGetControllerPoseOverride(controllerType, ControllerHandedness, out MixedRealityInputAction altPoseAction))
-                    {
-                        Visualizer.UseSourcePoseData = false;
-                        Visualizer.PoseAction = altPoseAction;
-                    }
+                    SetupController(Visualizer);
                 }
                 else
                 {
@@ -290,6 +269,24 @@ namespace Microsoft.MixedReality.Toolkit.Core.DataProviders.Controllers
             if (Visualizer == null)
             {
                 Debug.LogError("Failed to render controller model!");
+            }
+
+            void SetupController(IMixedRealityControllerVisualizer visualizer)
+            {
+                if (!useAlternatePoseAction && visualizationProfile.TryGetControllerPose(controllerType, ControllerHandedness, out MixedRealityInputAction poseAction))
+                {
+                    visualizer.UseSourcePoseData = false;
+                    visualizer.PoseAction = poseAction;
+                }
+                else if (useAlternatePoseAction && visualizationProfile.TryGetControllerPoseOverride(controllerType, ControllerHandedness, out MixedRealityInputAction altPoseAction))
+                {
+                    visualizer.UseSourcePoseData = false;
+                    visualizer.PoseAction = altPoseAction;
+                }
+                else
+                {
+                    Debug.LogError("Failed to get pose actions for controller visual.");
+                }
             }
         }
     }

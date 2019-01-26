@@ -620,6 +620,9 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.WindowsDevicePortal
         /// <returns>The path of the downloaded log file.</returns>
         public static async Task<string> DownloadLogFileAsync(string packageName, DeviceInfo targetDevice, ApplicationInfo appInfo = null)
         {
+            var isAuth = await EnsureAuthenticationAsync(targetDevice);
+            if (!isAuth) { return string.Empty; }
+
             Debug.Assert(!string.IsNullOrEmpty(packageName));
 
             if (appInfo == null)
@@ -816,7 +819,8 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.WindowsDevicePortal
                 var response = await DevicePortalAuthorizationAsync(targetDevice);
                 success = response.Successful;
 
-                if (success)
+                if (success &&
+                   !string.IsNullOrEmpty(response.ResponseBody))
                 {
                     targetDevice.CsrfToken = response.ResponseBody;
 
@@ -826,6 +830,7 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.WindowsDevicePortal
                 else
                 {
                     Debug.LogError($"Authentication failed! {response.ResponseBody}");
+                    success = false;
                 }
 
                 if (!string.IsNullOrEmpty(targetDevice.CsrfToken))
