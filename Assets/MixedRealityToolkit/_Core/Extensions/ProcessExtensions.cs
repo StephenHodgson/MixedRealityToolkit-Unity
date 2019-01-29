@@ -3,14 +3,11 @@
 
 #if UNITY_EDITOR || !UNITY_WSA
 using Microsoft.MixedReality.Toolkit.Core.Definitions.Utilities;
-using Microsoft.MixedReality.Toolkit.Core.Utilities.Async;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using UnityEngine;
-using Debug = System.Diagnostics.Debug;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Extensions
 {
