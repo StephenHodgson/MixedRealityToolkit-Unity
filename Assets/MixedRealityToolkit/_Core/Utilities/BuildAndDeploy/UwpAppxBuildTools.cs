@@ -118,7 +118,14 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
                             if (Application.isBatchMode)
                             {
-                                Debug.LogError(string.Join("\n", processResult.Errors));
+                                var errors = "Error List:\n";
+
+                                foreach (var error in processResult.Errors)
+                                {
+                                    errors += $"{error}\n";
+                                }
+
+                                Debug.LogError(errors);
                             }
                         }
 
