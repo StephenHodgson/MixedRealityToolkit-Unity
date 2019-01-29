@@ -118,14 +118,21 @@ namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 
                             if (Application.isBatchMode)
                             {
-                                var errors = "Error List:\n";
+                                var output = "Appx Output:\n";
+
+                                foreach (var message in processResult.Output)
+                                {
+                                    output += $"{message}\n";
+                                }
+
+                                output += "Error List:\n";
 
                                 foreach (var error in processResult.Errors)
                                 {
-                                    errors += $"{error}\n";
+                                    output += $"{error}\n";
                                 }
 
-                                Debug.LogError(errors);
+                                Debug.LogError(output);
                             }
                         }
 
