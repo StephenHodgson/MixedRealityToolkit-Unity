@@ -16,7 +16,7 @@ using Debug = UnityEngine.Debug;
 
 namespace Microsoft.MixedReality.Toolkit.Core.Utilities.Build
 {
-    public class UwpAppxBuildTools
+    public static class UwpAppxBuildTools
     {
         private static readonly XNamespace UapNameSpace = "http://schemas.microsoft.com/appx/manifest/uap/windows10";
         private static readonly XNamespace Uap5NameSpace = "http://schemas.microsoft.com/appx/manifest/uap/windows10/5";
